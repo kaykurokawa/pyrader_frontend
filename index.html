@@ -6,6 +6,7 @@
         <title>Bitcoin Trader</title>
         <link rel="stylesheet" href="/css/c3.css">
         <link rel="stylesheet" href="/css/project.css">
+        <link rel="stylesheet" href="/css/highcharts.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     </head>
     <body>
@@ -44,7 +45,6 @@
                             <option>1 day</option>
                         </select>
                     </div>
- 
                     <div class="col-xs-2">
                       <div>&nbsp</div>
                         <button type="button" class="btn btn-primary" id="submit">Sumbit</button>
@@ -53,19 +53,12 @@
                  <div class="row">
                     <div>&nbsp</div>
                     <div class="col-sm-2">
-                        <label>From:</label>   
-                        <select class="form-control" id="from-date">
-                            <option>Beginning</option>
-                            <option>1 week ago</option>
-                            <option>1 day ago</option>
-                        </select>
-                    </div>
-                    <div class="col-sm-2">
-                        <label>To:</label>   
-                        <select class="form-control" id="to-date">
-                            <option>Now</option>
-                            <option>1 day ago</option>
-                            <option>1 week ago</option>
+                        <label>Reporting Period:</label>   
+                        <select class="form-control" id="reporting-period">
+                            <option>None</option>
+                            <option>Daily</option>
+                            <option>Weekly</option>
+                            <option>Monthly</option>
                         </select>
                     </div>
                  </div>
@@ -75,6 +68,7 @@
             <h3 id="current-volume"></h3>
             <h3 id="time"></h3>
             <div id="chart2"></div>
+            <div id="hchart" style="height: 800px; min-width: 310px"></div>
             <footer>
                 <p class="float-right"><a href="#">Back to top</a></p>
                 <p>&copy; 2018 &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
@@ -85,7 +79,12 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js" charset="utf-8"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="/js/c3.min.js"></script>
+        <script src="/js/highstock.js"></script>
+        <script src="/js/exporting.js"></script>
+        <script src="/js/drag-panes.js"></script>
+        <script src="/js/example.js"></script>
         <script src="/js/graph.js"></script>
+        <script src="/js/hgraph.js"></script>
         <script src="/js/input.js"></script>
         <script src="/js/app.js"></script>
     </body>

@@ -38,7 +38,6 @@ function drawPriceGraph(json){
 }
 
 function drawVolumeGraph(json){
-  console.log("working!")
   symbol = json.symbol
   var unit = json.unit
   var label = symbol + " in " + unit
