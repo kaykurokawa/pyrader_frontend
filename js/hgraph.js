@@ -1,4 +1,6 @@
  // split the data set into ohlc and volume
+ $(document).ready(function(){ 
+    Highcharts.setOptions(Highcharts.theme);
  data = mydata
  var ohlc = [],
  volume = [],
@@ -86,4 +88,4 @@ Highcharts.stockChart('hchart', {
  }]
 });
 
-   
+});

@@ -10,8 +10,34 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     </head>
     <body>
+
         <div class="container">
+
             <h1>PyRadar API</h1>
+            <ul class="nav nav-tabs text-left" role="tablist">
+                    <li><a href="#price" role="tab" data-toggle="tab"> <span class="glyphicon glyphicon-stats text-gray"></span> Prices</a></li>
+                    <li><a href="#block" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-transfer text-gray"></span> Block</a></li>
+                    <li><a href="#tools" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-wrench text-gray"></span> Tools</a></li>
+                    <li><a href="#data"><span class="glyphicon glyphicon-calendar text-gray"></span> Data</a></li>
+             </ul>
+             <div class="tab-content">
+                    <div id="price" class="tab-pane fade in active">
+                      <h3>Prices</h3>
+                      <p>Some content.</p>
+                    </div>
+                    <div id="block" class="tab-pane fade">
+                      <h3>Menu 1</h3>
+                      <p>Some content in menu 1.</p>
+                    </div>
+                    <div id="tools" class="tab-pane fade">
+                        <h3>Menu 1</h3>
+                        <p>Some content in menu 1.</p>
+                    </div>
+                    <div id="data" class="tab-pane fade">
+                        <h3>Menu 1</h3>
+                        <p>Some content in menu 1.</p>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-sm-2"> 
                         <label>Symbol:</label>        
@@ -64,11 +90,15 @@
                  </div>
             <h3 id="time"></h3>             
             <h3 id="current-price"></h3>
+            <h3>C3JS</h3>
             <div id="chart1"></div>
             <h3 id="current-volume"></h3>
             <h3 id="time"></h3>
             <div id="chart2"></div>
+            <h3>Highcharts</h3>     
             <div id="hchart" style="height: 800px; min-width: 310px"></div>
+            <h3>Charts.js</h3>    
+            <canvas id="canvas"></canvas>
             <footer>
                 <p class="float-right"><a href="#">Back to top</a></p>
                 <p>&copy; 2018 &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
@@ -78,13 +108,17 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js" charset="utf-8"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>  
         <script src="/js/c3.min.js"></script>
         <script src="/js/highstock.js"></script>
         <script src="/js/exporting.js"></script>
         <script src="/js/drag-panes.js"></script>
         <script src="/js/example.js"></script>
         <script src="/js/graph.js"></script>
+        <script src="/js/dark-unica.js"></script>
         <script src="/js/hgraph.js"></script>
+        <script src="/js/utils.js"></script>
+        <script src="/js/chart.js"></script>
         <script src="/js/input.js"></script>
         <script src="/js/app.js"></script>
     </body>
