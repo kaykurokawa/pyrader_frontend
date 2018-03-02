@@ -1,6 +1,6 @@
 var Input = (function(){
 
-    function getAPI(){
+    function getPriceAPI(){
         var reporting_period = document.getElementById ("reporting-period").value
         var start_stamp = getTimeStamp(reporting_period)[0]
         var start_stamp = getTimeStamp(reporting_period)[1]
@@ -26,10 +26,48 @@ var Input = (function(){
                 response.json().then(function(data) {
                     data = processDates(data,interval_i)
                     data = processPrices(data,unit)
+                    data = processVolume(data,unit)
                     window.apiCall = data
                     //Here you will pass data to whatever Graphing library asynchronosly
                     Graph.drawPriceGraph(data)
                     Graph.drawVolumeGraph(data)
+                });
+                }
+            )
+                .catch(function(err) {
+                    console.log('Fetch Error :-S', err);
+                    document.getElementById("chart1").innerHTML = "Cannot load data" 
+                });
+    }
+
+    function getBlockAPI(){
+        console.log("getting block data")
+        var reporting_period = document.getElementById("block-reporting-period").value
+        var start_stamp = getTimeStamp(reporting_period)[0]
+        var start_stamp = getTimeStamp(reporting_period)[1]
+        var symbol = document.getElementById("block-symbol").value
+        var datatype = document.getElementById("block-datatype").value
+        var interval = document.getElementById("block-interval").value
+        var interval_i = convertIntervalToNumber(interval)
+        var interval = convertIntervalText(interval)
+        var parameter = 'http://api.blkdat.com/block?' + 'coin=' + symbol 
+        + '&datatype=' + datatype + '&interval=' + interval + '&start=' + start_stamp +'&end=' + end_stamp     
+        window.parameter = parameter
+        console.log(parameter)
+        fetch(parameter)
+        .then(
+        function(response) {
+            if (response.status !== 200) {
+            console.log('Looks like there was a problem. Status Code: ' +
+                response.status);
+                return;
+                }
+                response.json().then(function(data) {
+                    data = processDates(data,interval_i)
+                    data = processData(data)
+                    window.apiCall = data
+                    //Here you will pass data to whatever Graphing library asynchronosly
+                    Graph.drawBlockGraph(data)
                 });
                 }
             )
@@ -140,7 +178,21 @@ var Input = (function(){
                 json.data[3] = json.data[3].map(function(cents){return Number(Math.round(vol/100000000 + 'e2') + 'e-2')})
             }
             return json
-            }      
+            }
+    function processData(json){
+                for(i = 0 ; i < json.data[2].length ; i++){
+                    if(json.data[2][i] == 0){
+                        json.data[2][i] = (json.data[2][i-1] + json.data[2][i+1])/2
+                    }else if(json.data[2][i] == 0 && i == 0){
+                        json.data[2][0] =  json.data[2][i+1]
+                    }else if(json.data[2][i] == 0 && i == json.data[2].length-1){
+                        json.data[2][i] =  json.data[2][i-1]
+                    }else{
+                        continue
+                    }
+                }
+                return json
+                }              
 
     function convertUnix(data){
           function unixToReg(time){
@@ -158,7 +210,8 @@ var Input = (function(){
     }
  
     return {
-        getAPI: getAPI,
+        getPriceAPI: getPriceAPI,
+        getBlockAPI: getBlockAPI,
         getData: getData,
         getParameter: getParameter
     } 
