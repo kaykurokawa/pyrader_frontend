@@ -3,7 +3,7 @@ var Input = (function(){
     function getPriceAPI(){
         var reporting_period = document.getElementById ("reporting-period").value
         var start_stamp = getTimeStamp(reporting_period)[0]
-        var start_stamp = getTimeStamp(reporting_period)[1]
+        var end_stamp = getTimeStamp(reporting_period)[1]
         var exchange = document.getElementById("exchange").value 
         var symbol = document.getElementById("symbol").value
         var unit = document.getElementById("unit").value
@@ -44,7 +44,7 @@ var Input = (function(){
         console.log("getting block data")
         var reporting_period = document.getElementById("block-reporting-period").value
         var start_stamp = getTimeStamp(reporting_period)[0]
-        var start_stamp = getTimeStamp(reporting_period)[1]
+        var end_stamp = getTimeStamp(reporting_period)[1]
         var symbol = document.getElementById("block-symbol").value
         var datatype = document.getElementById("block-datatype").value
         var interval = document.getElementById("block-interval").value
@@ -168,31 +168,32 @@ var Input = (function(){
         }
 
     function processVolume(json,unit){
-            if(unit == "USD"){
-                json.data[3] = json.data[3].map(function(vol){return Number(Math.round(vol/100000000 + 'e2') + 'e-2')})
-            }else if(unit == "BTC"){
-                //What would this be?
-                json.data[3] = json.data[3].map(function(cents){return Number(Math.round(vol/100000000 + 'e2') + 'e-2')})
-            }else{
-                //What would this be?
-                json.data[3] = json.data[3].map(function(cents){return Number(Math.round(vol/100000000 + 'e2') + 'e-2')})
-            }
+        if(unit == "USD"){
+            json.data[3] = json.data[3].map(function(vol){return Number(Math.round(vol/100000000 + 'e2') + 'e-2')})
+        }else if(unit == "BTC"){
+            //What would this be?
+            json.data[3] = json.data[3].map(function(cents){return Number(Math.round(vol/100000000 + 'e2') + 'e-2')})
+        }else{
+            //What would this be?
+            json.data[3] = json.data[3].map(function(cents){return Number(Math.round(vol/100000000 + 'e2') + 'e-2')})
+        }
             return json
-            }
+        }
     function processData(json){
-                for(i = 0 ; i < json.data[2].length ; i++){
-                    if(json.data[2][i] == 0){
-                        json.data[2][i] = (json.data[2][i-1] + json.data[2][i+1])/2
-                    }else if(json.data[2][i] == 0 && i == 0){
-                        json.data[2][0] =  json.data[2][i+1]
-                    }else if(json.data[2][i] == 0 && i == json.data[2].length-1){
-                        json.data[2][i] =  json.data[2][i-1]
-                    }else{
-                        continue
-                    }
+
+        for(i = 0 ; i < json.data[2].length ; i++){
+            if(json.data[2][i] == 0){
+                json.data[2][i] = (json.data[2][i-1] + json.data[2][i+1])/2
+            }else if(json.data[2][i] == 0 && i == 0){
+                json.data[2][0] =  json.data[2][i+1]
+            }else if(json.data[2][i] == 0 && i == json.data[2].length-1){
+                json.data[2][i] =  json.data[2][i-1]
+            }else{
+                continue
                 }
+            }
                 return json
-                }              
+            }              
 
     function convertUnix(data){
           function unixToReg(time){
