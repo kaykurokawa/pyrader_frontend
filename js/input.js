@@ -1,20 +1,29 @@
 var Input = (function(){
 
+    var MICRO = Math.pow(10,6)
+    var MILLI = Math.pow(10,3)
+    var HUNDREDMIL = Math.pow(10,8)
+    var TENTHOUSAND = Math.pow(10,4)
+    var BILLIONSANDBILLIONS = Math.pow(10,18)
+    var conversions = {"USD": HUNDREDMIL, "BTC" : HUNDREDMIL, "DOGE" : HUNDREDMIL, 
+    "LTC" : HUNDREDMIL, "ETH" : BILLIONSANDBILLIONS, "EUR" : HUNDREDMIL, "SGD" : HUNDREDMIL, "KRW" : TENTHOUSAND}
+
+    //call API and Generate the Price and Volume graphs
     function getPriceAPI(){
         var reporting_period = document.getElementById ("reporting-period").value
-        var start_stamp = getTimeStamp(reporting_period)[0]
-        var end_stamp = getTimeStamp(reporting_period)[1]
-        var exchange = document.getElementById("exchange").value 
-        var symbol = document.getElementById("symbol").value
-        var unit = document.getElementById("unit").value
-        var interval = document.getElementById("interval").value
+        var start_stamp = reporting_period == "None" ? "" : "&start=" + getTimeStamp(reporting_period)[0]
+        var end_stamp = reporting_period == "None" ? "" : "&end=" + getTimeStamp(reporting_period)[1]
+        var exchange = document.getElementById("exchange").value
+            exchange = exchange == "none" ? "" : '&exchange=' + exchange
+        var symbol = 'symbol=' + document.getElementById("symbol").value
+        var unit = '&unit=' + document.getElementById("unit").value
+        var interval = '&interval=' + convertIntervalText(document.getElementById("interval").value)
         var interval_i = convertIntervalToNumber(interval)
-        var interval = convertIntervalText(interval)
-        var parameter = 'http://api.blkdat.com/price?' + 'symbol=' + symbol 
-        + '&exchange=' + exchange + '&unit=' + unit + '&interval=' + interval 
-        + '&start=' + start_stamp +'&end=' + end_stamp     
+        var parameter = 'http://api.blkdat.com/price?' +  symbol + exchange + unit + interval 
+        + start_stamp + end_stamp     
         window.parameter = parameter
-        console.log(parameter)
+        validateParamtersConsole(parameter, start_stamp, end_stamp)
+
         fetch(parameter)
         .then(
         function(response) {
@@ -39,21 +48,21 @@ var Input = (function(){
                     document.getElementById("chart1").innerHTML = "Cannot load data" 
                 });
     }
-
+    //Call the API and generate graph for Block data
     function getBlockAPI(){
-        console.log("getting block data")
         var reporting_period = document.getElementById("block-reporting-period").value
-        var start_stamp = getTimeStamp(reporting_period)[0]
-        var end_stamp = getTimeStamp(reporting_period)[1]
-        var symbol = document.getElementById("block-symbol").value
-        var datatype = document.getElementById("block-datatype").value
-        var interval = document.getElementById("block-interval").value
+        var start_stamp = reporting_period == "None" ? "" : "&start=" + getTimeStamp(reporting_period)[0]
+        var end_stamp = reporting_period == "None" ? "" : "&end=" + getTimeStamp(reporting_period)[1]
+        var symbol = 'coin=' + document.getElementById("block-symbol").value
+        var datatype = '&datatype=' + document.getElementById("block-datatype").value
+        var interval = '&interval=' + convertIntervalText(document.getElementById("block-interval").value)
+        console.log(interval)
         var interval_i = convertIntervalToNumber(interval)
-        var interval = convertIntervalText(interval)
-        var parameter = 'http://api.blkdat.com/block?' + 'coin=' + symbol 
-        + '&datatype=' + datatype + '&interval=' + interval + '&start=' + start_stamp +'&end=' + end_stamp     
+        var parameter = 'http://api.blkdat.com/block?' + symbol 
+        +  datatype + interval + start_stamp + end_stamp     
         window.parameter = parameter
-        console.log(parameter)
+        validateParamtersConsole(parameter, start_stamp, end_stamp)
+
         fetch(parameter)
         .then(
         function(response) {
@@ -77,6 +86,7 @@ var Input = (function(){
                 });
     }
 
+    //given a reporting period in string, return the start and end time stamps in an array in microseconds
     function getTimeStamp(reporting_period){
         now = new Date()
         timestamps = []
@@ -84,56 +94,41 @@ var Input = (function(){
         end_stamp = ""
         if (reporting_period == "Daily"){
             start_stamp = new Date(now.getFullYear(),now.getMonth(),now.getDate())
-            start_stamp = (start_stamp*1000).toString() 
+            start_stamp = (start_stamp * 1000).toString()
             end_stamp = (Date.now() * 1000).toString()
         }else if(reporting_period == "Weekly"){
             start_stamp = new Date(now.getFullYear(),now.getMonth(),now.getDate() - (now.getDay()));
-            start_stamp = (start_stamp*1000).toString()  
-            end_stamp = (Date.now() * 1000).toString()
+            start_stamp = (start_stamp* 1000).toString()  
+            end_stamp = (Date.now()*1000).toString()
         }else if(reporting_period == "Monthly"){
             start_stamp = new Date(now.getFullYear(),now.getMonth())
-            end_stamp = (Date.now() * 1000).toString().toString()
+            start_stamp = (start_stamp* 1000).toString() 
+            end_stamp = (Date.now()*1000).toString()
         }else{
-            start_stamp = new Date(now.getFullYear(),now.getMonth(),now.getDate())
-            start_stamp = (start_stamp*1000).toString() 
-            end_stamp = (Date.now() * 1000).toString()
+
         }
         timestamps.push(start_stamp)
         timestamps.push(end_stamp)
 
         return timestamps
     }
-
+    //given a parsed DOM reading of the interval in string, return the query string.
     function convertIntervalText(interval){
-        if(interval == "5 min."){
-            interval = "5min"
-        }else if(interval == "1 hour"){
-            interval = "hour"
-        }else if(interval == "1 day"){
-            interval = "day"
-        }else{
-            interval = "hour"
-        }
+        intervals = {"5 min." : "5min", "1 hour" : "hour", "1 day" : "day"}
+        interval = intervals[interval]
         return interval
     }
-
+    //given the interval in string format, return the milliseconds in integer in order to be converted into dates. 
     function convertIntervalToNumber(interval){
-        interval_i = 0
-        if(interval == "5 min."){
-            interval_i = 300000000
-        }else if(interval == "1 hour"){
-            interval_i = 3600000000
-        }else if(interval == "1 day"){
-            interval_i = 86400000000
-        }else{
-            interval_i = 3600000000
-        }
+        interval_numbers = {"&interval=5min" : 300 * MILLI, 
+            "&interval=hour" : 3600 * MILLI, "&interval=day" : 86400 * MILLI }
+        interval_i = interval_numbers[interval]
         return interval_i
     }
-
-    function processDates(json,interval_i){
+    //take in json with  microsecond times and a millisecond interval and create a bunch of date object in json
+    function processDates(json,interval_i){ 
         var timeArray = []
-        var time = json.data[0]
+        var time = json.data[0]/1000
         for(i = 0 ; i < json.data[2].length ; i++){
             timeArray.push(time)
             time += interval_i
@@ -142,7 +137,7 @@ var Input = (function(){
         json.data.push(timeArray)
         return json
     }
-
+    //given a json with prices, and units in string, eliminate zeros, convert the prices to those units and return the json
     function processPrices(json,unit){
         for(i = 0 ; i < json.data[2].length ; i++){
             if(json.data[2][i] == 0){
@@ -155,30 +150,18 @@ var Input = (function(){
                 continue
             }
         }
-        if(unit == "USD"){
-            json.data[2] = json.data[2].map(function(cents){return Number(Math.round(cents/100000000 + 'e2') + 'e-2').toFixed(2)})
-        }else if(unit == "BTC"){
-            //What would this be?
-            json.data[2] = json.data[2].map(function(cents){return Number(Math.round(cents/100000000 + 'e2') + 'e-2').toFixed(2)})
-        }else{
-            //What would this be?
-            json.data[2] = json.data[2].map(function(cents){return Number(Math.round(cents/100000000 + 'e2') + 'e-2').toFixed(2)})
-        }
+        unit = unit.slice(6,unit.length)
+        json.data[2] = json.data[2].map(function(units){return Number(Math.round(units/conversions[unit] + 'e2') + 'e-2').toFixed(2)})
         return json
         }
 
+    //given a json with volumes, and units in string, convert the volumes to those units and return the json
     function processVolume(json,unit){
-        if(unit == "USD"){
-            json.data[3] = json.data[3].map(function(vol){return Number(Math.round(vol/100000000 + 'e2') + 'e-2')})
-        }else if(unit == "BTC"){
-            //What would this be?
-            json.data[3] = json.data[3].map(function(cents){return Number(Math.round(vol/100000000 + 'e2') + 'e-2')})
-        }else{
-            //What would this be?
-            json.data[3] = json.data[3].map(function(cents){return Number(Math.round(vol/100000000 + 'e2') + 'e-2')})
-        }
+        unit = unit.slice(6,unit.length)
+            json.data[3] = json.data[3].map(function(vol){return Number(Math.round(vol/conversions[unit] + 'e2') + 'e-2')})
             return json
         }
+     //given a json block data, eliminate zeros by averaging and return the json   
     function processData(json){
 
         for(i = 0 ; i < json.data[2].length ; i++){
@@ -193,23 +176,29 @@ var Input = (function(){
                 }
             }
                 return json
-            }              
-
+            }           
+    //given a unix timestamp in milliseconds, convert that to a date object
     function convertUnix(data){
           function unixToReg(time){
-            return new Date(time/1000)
+            return new Date(time)
           }
           return data.map(function(time){return unixToReg(time)})
     }
-
+    //print out the API call URL and the exact time stamps you called for debugging.
+    function validateParamtersConsole(parameter, start_stamp, end_stamp){
+        console.log(parameter) // you can validate paramter in console. 
+        console.log(new Date(Number(start_stamp.slice(7,start_stamp.length))/1000)) //to validate timestamps in console
+        console.log(new Date(Number(end_stamp.slice(5,start_stamp.length))/1000)) // you can validate timestamps in consloe
+    }
+    //getter for the JSON object
     function getData(){
         return window.apiCall
     }
-
+    //getter for the API url
     function getParameter(){
         return window.parameter
     }
- 
+    
     return {
         getPriceAPI: getPriceAPI,
         getBlockAPI: getBlockAPI,
