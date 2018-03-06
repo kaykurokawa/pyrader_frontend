@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    Input.getInfo()
     Input.getPriceAPI()
 
     document.getElementById("submit").onclick = function(event){

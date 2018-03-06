@@ -8,6 +8,28 @@ var Input = (function(){
     var conversions = {"USD": HUNDREDMIL, "BTC" : HUNDREDMIL, "DOGE" : HUNDREDMIL, 
     "LTC" : HUNDREDMIL, "ETH" : BILLIONSANDBILLIONS, "EUR" : HUNDREDMIL, "SGD" : HUNDREDMIL, "KRW" : TENTHOUSAND}
 
+    //Call Info API and pass information to dropdowns 
+    function getInfo(){
+       url= 'http://api.blkdat.com/info?'
+        fetch(url)
+        .then(
+        function(response) {
+            if (response.status !== 200) {
+            console.log('Looks like there was a problem. Status Code: ' +
+                response.status);
+                return;
+                }
+                response.json().then(function(data) {
+                    data = processInfo(data)
+                });
+                }
+            )
+                .catch(function(err) {
+                    console.log('Fetch Error :-S', err);
+                    document.getElementById("chart1").innerHTML = "Cannot load data" 
+                });
+    }
+
     //call API and Generate the Price and Volume graphs
     function getPriceAPI(){
         var reporting_period = document.getElementById ("reporting-period").value
@@ -85,7 +107,41 @@ var Input = (function(){
                     document.getElementById("chart1").innerHTML = "Cannot load data" 
                 });
     }
+    //
+    function processInfo(json){
+        console.log(json)
+        n = json.price.length
+        symbols_array = ["BTC"]
+        units_array = ["USD"]
+        exchanges_array = ["coinbase"]
+        for(i = 0 ; i < n ; i++){
+            var symbol_option = document.createElement("option")
+            var unit_option = document.createElement("option")
+            var exchange_option = document.createElement("option")
+            symbol_option.text = json.price[i].symbol 
+            unit_option.text = json.price[i].unit
+            exchange_option.text = json.price[i].exchange
 
+            if (!symbols_array.includes(symbol_option.text)){
+                symbols_array.push(symbol_option.text)
+                var select = document.getElementById("symbol");
+                select.appendChild(symbol_option) 
+            }
+                
+            if (!units_array.includes(unit_option.text)){
+                units_array.push(unit_option.text)
+                var select = document.getElementById("unit");
+                select.appendChild(unit_option)
+            }
+         
+            if (!exchanges_array.includes(exchange_option.text)){
+                exchanges_array.push(exchange_option.text)        
+                var select = document.getElementById("exchange");
+                select.appendChild(exchange_option); 
+            }   
+        }
+
+    } 
     //given a reporting period in string, return the start and end time stamps in an array in microseconds
     function getTimeStamp(reporting_period){
         now = new Date()
@@ -203,7 +259,8 @@ var Input = (function(){
         getPriceAPI: getPriceAPI,
         getBlockAPI: getBlockAPI,
         getData: getData,
-        getParameter: getParameter
+        getParameter: getParameter,
+        getInfo: getInfo
     } 
 
 }());
