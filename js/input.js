@@ -118,7 +118,7 @@ var Input = (function(){
         n = json.price.length
         symbols_array = ["BTC"]
         units_array = ["USD"]
-        exchanges_array = ["coinbase"]
+        exchanges_array = ["null"]
 
         for(i = 0 ; i < n ; i++){
     

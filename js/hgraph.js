@@ -4,7 +4,7 @@
 //Create Highcharts for price/volume
 function drawPriceVolumeGraph(json){
 
-Highcharts.setOptions(Highcharts.theme);
+Highcharts.setOptions({global:{useUTC: false}});
 volume = []
 prices = []
 json.data[2].length
