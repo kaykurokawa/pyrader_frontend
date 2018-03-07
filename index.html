@@ -26,25 +26,18 @@
                                     <label>Symbol:</label>        
                                     <select class="form-control" id="symbol">
                                         <option>BTC</option>
-                                        <option>LTC</option>
-                                        <option>DOGE</option>
                                     </select>
                                 </div>
                                     <div class="col-sm-2">  
                                         <label>Unit:</label> 
                                         <select class="form-control" id="unit">
                                             <option>USD</option>
-                                            <option>BTC</option>
-                                            <option>LTC</option>
                                         </select>
                                     </div> 
                                 <div class="col-sm-2">
                                     <label>Exchange:</label>   
                                     <select class="form-control" id="exchange">
                                         <option>none</option>
-                                        <option>coinbase</option>
-                                        <option>coinsquare</option>
-                                        <option>kraken</option>
                                     </select>
                                 </div>
                                 <div class="col-sm-2">
@@ -71,7 +64,13 @@
                                         <option>Monthly</option>
                                     </select>
                                 </div>
-                             </div>
+                             </div>   
+                        <div>&nbsp</div>
+                        <div class = "row">
+                            <div class ="col-sm-8">     
+                                <div id="error"></div>
+                            </div>
+                        </div>
                         <h3 id="time"></h3>             
                         <h3 id="current-price"></h3>
                         <h3>C3JS</h3>
@@ -81,8 +80,6 @@
                         <div id="chart2"></div>
                         <h3>Highcharts</h3>     
                         <div id="hchart" style="height: 800px; min-width: 310px"></div>
-                        <h3>Charts.js</h3>    
-                        <canvas id="canvas"></canvas>
                         <!-- end of prices tab -->
                     </div>
                     <div id="block" class="tab-pane fade">
@@ -92,17 +89,12 @@
                                     <label>Symbol:</label>        
                                     <select class="form-control" id="block-symbol">
                                         <option>LTC</option>
-                                        <option>BTC</option>
-                                        <option>DOGE</option>
                                     </select>
                                 </div>
                                     <div class="col-sm-2">  
                                         <label>Data type:</label> 
                                         <select class="form-control" id="block-datatype">
-                                            <option>size</option>
-                                            <option>difficulty</option>
                                             <option>height</option>
-                                            <option>vol</option>
                                         </select>
                                     </div> 
                                 <div class="col-sm-2">
@@ -127,24 +119,32 @@
                                     <button type="button" class="btn btn-primary" id="block-submit">Sumbit</button>
                                 </div>   
                         </div>
-                        
-                        <h3 id="block-time"></h3>             
-                        <h3 id="current-block"></h3>
+                        <div>&nbsp</div>
+                        <div class = "row">
+                            <div class ="col-sm-8">     
+                                <div id="block-error"></div>
+                            </div>
+                        </div>
+                        <h3 id="block-time"></h3>  
+                        <h3 id="current-block"></h3>            
                         <h3>C3JS</h3>
-                        <div id="block-chart1"></div>
-                        <h3 id="current-block"></h3>
+                        <div id="block-chart2"></div>
+                        <h3>Highcharts</h3>
+                        <h3 id="h-block-time"></h3>             
+                        <h3 id="h-current-block"></h3>
+                        <div id="block-hchart" style="height: 400px; min-width: 310px"></div>
                         <!-- end of block tab -->
                     </div>
                     <div id="tools" class="tab-pane fade">
                         <!-- Write your code for the Tools tab here -->
-                        <h3>Menu 2</h3>
-                        <p>Some content in menu 2.</p>
+                        <h3>Coming soon</h3>
+                        <p>Placeholder</p>
                          <!-- end of tools tab -->
                     </div>
                     <div id="data" class="tab-pane fade">
                         <!-- Write your code for the Data tab here -->
-                        <h3>Menu 3</h3>
-                        <p>Some content in menu 3.</p>
+                        <h3>Coming soon</h3>
+                        <p>placeholder</p>
                          <!-- end of data tab -->
                     </div>
                     <!-- end of tab content -->
