@@ -1,6 +1,7 @@
- // split the data set into ohlc and volume
+
  var High = (function(){
 
+//Create Highcharts for price/volume
 function drawPriceVolumeGraph(json){
 
 Highcharts.setOptions(Highcharts.theme);
@@ -65,7 +66,8 @@ hchart = Highcharts.stockChart('hchart', {
  }],
 
  tooltip: {
-     split: true
+     split: true,
+     valueDecimals: 2
  },
 
  series: [{
@@ -88,10 +90,8 @@ hchart = Highcharts.stockChart('hchart', {
  }]
 });
 
-
-
  }
-
+//Create Highcharts for block
  function drawBlockGraph(json){
     data = []
     for(i = 0 ; i < json.data[2].length ; i++){
@@ -127,9 +127,9 @@ hchart = Highcharts.stockChart('hchart', {
             });
  }
 
-
+//clear Highcharts and all the HTML associated with it
  function clearCharts(){
-    document.getElementById("error").innerHTML = "No data for this exchange" 
+    document.getElementById("error").innerHTML = "No data for this exchange/interval" 
     document.getElementById("error").className = "well"
     document.getElementById("chart1").style.display = "none"
     document.getElementById("chart2").style.display = "none"
@@ -139,6 +139,7 @@ hchart = Highcharts.stockChart('hchart', {
     $('#hchart').highcharts().destroy();
  }
 
+//generate the Highcharts
  function showCharts(){
     document.getElementById("error").innerHTML = "" 
     document.getElementById("error").classList.remove("well");
@@ -149,11 +150,35 @@ hchart = Highcharts.stockChart('hchart', {
     document.getElementById("current-volume").style.display = "block"
  }
 
+ function clearBlockCharts(){
+    document.getElementById("block-error").innerHTML = "No data for this datatype/interval" 
+    document.getElementById("block-error").className = "well"
+    document.getElementById("block-chart2").style.display = "none"
+    document.getElementById("block-time").style.display = "none"
+    document.getElementById("current-block").style.display = "none"
+    document.getElementById("h-block-time").style.display = "none"
+    document.getElementById("h-current-block").style.display = "none"
+    $('#block-hchart').highcharts().destroy();
+ }
+
+//generate the Highcharts
+ function showBlockCharts(){
+    document.getElementById("block-error").innerHTML = "" 
+    document.getElementById("block-error").classList.remove("well");
+    document.getElementById("block-chart2").style.display = "block"
+    document.getElementById("block-time").style.display = "block"
+    document.getElementById("current-block").style.display = "block"
+    document.getElementById("h-block-time").style.display = "block"
+    document.getElementById("h-current-block").style.display = "block"
+ }
+
 return {
     drawPriceVolumeGraph : drawPriceVolumeGraph,
     showCharts : showCharts,
     clearCharts : clearCharts,
-    drawBlockGraph : drawBlockGraph
+    drawBlockGraph : drawBlockGraph,
+    showBlockCharts : showBlockCharts,
+    clearBlockCharts : clearBlockCharts
   }
   
   }());

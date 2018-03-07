@@ -27,7 +27,6 @@ var Input = (function(){
             )
                 .catch(function(err) {
                     console.log('Fetch Error :-S', err);
-                    document.getElementById("chart1").innerHTML = "Cannot load data" 
                 });
     }
 
@@ -53,13 +52,12 @@ var Input = (function(){
             if (response.status !== 200) {
             console.log('Looks like there was a problem. Status Code: ' +
                 response.status);
-                high.clearCharts()
+                High.clearCharts()
                 return;
                 }
                 response.json().then(function(data) {
                     High.showCharts()
                     data = processDates(data,interval_i)
-                    data = processEpoch(data,interval_i)
                     data = processPrices(data,unit)
                     data = processVolume(data,unit)
                     window.apiCall = data
@@ -83,7 +81,6 @@ var Input = (function(){
         var symbol = 'coin=' + document.getElementById("block-symbol").value
         var datatype = '&datatype=' + document.getElementById("block-datatype").value
         var interval = '&interval=' + convertIntervalText(document.getElementById("block-interval").value)
-        console.log(interval)
         var interval_i = convertIntervalToNumber(interval)
         var parameter = 'http://api.blkdat.com/block?' + symbol 
         +  datatype + interval + start_stamp + end_stamp     
@@ -96,15 +93,12 @@ var Input = (function(){
             if (response.status !== 200) {
             console.log('Looks like there was a problem. Status Code: ' +
                 response.status);
-                document.getElementById("block-error").innerHTML = "No data for this exchange" 
-                document.getElementById("block-error").className = "well"
+                High.clearBlockCharts()
                 return;
                 }
                 response.json().then(function(data) {
-                    document.getElementById("block-error").innerHTML = "" 
-                    document.getElementById("block-error").classList.remove("well");
+                    High.showBlockCharts()
                     data = processDates(data,interval_i)
-                    data = processEpoch(data,interval_i)
                     data = processData(data)
                     window.apiCall = data
                     //Here you will pass data to whatever Graphing library asynchronosly
@@ -115,10 +109,10 @@ var Input = (function(){
             )
                 .catch(function(err) {
                     console.log('Fetch Error :-S', err);
-                    document.getElementById("chart1").innerHTML = "Cannot load data" 
+
                 });
     }
-    //
+    //get info from API and append to drop down menus 
     function processInfo(json){
         console.log(json)
         n = json.price.length
@@ -127,62 +121,65 @@ var Input = (function(){
         exchanges_array = ["coinbase"]
 
         for(i = 0 ; i < n ; i++){
-            var symbol_option = document.createElement("option")
-            var unit_option = document.createElement("option")
-            var exchange_option = document.createElement("option")
-            symbol_option.text = json.price[i].symbol 
-            unit_option.text = json.price[i].unit
-            exchange_option.text = json.price[i].exchange
+    
+            var symbol_text = json.price[i].symbol 
+            var unit_text = json.price[i].unit
+            var exchange_text = json.price[i].exchange
 
-            if (!symbols_array.includes(symbol_option.text)){
-                symbols_array.push(symbol_option.text)
+            if (!symbols_array.includes(symbol_text)){
+                symbols_array.push(symbol_text)
+                var symbol_option = document.createElement("option")
+                symbol_option.text = symbol_text
                 var select = document.getElementById("symbol");
                 select.appendChild(symbol_option) 
             }
                 
-            if (!units_array.includes(unit_option.text)){
-                units_array.push(unit_option.text)
+            if (!units_array.includes(unit_text)){
+                units_array.push(unit_text)
+                var unit_option = document.createElement("option")
+                unit_option.text = unit_text
                 var select = document.getElementById("unit");
                 select.appendChild(unit_option)
             }
          
-            if (!exchanges_array.includes(exchange_option.text)){
-                exchanges_array.push(exchange_option.text)        
+            if (!exchanges_array.includes(exchange_text)){
+                exchanges_array.push(exchange_text)      
+                var exchange_option = document.createElement("option")
+                exchange_option.text = exchange_text  
                 var select = document.getElementById("exchange");
                 select.appendChild(exchange_option); 
             }   
         }
 
     } 
+    //get info from API and append to drop down menu for block charts
     function processBlockInfo(json){
-        console.log("in")
-        m = json.block.length
-        block_symbols_array = ["LTC"]
-        block_datatype_array = ["height"]
-        option = document.createElement("option")
+        var m = json.block.length
+        var symbols_array = ["LTC"]
+        var datatype_array = ["height"]
 
         for(i = 0; i < m ; i++){
-            var block_symbol_option = document.createElement("option")
-            var block_datatype_option = document.createElement("option")
-            block_symbol_option.text = json.block[i].coin 
-            block_datatype_option.text = json.block[i].datatype
-            if (!block_symbols_array.includes(block_symbol_option.text)){
-                block_symbols_array.push(block_symbol_option.text)
+            symbol_text = json.block[i].coin 
+            datatype_text = json.block[i].datatype
+            if (!symbols_array.includes(symbol_text)){
+                symbols_array.push(symbol_text)
+                var symbol_option = document.createElement("option")
+                symbol_option.text = symbol_text
                 var select = document.getElementById("block-symbol");
-                select.appendChild(block_symbol_option) 
+                select.appendChild(symbol_option) 
             }
                 
-            if (!block_datatype_array.includes(block_datatype_option.text)){
-                units_array.push(block_datatype_option.text)
+            if (!datatype_array.includes(datatype_text)){
+                datatype_array.push(datatype_text)
+                var datatype_option = document.createElement("option")
+                datatype_option.text = datatype_text
                 var select = document.getElementById("block-datatype");
-                select.appendChild(block_datatype_option)
+                select.appendChild(datatype_option)
             }
 
         }
-
         
     }
-
 
     //given a reporting period in string, return the start and end time stamps in an array in microseconds
     function getTimeStamp(reporting_period){
@@ -193,15 +190,15 @@ var Input = (function(){
         if (reporting_period == "Daily"){
             start_stamp = new Date(now.getFullYear(),now.getMonth(),now.getDate())
             start_stamp = (start_stamp * 1000).toString()
-            end_stamp = (Date.now() * 1000).toString()
+            end_stamp = ((Date.now() - 300 * MILLI) * 1000).toString()
         }else if(reporting_period == "Weekly"){
             start_stamp = new Date(now.getFullYear(),now.getMonth(),now.getDate() - (now.getDay()));
             start_stamp = (start_stamp* 1000).toString()  
-            end_stamp = (Date.now()*1000).toString()
+            end_stamp = ((Date.now() - 300 * MILLI) * 1000).toString()
         }else if(reporting_period == "Monthly"){
             start_stamp = new Date(now.getFullYear(),now.getMonth())
             start_stamp = (start_stamp* 1000).toString() 
-            end_stamp = (Date.now()*1000).toString()
+            end_stamp = ((Date.now() - 300 * MILLI) * 1000).toString()
         }else{
 
         }
@@ -223,7 +220,7 @@ var Input = (function(){
         interval_i = interval_numbers[interval]
         return interval_i
     }
-    //take in json with  microsecond times and a millisecond interval and create a bunch of date object in json
+    //take in json with  microsecond times and append to json the array of dates as well as millisecond time stamps
     function processDates(json,interval_i){ 
         var timeArray = []
         var time = json.data[0]/1000
@@ -231,19 +228,10 @@ var Input = (function(){
             timeArray.push(time)
             time += interval_i
         }
+        milliArray = timeArray
         timeArray = convertUnix(timeArray)
         json.data.push(timeArray)
-        return json
-    }
-
-    function processEpoch(json,interval_i){ 
-        var timeArray = []
-        var time = json.data[0]/1000
-        for(i = 0 ; i < json.data[2].length ; i++){
-            timeArray.push(time)
-            time += interval_i
-        }
-        json.data.push(timeArray)
+        json.data.push(milliArray)
         return json
     }
 
@@ -303,8 +291,12 @@ var Input = (function(){
     //print out the API call URL and the exact time stamps you called for debugging.
     function validateParamtersConsole(parameter, start_stamp, end_stamp){
         console.log(parameter) // you can validate paramter in console. 
-        console.log(new Date(Number(start_stamp.slice(7,start_stamp.length))/1000)) //to validate timestamps in console
-        console.log(new Date(Number(end_stamp.slice(5,start_stamp.length))/1000)) // you can validate timestamps in consloe
+        if(Number(start_stamp) || Number(end_stamp) == 0){
+            console.log("No start or end time stamps requested")
+        }else{        
+            console.log(new Date(Number(start_stamp.slice(7,start_stamp.length))/1000)) //to validate timestamps in console
+            console.log(new Date(Number(end_stamp.slice(5,start_stamp.length))/1000)) // you can validate timestamps in consloe}
+        }
     }
     //getter for the JSON object
     function getData(){
