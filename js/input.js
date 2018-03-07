@@ -20,7 +20,8 @@ var Input = (function(){
                 return;
                 }
                 response.json().then(function(data) {
-                    data = processInfo(data)
+                    processInfo(data)
+                    processBlockInfo(data)
                 });
                 }
             )
@@ -52,22 +53,26 @@ var Input = (function(){
             if (response.status !== 200) {
             console.log('Looks like there was a problem. Status Code: ' +
                 response.status);
+                high.clearCharts()
                 return;
                 }
                 response.json().then(function(data) {
+                    High.showCharts()
                     data = processDates(data,interval_i)
+                    data = processEpoch(data,interval_i)
                     data = processPrices(data,unit)
                     data = processVolume(data,unit)
                     window.apiCall = data
                     //Here you will pass data to whatever Graphing library asynchronosly
                     Graph.drawPriceGraph(data)
                     Graph.drawVolumeGraph(data)
+                    High.drawPriceVolumeGraph(data)
                 });
                 }
             )
                 .catch(function(err) {
                     console.log('Fetch Error :-S', err);
-                    document.getElementById("chart1").innerHTML = "Cannot load data" 
+                    
                 });
     }
     //Call the API and generate graph for Block data
@@ -91,14 +96,20 @@ var Input = (function(){
             if (response.status !== 200) {
             console.log('Looks like there was a problem. Status Code: ' +
                 response.status);
+                document.getElementById("block-error").innerHTML = "No data for this exchange" 
+                document.getElementById("block-error").className = "well"
                 return;
                 }
                 response.json().then(function(data) {
+                    document.getElementById("block-error").innerHTML = "" 
+                    document.getElementById("block-error").classList.remove("well");
                     data = processDates(data,interval_i)
+                    data = processEpoch(data,interval_i)
                     data = processData(data)
                     window.apiCall = data
                     //Here you will pass data to whatever Graphing library asynchronosly
                     Graph.drawBlockGraph(data)
+                    High.drawBlockGraph(data)
                 });
                 }
             )
@@ -114,6 +125,7 @@ var Input = (function(){
         symbols_array = ["BTC"]
         units_array = ["USD"]
         exchanges_array = ["coinbase"]
+
         for(i = 0 ; i < n ; i++){
             var symbol_option = document.createElement("option")
             var unit_option = document.createElement("option")
@@ -142,6 +154,36 @@ var Input = (function(){
         }
 
     } 
+    function processBlockInfo(json){
+        console.log("in")
+        m = json.block.length
+        block_symbols_array = ["LTC"]
+        block_datatype_array = ["height"]
+        option = document.createElement("option")
+
+        for(i = 0; i < m ; i++){
+            var block_symbol_option = document.createElement("option")
+            var block_datatype_option = document.createElement("option")
+            block_symbol_option.text = json.block[i].coin 
+            block_datatype_option.text = json.block[i].datatype
+            if (!block_symbols_array.includes(block_symbol_option.text)){
+                block_symbols_array.push(block_symbol_option.text)
+                var select = document.getElementById("block-symbol");
+                select.appendChild(block_symbol_option) 
+            }
+                
+            if (!block_datatype_array.includes(block_datatype_option.text)){
+                units_array.push(block_datatype_option.text)
+                var select = document.getElementById("block-datatype");
+                select.appendChild(block_datatype_option)
+            }
+
+        }
+
+        
+    }
+
+
     //given a reporting period in string, return the start and end time stamps in an array in microseconds
     function getTimeStamp(reporting_period){
         now = new Date()
@@ -193,6 +235,23 @@ var Input = (function(){
         json.data.push(timeArray)
         return json
     }
+
+    function processEpoch(json,interval_i){ 
+        var timeArray = []
+        var time = json.data[0]/1000
+        for(i = 0 ; i < json.data[2].length ; i++){
+            timeArray.push(time)
+            time += interval_i
+        }
+        json.data.push(timeArray)
+        return json
+    }
+
+    function round(value, precision) {
+        var multiplier = Math.pow(10, precision || 0);
+        return Math.round(value * multiplier) / multiplier;
+    }
+
     //given a json with prices, and units in string, eliminate zeros, convert the prices to those units and return the json
     function processPrices(json,unit){
         for(i = 0 ; i < json.data[2].length ; i++){
@@ -207,14 +266,14 @@ var Input = (function(){
             }
         }
         unit = unit.slice(6,unit.length)
-        json.data[2] = json.data[2].map(function(units){return Number(Math.round(units/conversions[unit] + 'e2') + 'e-2').toFixed(2)})
+        json.data[2] = json.data[2].map(function(units){return round(units/conversions[unit],2)})
         return json
         }
 
     //given a json with volumes, and units in string, convert the volumes to those units and return the json
     function processVolume(json,unit){
         unit = unit.slice(6,unit.length)
-            json.data[3] = json.data[3].map(function(vol){return Number(Math.round(vol/conversions[unit] + 'e2') + 'e-2')})
+            json.data[3] = json.data[3].map(function(vol){return round(vol/conversions[unit],2)})
             return json
         }
      //given a json block data, eliminate zeros by averaging and return the json   
@@ -232,7 +291,8 @@ var Input = (function(){
                 }
             }
                 return json
-            }           
+    }
+        
     //given a unix timestamp in milliseconds, convert that to a date object
     function convertUnix(data){
           function unixToReg(time){

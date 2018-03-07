@@ -1,6 +1,4 @@
 var Graph = (function(){
-
-
 function drawPriceGraph(json){
   console.log(json)
   symbol = json.symbol
@@ -83,7 +81,7 @@ function drawBlockGraph(json){
   document.getElementById("current-block").innerHTML = "Current " + datatype + " of " + symbol + ": " + row[row.length-1].toLocaleString()
   document.getElementById("block-time").innerHTML = "As of " + time[time.length-1]  
   var blockChart = c3.generate({
-    bindto: '#block-chart1',
+    bindto: '#block-chart2',
     data: {
       x: 'x',
       columns: [
