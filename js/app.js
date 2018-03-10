@@ -1,7 +1,6 @@
 $(document).ready(function () {
-    Input.getInfo()
-    Input.getPriceAPI()
-
+    Info.getInfo()
+    Input.getInitialData()
     document.getElementById("submit").onclick = function(event){
         event.preventDefault();
         Input.getPriceAPI()

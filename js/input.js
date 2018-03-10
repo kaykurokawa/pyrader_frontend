@@ -4,42 +4,50 @@ var Input = (function(){
     var MILLI = Math.pow(10,3)
     var HUNDREDMIL = Math.pow(10,8)
     var TENTHOUSAND = Math.pow(10,4)
-    var BILLIONSANDBILLIONS = Math.pow(10,18)
-    var conversions = {"USD": HUNDREDMIL, "BTC" : HUNDREDMIL, "DOGE" : HUNDREDMIL, 
-    "LTC" : HUNDREDMIL, "ETH" : BILLIONSANDBILLIONS, "EUR" : HUNDREDMIL, "SGD" : HUNDREDMIL, "KRW" : TENTHOUSAND}
 
-    //Call Info API and pass information to dropdowns 
-    function getInfo(){
-       url= 'http://api.blkdat.com/info?'
-        fetch(url)
+    var conversions = {"USD": HUNDREDMIL, "BTC" : HUNDREDMIL, "DOGE" : HUNDREDMIL, 
+    "LTC" : HUNDREDMIL, "ETH" : HUNDREDMIL, "EUR" : HUNDREDMIL, "SGD" : HUNDREDMIL, "KRW" : TENTHOUSAND}
+
+
+    //Call draw the initial conditon of the graph
+    function getInitialData(){
+        parameter = 'http://api.blkdat.com/price?symbol=LTC&interval=5min'
+        var unit = '&unit=' + "USD"
+        var interval = '&interval=' + "5min"
+        var interval_i = convertIntervalToNumber(interval)
+        fetch(parameter)
         .then(
         function(response) {
             if (response.status !== 200) {
-            console.log('Looks like there was a problem. Status Code: ' +
-                response.status);
+                console.log('Looks like there was a problem. Status Code: ' + response.status);
                 return;
                 }
                 response.json().then(function(data) {
-                    processInfo(data)
-                    processBlockInfo(data)
+                    High.showCharts()
+                    data = processDates(data,interval_i)
+                    data = processPrices(data,unit)
+                    data = processVolume(data,unit)
+                    window.apiCall = data
+                    //Here you will pass data to whatever Graphing library asynchronosly
+                    High.drawPriceVolumeGraph(data)
                 });
                 }
             )
                 .catch(function(err) {
-                    console.log('Fetch Error :-S', err);
+                    console.log('Fetch Error :-S', err);   
                 });
     }
 
     //call API and Generate the Price and Volume graphs
     function getPriceAPI(){
         var reporting_period = document.getElementById ("reporting-period").value
-        var start_stamp = reporting_period == "None" ? "" : "&start=" + getTimeStamp(reporting_period)[0]
-        var end_stamp = reporting_period == "None" ? "" : "&end=" + getTimeStamp(reporting_period)[1]
+        var start_stamp = reporting_period == "None" || reporting_period == "" ? "" : "&start=" + getTimeStamp(reporting_period)[0]
+        var end_stamp = reporting_period == "None" || reporting_period == "" ? "" : "&end=" + getTimeStamp(reporting_period)[1]
         var exchange = document.getElementById("exchange").value
             exchange = exchange == "none" ? "" : '&exchange=' + exchange
         var symbol = 'symbol=' + document.getElementById("symbol").value
         var unit = '&unit=' + document.getElementById("unit").value
-        var interval = '&interval=' + convertIntervalText(document.getElementById("interval").value)
+        var interval = '&interval=' + document.getElementById("interval").value
         var interval_i = convertIntervalToNumber(interval)
         var parameter = 'http://api.blkdat.com/price?' +  symbol + exchange + unit + interval 
         + start_stamp + end_stamp     
@@ -50,8 +58,7 @@ var Input = (function(){
         .then(
         function(response) {
             if (response.status !== 200) {
-            console.log('Looks like there was a problem. Status Code: ' +
-                response.status);
+                console.log('Looks like there was a problem. Status Code: ' + response.status);
                 High.clearCharts()
                 return;
                 }
@@ -62,15 +69,12 @@ var Input = (function(){
                     data = processVolume(data,unit)
                     window.apiCall = data
                     //Here you will pass data to whatever Graphing library asynchronosly
-                    Graph.drawPriceGraph(data)
-                    Graph.drawVolumeGraph(data)
                     High.drawPriceVolumeGraph(data)
                 });
                 }
             )
                 .catch(function(err) {
-                    console.log('Fetch Error :-S', err);
-                    
+                    console.log('Fetch Error :-S', err);   
                 });
     }
     //Call the API and generate graph for Block data
@@ -80,7 +84,7 @@ var Input = (function(){
         var end_stamp = reporting_period == "None" ? "" : "&end=" + getTimeStamp(reporting_period)[1]
         var symbol = 'coin=' + document.getElementById("block-symbol").value
         var datatype = '&datatype=' + document.getElementById("block-datatype").value
-        var interval = '&interval=' + convertIntervalText(document.getElementById("block-interval").value)
+        var interval = '&interval=' + document.getElementById("block-interval").value
         var interval_i = convertIntervalToNumber(interval)
         var parameter = 'http://api.blkdat.com/block?' + symbol 
         +  datatype + interval + start_stamp + end_stamp     
@@ -102,7 +106,6 @@ var Input = (function(){
                     data = processData(data)
                     window.apiCall = data
                     //Here you will pass data to whatever Graphing library asynchronosly
-                    Graph.drawBlockGraph(data)
                     High.drawBlockGraph(data)
                 });
                 }
@@ -112,74 +115,6 @@ var Input = (function(){
 
                 });
     }
-    //get info from API and append to drop down menus 
-    function processInfo(json){
-        console.log(json)
-        n = json.price.length
-        symbols_array = ["BTC"]
-        units_array = ["USD"]
-        exchanges_array = ["null"]
-
-        for(i = 0 ; i < n ; i++){
-    
-            var symbol_text = json.price[i].symbol 
-            var unit_text = json.price[i].unit
-            var exchange_text = json.price[i].exchange
-
-            if (!symbols_array.includes(symbol_text)){
-                symbols_array.push(symbol_text)
-                var symbol_option = document.createElement("option")
-                symbol_option.text = symbol_text
-                var select = document.getElementById("symbol");
-                select.appendChild(symbol_option) 
-            }
-                
-            if (!units_array.includes(unit_text)){
-                units_array.push(unit_text)
-                var unit_option = document.createElement("option")
-                unit_option.text = unit_text
-                var select = document.getElementById("unit");
-                select.appendChild(unit_option)
-            }
-         
-            if (!exchanges_array.includes(exchange_text)){
-                exchanges_array.push(exchange_text)      
-                var exchange_option = document.createElement("option")
-                exchange_option.text = exchange_text  
-                var select = document.getElementById("exchange");
-                select.appendChild(exchange_option); 
-            }   
-        }
-
-    } 
-    //get info from API and append to drop down menu for block charts
-    function processBlockInfo(json){
-        var m = json.block.length
-        var symbols_array = ["LTC"]
-        var datatype_array = ["height"]
-
-        for(i = 0; i < m ; i++){
-            symbol_text = json.block[i].coin 
-            datatype_text = json.block[i].datatype
-            if (!symbols_array.includes(symbol_text)){
-                symbols_array.push(symbol_text)
-                var symbol_option = document.createElement("option")
-                symbol_option.text = symbol_text
-                var select = document.getElementById("block-symbol");
-                select.appendChild(symbol_option) 
-            }
-                
-            if (!datatype_array.includes(datatype_text)){
-                datatype_array.push(datatype_text)
-                var datatype_option = document.createElement("option")
-                datatype_option.text = datatype_text
-                var select = document.getElementById("block-datatype");
-                select.appendChild(datatype_option)
-            }
-
-        }
-        
-    }
 
     //given a reporting period in string, return the start and end time stamps in an array in microseconds
     function getTimeStamp(reporting_period){
@@ -187,15 +122,15 @@ var Input = (function(){
         timestamps = []
         start_stamp = ""
         end_stamp = ""
-        if (reporting_period == "Daily"){
+        if (reporting_period == "Day"){
             start_stamp = new Date(now.getFullYear(),now.getMonth(),now.getDate())
             start_stamp = (start_stamp * 1000).toString()
             end_stamp = ((Date.now() - 300 * MILLI) * 1000).toString()
-        }else if(reporting_period == "Weekly"){
+        }else if(reporting_period == "Week"){
             start_stamp = new Date(now.getFullYear(),now.getMonth(),now.getDate() - (now.getDay()));
             start_stamp = (start_stamp* 1000).toString()  
             end_stamp = ((Date.now() - 300 * MILLI) * 1000).toString()
-        }else if(reporting_period == "Monthly"){
+        }else if(reporting_period == "Month"){
             start_stamp = new Date(now.getFullYear(),now.getMonth())
             start_stamp = (start_stamp* 1000).toString() 
             end_stamp = ((Date.now() - 300 * MILLI) * 1000).toString()
@@ -207,12 +142,7 @@ var Input = (function(){
 
         return timestamps
     }
-    //given a parsed DOM reading of the interval in string, return the query string.
-    function convertIntervalText(interval){
-        intervals = {"5 min." : "5min", "1 hour" : "hour", "1 day" : "day"}
-        interval = intervals[interval]
-        return interval
-    }
+
     //given the interval in string format, return the milliseconds in integer in order to be converted into dates. 
     function convertIntervalToNumber(interval){
         interval_numbers = {"&interval=5min" : 300 * MILLI, 
@@ -244,11 +174,11 @@ var Input = (function(){
     function processPrices(json,unit){
         for(i = 0 ; i < json.data[2].length ; i++){
             if(json.data[2][i] == 0){
-                json.data[2][i] = (json.data[2][i-1] + json.data[2][i+1])/2
+                json.data[2][i] = json.data[2][i-1]
             }else if(json.data[2][i] == 0 && i == 0){
-                json.data[2][0] =  json.data[2][i+1]
-            }else if(json.data[2][i] == 0 && i == json.data[2].length-1){
-                json.data[2][i] =  json.data[2][i-1]
+                j = 0
+                while(json.data[2][j] == 0){j++ }
+                json.data[2][0] = json.data[2][j]
             }else{
                 continue
             }
@@ -312,7 +242,7 @@ var Input = (function(){
         getBlockAPI: getBlockAPI,
         getData: getData,
         getParameter: getParameter,
-        getInfo: getInfo
+        getInitialData: getInitialData
     } 
 
 }());

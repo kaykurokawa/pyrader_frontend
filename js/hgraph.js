@@ -1,4 +1,3 @@
-
  var High = (function(){
 
 //Create Highcharts for price/volume
@@ -131,8 +130,6 @@ hchart = Highcharts.stockChart('hchart', {
  function clearCharts(){
     document.getElementById("error").innerHTML = "No data for this exchange/interval" 
     document.getElementById("error").className = "well"
-    document.getElementById("chart1").style.display = "none"
-    document.getElementById("chart2").style.display = "none"
     document.getElementById("time").style.display = "none"
     document.getElementById("current-price").style.display = "none"
     document.getElementById("current-volume").style.display = "none"
@@ -143,8 +140,6 @@ hchart = Highcharts.stockChart('hchart', {
  function showCharts(){
     document.getElementById("error").innerHTML = "" 
     document.getElementById("error").classList.remove("well");
-    document.getElementById("chart1").style.display = "block"
-    document.getElementById("chart2").style.display = "block"
     document.getElementById("time").style.display = "block"
     document.getElementById("current-price").style.display = "block"
     document.getElementById("current-volume").style.display = "block"
@@ -153,11 +148,8 @@ hchart = Highcharts.stockChart('hchart', {
  function clearBlockCharts(){
     document.getElementById("block-error").innerHTML = "No data for this datatype/interval" 
     document.getElementById("block-error").className = "well"
-    document.getElementById("block-chart2").style.display = "none"
     document.getElementById("block-time").style.display = "none"
     document.getElementById("current-block").style.display = "none"
-    document.getElementById("h-block-time").style.display = "none"
-    document.getElementById("h-current-block").style.display = "none"
     $('#block-hchart').highcharts().destroy();
  }
 
@@ -165,11 +157,8 @@ hchart = Highcharts.stockChart('hchart', {
  function showBlockCharts(){
     document.getElementById("block-error").innerHTML = "" 
     document.getElementById("block-error").classList.remove("well");
-    document.getElementById("block-chart2").style.display = "block"
     document.getElementById("block-time").style.display = "block"
     document.getElementById("current-block").style.display = "block"
-    document.getElementById("h-block-time").style.display = "block"
-    document.getElementById("h-current-block").style.display = "block"
  }
 
 return {
