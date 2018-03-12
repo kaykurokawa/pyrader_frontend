@@ -44,7 +44,7 @@ var Input = (function(){
         var start_stamp = reporting_period == "None" || reporting_period == "" ? "" : "&start=" + getTimeStamp(reporting_period)[0]
         var end_stamp = reporting_period == "None" || reporting_period == "" ? "" : "&end=" + getTimeStamp(reporting_period)[1]
         var exchange = document.getElementById("exchange").value
-            exchange = exchange == "none" ? "" : '&exchange=' + exchange
+            exchange = exchange == "None" ? "" : '&exchange=' + exchange
         var symbol = 'symbol=' + document.getElementById("symbol").value
         var unit = '&unit=' + document.getElementById("unit").value
         var interval = '&interval=' + document.getElementById("interval").value

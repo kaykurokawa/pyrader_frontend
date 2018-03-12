@@ -35,66 +35,89 @@ var Info = (function(){
         info = json.price
         n = json.price.length
         var symbol = document.getElementById("symbol")
+        var symbol_label = document.getElementById("symbol-label")
         var unit = document.getElementById("unit")
+        var unit_label =  document.getElementById("unit-label")
         var exchange = document.getElementById("exchange")
+        var exchange_label = document.getElementById("exchange-label")
         var reporting_period = document.getElementById("reporting-period")
+        var reporting_label = document.getElementById("reporting-label")
         var interval = document.getElementById("interval")
+        var interval_label = document.getElementById("interval-label")
         var submit = document.getElementById("submit")
         var reset = document.getElementById("reset") 
-        unit.disabled = true
-        document.getElementById("unit-label").opactiy = 0.6
-        exchange.disabled= true
-        reporting_period.disabled = true
-        interval.disabled = true
-        submit.disabled = true
+       
+        enableDropdown("symbol")
+        disableDropdown("unit")
+        disableDropdown("exchange")
+        disableDropdown("reporting-period")
+        disableDropdown("interval")
         createOptions(info,"symbol")
+
+        function disableDropdown(select){
+            select_label = select + "-label"
+            arrow_label = select + "-arrow"
+            document.getElementById(arrow_label).classList.remove("glyphicon", "glyphicon-arrow-right");
+            document.getElementById(select).disabled = true
+            document.getElementById(select_label).style.color = "silver"
+        }
+
+        function enableDropdown(select){
+            select_label = select + "-label"
+            arrow_label = select+ "-arrow"
+            document.getElementById(select).disabled = false
+            document.getElementById(arrow_label).classList.add("glyphicon", "glyphicon-arrow-right");
+            document.getElementById(select_label).style.color = "black"
+        }
+
 
         symbol.onchange = function(event){
             info = info.filter(line => line.symbol.includes(document.getElementById("symbol").value))
-            unit.disabled = false
+            enableDropdown("unit")
             console.log(info)
             createOptions(info,"unit")
-            symbol.disabled = true
+            disableDropdown("symbol")
         }
 
         unit.onchange = function(event){
             info = info.filter(line => line.unit.includes(document.getElementById("unit").value))
-            exchange.disabled = false
+            enableDropdown("exchange")
              console.log(info)
             createOptions(info, "exchange")
-            unit.disabled = true
+            disableDropdown("unit")
         } 
 
         exchange.onchange = function(event){
             info.forEach(function(item){if(item.exchange == null){item.exchange = "none"}})
             info = info.filter(line => line.exchange.includes(document.getElementById("exchange").value))            
             console.log(info)
-            interval.disabled = false
+            enableDropdown("interval")
             createOptions(info, "interval")
-            exchange.disabled = true
+            disableDropdown("exchange")
         }
         
         interval.onchange  = function(event){
-            reporting_period.disabled = false
+            enableDropdown("reporting-period")
             submit.disabled = false
-            interval.disabled = true
+            disableDropdown("interval")
             info = json.price
             console.log(info)
         }     
 
         reset.onclick  = function(event){
             info = json.price
-            unit.disabled = false
-            unit.options.length = 1
-            exchange.disabled = true
-            exchange.options.length = 1
-            reporting_period.disabled = true
-            interval.disabled = true
-            interval.options.length = 1
-            submit.disabled = true;
-            symbol.disabled = false;
             symbol.options.length = 1
             createOptions(info,"symbol")
+            enableDropdown("symbol")
+            disableDropdown("unit")
+            unit.options.length = 1
+            disableDropdown("exchange")
+            exchange.options.length = 1
+            disableDropdown("interval")
+            interval.options.length = 1
+            submit.disabled = true;
+            disableDropdown("reporting-period")
+            
         }    
     }
 
