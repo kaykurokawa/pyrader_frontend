@@ -218,6 +218,7 @@ var Input = (function(){
           }
           return data.map(function(time){return unixToReg(time)})
     }
+    
     //print out the API call URL and the exact time stamps you called for debugging.
     function validateParamtersConsole(parameter, start_stamp, end_stamp){
         console.log(parameter) // you can validate paramter in console. 

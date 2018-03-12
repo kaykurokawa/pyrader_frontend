@@ -33,6 +33,7 @@ var Info = (function(){
     function processInfo(json){
         info = []
         info = json.price
+        info = eliminateNulls(info)
         n = json.price.length
         var symbol = document.getElementById("symbol")
         var symbol_label = document.getElementById("symbol-label")
@@ -88,7 +89,7 @@ var Info = (function(){
         } 
 
         exchange.onchange = function(event){
-            info.forEach(function(item){if(item.exchange == null){item.exchange = "none"}})
+            //info.forEach(function(item){if(item.exchange == null){item.exchange = "none"}})
             info = info.filter(line => line.exchange.includes(document.getElementById("exchange").value))            
             console.log(info)
             enableDropdown("interval")
@@ -153,6 +154,7 @@ var Info = (function(){
         //given info array of objects and string id populate the dropdowns with the info of type id. 
         function createOptions(info, id){
             array = []
+            console.log(info)
             for(i = 0 ; i < info.length ; i++){
                 if(id == "symbol"){text = info[i].symbol}
                 if(id == "unit"){text = info[i].unit}
@@ -176,6 +178,15 @@ var Info = (function(){
             if(interval/MICRO == 300)
                 return "5min"
     
+        }
+
+        function eliminateNulls(info){
+            for(i = 0 ; i < info.length ; i++){
+                if (info[i].exchange == null){
+                    info[i].exchange = "None"
+                }
+            }
+            return info 
         }
 
 

@@ -4,6 +4,13 @@
 function drawPriceVolumeGraph(json){
 
 Highcharts.setOptions({global:{useUTC: false}});
+coin = json.symbol
+unit = json.unit
+current_price = json.data[2][json.data[2].length-1]
+current_volume = json.data[3][json.data[3].length-1]
+from_date = json.data[4][0].toDateString() + " " + json.data[4][0].toLocaleTimeString('en-US')
+to_date = json.data[4][json.data[4].length-1].toDateString() + " " + json.data[4][json.data[4].length-1].toLocaleTimeString('en-US')
+console.log(json)
 volume = []
 prices = []
 json.data[2].length
@@ -20,6 +27,10 @@ for(i = 0 ; i < json.data[2].length ; i++){
     prices.push([json.data[5][i], json.data[2][i]])
     volume.push([json.data[5][i], json.data[3][i]])
 }
+
+document.getElementById("time-period").innerHTML =  from_date + " to " + to_date 
+document.getElementById("current-price").innerHTML =  coin + ": " + current_price + " " + unit
+document.getElementById("current-volume").innerHTML = coin + ": " + current_volume + " " + unit
 minimum = Math.min.apply(null, json.data[2])
 title = json.symbol + " Charts"
 y_axis1 = "Price of " + json.symbol + " in " + json.unit
@@ -30,10 +41,6 @@ hchart = Highcharts.stockChart('hchart', {
 
  rangeSelector: {
      selected: 1
- },
-
- title: {
-     text: title
  },
 
  yAxis: [{
@@ -71,7 +78,7 @@ hchart = Highcharts.stockChart('hchart', {
 
  series: [{
      type: 'area',
-     name: 'Bitcoin',
+     name: 'Cryptocurrency',
      data: prices,
      dataGrouping: {
          enabled: false,
@@ -140,7 +147,7 @@ hchart = Highcharts.stockChart('hchart', {
  function showCharts(){
     document.getElementById("error").innerHTML = "" 
     document.getElementById("error").classList.remove("well");
-    document.getElementById("time").style.display = "block"
+    document.getElementById("time-period").style.display = "block"
     document.getElementById("current-price").style.display = "block"
     document.getElementById("current-volume").style.display = "block"
  }
