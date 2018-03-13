@@ -6,7 +6,7 @@ $(document).ready(function () {
         Input.getPriceAPI()
     }
     document.getElementById("block-tab").onclick = function(event){
-        Input.getBlockAPI()
+        Input.getInitialBlock()
         document.getElementById("block-submit").onclick = function(event){
             event.preventDefault();
             Input.getBlockAPI()

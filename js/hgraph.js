@@ -106,12 +106,14 @@ hchart = Highcharts.stockChart('hchart', {
     minimum = Math.min.apply(null, json.data[2])
     coin = json.coin
     datatype =json.datatype
-    date = json.data[3][json.data[3].length-1]
+    console.log(json)
     title = json.coin + " " + json.datatype + " " + "chart"
     y_axis = json.datatype + " of " + json.coin
-
-    document.getElementById("h-current-block").innerHTML = "Current " + datatype + " of " + coin + ": " + data[data.length-1][1].toLocaleString()
-    document.getElementById("h-block-time").innerHTML = "As of " + date 
+    from_date = json.data[3][0].toDateString() + " " + json.data[3][0].toLocaleTimeString('en-US')
+    to_date = json.data[3][json.data[3].length-1].toDateString() + " " +  json.data[3][json.data[3].length-1].toLocaleTimeString('en-US')
+    current_block = json.data[2][json.data[2].length-1]
+    document.getElementById("block-time-period").innerHTML =  from_date  + " to " + to_date
+    document.getElementById("current-block").innerHTML = datatype + " for " + coin + " " + current_block
 
        // create the chart
     Highcharts.stockChart('block-hchart', {

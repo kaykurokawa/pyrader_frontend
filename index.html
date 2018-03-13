@@ -4,11 +4,10 @@
     <head>
         <meta charset="utf-8">
         <title>Bitcoin Trader</title>
-        <link rel="stylesheet" href="/css/c3.css">
         <link rel="stylesheet" href="/css/project.css">
         <link rel="stylesheet" href="/css/highcharts.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css">
+       
     </head>
     <body>
         <div class="container">
@@ -111,7 +110,6 @@
                                 <div id="error"></div>
                             </div>
                         </div>
-                        <h3>Price/Data information</h3>
                         <table class="table">
                             <thead>
                                 <th>Price/Data Information</th>
@@ -141,46 +139,96 @@
                     <div id="block" class="tab-pane fade">
                         <!-- Write your code for the Block tab here -->
                         <div class="row">
-                                <div class="col-sm-2"> 
-                                    <label>Symbol:</label>        
-                                    <select class="form-control" id="block-symbol">
-                                        <option>LTC</option>
-                                    </select>
+                                <div class="col-sm-3">
+                                    <div class="row">
+                                        <div class="col-sm-2 text-center">
+                                            &nbsp&nbsp
+                                            <span id="block-symbol-arrow"></span>
+                                        </div>
+                                        <div class="col-sm-10"> 
+                                            <label id="block-symbol-label">Symbol:</label>       
+                                            <select class="form-control" id="block-symbol">
+                                                <option></option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
-                                    <div class="col-sm-2">  
-                                        <label>Data type:</label> 
-                                        <select class="form-control" id="block-datatype">
-                                            <option>height</option>
-                                        </select>
-                                    </div> 
-                                <div class="col-sm-2">
-                                    <label>Interval:</label>   
-                                    <select class="form-control" id="block-interval">
-                                        <option>5 min.</option>
-                                        <option>1 hour</option>
-                                        <option>1 day</option>
-                                    </select>
+                                <div class="col-sm-3">
+                                    <div class="row">
+                                        <div class="col-sm-2 text-center">
+                                            &nbsp&nbsp
+                                            <span id="block-datatype-arrow"></span>
+                                        </div>
+                                        <div class="col-sm-10"> 
+                                            <label id="block-datatype-label">Data Type:</label>       
+                                            <select class="form-control" id="block-datatype">
+                                                <option></option>
+                                            </select>
+                                        </div>
+                                     </div>
                                 </div>
-                                <div class="col-sm-2">
-                                    <label>Reporting Period:</label>   
-                                    <select class="form-control" id="block-reporting-period">
-                                        <option>None</option>
-                                        <option>Daily</option>
-                                        <option>Weekly</option>
-                                        <option>Monthly</option>
-                                    </select>
+                                <div class="col-sm-3">
+                                        <div class="row">
+                                            <div class="col-sm-2 text-center">
+                                                &nbsp&nbsp
+                                                <span id="block-interval-arrow"></span>
+                                            </div>
+                                            <div class="col-sm-10"> 
+                                                <label id="block-interval-label">Interval:</label>       
+                                                <select class="form-control" id="block-interval">
+                                                    <option></option>
+                                                </select>
+                                            </div>
+                                        </div>
                                 </div>
-                                <div class="col-xs-2">
-                                  <div>&nbsp</div>
-                                    <button type="button" class="btn btn-primary" id="block-submit">Submit</button>
-                                </div>   
                         </div>
+                        <div class="row">
+                                <div>&nbsp</div>
+                                <div class="col-sm-3">
+                                    <div class="row">
+                                        <div class="col-sm-2 text-center" id="arrow5">
+                                            <span id="block-reporting-period-arrow"></span>
+                                        </div>
+                                         <div class="col-sm-10">     
+                                         <label id="block-reporting-period-label">Reporting Period:</label>   
+                                         <select class="form-control" id="block-reporting-period">
+                                         <option></optioin>
+                                         <option>None</option>
+                                         <option>Day</option>
+                                         <option>Week</option>
+                                         <option>Month</option>
+                                         </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>    
+                                <div>&nbsp</div>
+                                <button type="button" class="btn btn-primary floated" id="block-submit">Submit</button>
+                                <button type="button" class="btn btn-success floated" id="block-reset">Reset</button>
+                            </div>
+                        </div>  
                         <div>&nbsp</div>
                         <div class = "row">
                             <div class ="col-sm-8">     
                                 <div id="block-error"></div>
                             </div>
-                        </div>       
+                        </div>
+                        <table class="table">
+                                <thead>
+                                    <th>Block Information</th>
+                                    <th></th>
+                                </thead>    
+                              <tbody>
+                                <tr>
+                                  <td>Time Period:</td>
+                                  <td id="block-time-period"></td>
+                                </tr>
+                                <tr>
+                                  <td>Current Price:</td>
+                                  <td id="current-block"></td>    
+                                </tr>
+                              </tbody>
+                        </table>         
                         <h3>Highcharts</h3>
                         <h3 id="block-time"></h3>             
                         <h3 id="current-block"></h3>

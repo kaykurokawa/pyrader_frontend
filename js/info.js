@@ -31,20 +31,15 @@ var Info = (function(){
 
 
     function processInfo(json){
-        info = []
-        info = json.price
-        info = eliminateNulls(info)
+        prices = []
+        prices = json.price
+        prices = eliminateNulls(prices)
         n = json.price.length
         var symbol = document.getElementById("symbol")
-        var symbol_label = document.getElementById("symbol-label")
         var unit = document.getElementById("unit")
-        var unit_label =  document.getElementById("unit-label")
         var exchange = document.getElementById("exchange")
-        var exchange_label = document.getElementById("exchange-label")
         var reporting_period = document.getElementById("reporting-period")
-        var reporting_label = document.getElementById("reporting-label")
         var interval = document.getElementById("interval")
-        var interval_label = document.getElementById("interval-label")
         var submit = document.getElementById("submit")
         var reset = document.getElementById("reset") 
        
@@ -53,7 +48,109 @@ var Info = (function(){
         disableDropdown("exchange")
         disableDropdown("reporting-period")
         disableDropdown("interval")
-        createOptions(info,"symbol")
+        createOptions(prices,"symbol")
+        submit.disabled = true
+
+        symbol.onchange = function(event){
+            prices = prices.filter(line => line.symbol.includes(document.getElementById("symbol").value))
+            enableDropdown("unit")
+            createOptions(prices,"unit")
+            disableDropdown("symbol")
+        }
+
+        unit.onchange = function(event){
+            prices = prices.filter(line => line.unit.includes(document.getElementById("unit").value))
+            enableDropdown("exchange")
+            createOptions(prices, "exchange")
+            disableDropdown("unit")
+        } 
+
+        exchange.onchange = function(event){
+            //info.forEach(function(item){if(item.exchange == null){item.exchange = "none"}})
+            prices = prices.filter(line => line.exchange.includes(document.getElementById("exchange").value))            
+            enableDropdown("interval")
+            createOptions(prices, "interval")
+            disableDropdown("exchange")
+        }
+        
+        interval.onchange  = function(event){
+            enableDropdown("reporting-period")
+            submit.disabled = false
+            disableDropdown("interval")
+            prices = json.price
+        }     
+
+        reset.onclick  = function(event){
+            prices = json.price
+            symbol.options.length = 1
+            createOptions(prices,"symbol")
+            enableDropdown("symbol")
+            disableDropdown("unit")
+            unit.options.length = 1
+            disableDropdown("exchange")
+            exchange.options.length = 1
+            disableDropdown("interval")
+            interval.options.length = 1
+            submit.disabled = false;
+            disableDropdown("reporting-period")
+            
+        }    
+    }
+
+        //get info from API and append to drop down menu for block charts
+        function processBlockInfo(json){
+            blocks = []
+            blocks = json.block
+            var m = json.block.length
+            var block_symbol = document.getElementById("block-symbol")
+            var block_datatype = document.getElementById("block-datatype")
+            var block_reporting_period = document.getElementById("block-reporting-period")
+            var block_interval = document.getElementById("block-interval")
+            var block_submit = document.getElementById("block-submit")
+            var block_reset = document.getElementById("block-reset") 
+
+            enableDropdown("block-symbol")
+            disableDropdown("block-datatype")
+            disableDropdown("block-interval")
+            disableDropdown("block-reporting-period")
+            createBlockOptions(blocks,"block-symbol")
+            block_submit.disabled = true
+
+            block_symbol.onchange = function(event){
+                blocks = blocks.filter(line => line.coin.includes(document.getElementById("block-symbol").value))
+                enableDropdown("block-datatype")
+                createBlockOptions(blocks,"block-datatype")
+                disableDropdown("block-symbol")
+            }
+
+            block_datatype.onchange = function(event){
+                blocks = blocks.filter(line => line.datatype.includes(document.getElementById("block-datatype").value))
+                enableDropdown("block-interval")
+                createBlockOptions(blocks,"block-interval")
+                disableDropdown("block-datatype")
+            }
+
+            block_interval.onchange  = function(event){
+                enableDropdown("block-reporting-period")
+                block_submit.disabled = false
+                disableDropdown("block-interval")
+                blocks = json.block
+            }
+
+            block_reset.onclick  = function(event){
+                blocks = json.block
+                block_symbol.options.length = 1
+                createBlockOptions(blocks,"block-symbol")
+                enableDropdown("block-symbol")
+                disableDropdown("block-datatype")
+                block_datatype.options.length = 1
+                disableDropdown("block-interval")
+                block_interval.options.length = 1
+                disableDropdown("block-reporting-period")
+                block_submit.disabled = true
+            }      
+            
+        }
 
         function disableDropdown(select){
             select_label = select + "-label"
@@ -71,86 +168,6 @@ var Info = (function(){
             document.getElementById(select_label).style.color = "black"
         }
 
-
-        symbol.onchange = function(event){
-            info = info.filter(line => line.symbol.includes(document.getElementById("symbol").value))
-            enableDropdown("unit")
-            console.log(info)
-            createOptions(info,"unit")
-            disableDropdown("symbol")
-        }
-
-        unit.onchange = function(event){
-            info = info.filter(line => line.unit.includes(document.getElementById("unit").value))
-            enableDropdown("exchange")
-             console.log(info)
-            createOptions(info, "exchange")
-            disableDropdown("unit")
-        } 
-
-        exchange.onchange = function(event){
-            //info.forEach(function(item){if(item.exchange == null){item.exchange = "none"}})
-            info = info.filter(line => line.exchange.includes(document.getElementById("exchange").value))            
-            console.log(info)
-            enableDropdown("interval")
-            createOptions(info, "interval")
-            disableDropdown("exchange")
-        }
-        
-        interval.onchange  = function(event){
-            enableDropdown("reporting-period")
-            submit.disabled = false
-            disableDropdown("interval")
-            info = json.price
-            console.log(info)
-        }     
-
-        reset.onclick  = function(event){
-            info = json.price
-            symbol.options.length = 1
-            createOptions(info,"symbol")
-            enableDropdown("symbol")
-            disableDropdown("unit")
-            unit.options.length = 1
-            disableDropdown("exchange")
-            exchange.options.length = 1
-            disableDropdown("interval")
-            interval.options.length = 1
-            submit.disabled = true;
-            disableDropdown("reporting-period")
-            
-        }    
-    }
-
-        //get info from API and append to drop down menu for block charts
-        function processBlockInfo(json){
-            var m = json.block.length
-            var symbols_array = ["LTC"]
-            var datatype_array = ["height"]
-    
-            for(i = 0; i < m ; i++){
-                symbol_text = json.block[i].coin 
-                datatype_text = json.block[i].datatype
-                if (!symbols_array.includes(symbol_text)){
-                    symbols_array.push(symbol_text)
-                    var symbol_option = document.createElement("option")
-                    symbol_option.text = symbol_text
-                    var select = document.getElementById("block-symbol");
-                    select.appendChild(symbol_option) 
-                }
-                    
-                if (!datatype_array.includes(datatype_text)){
-                    datatype_array.push(datatype_text)
-                    var datatype_option = document.createElement("option")
-                    datatype_option.text = datatype_text
-                    var select = document.getElementById("block-datatype");
-                    select.appendChild(datatype_option)
-                }
-    
-            }
-            
-        }
-
         //given info array of objects and string id populate the dropdowns with the info of type id. 
         function createOptions(info, id){
             array = []
@@ -160,6 +177,22 @@ var Info = (function(){
                 if(id == "unit"){text = info[i].unit}
                 if(id == "exchange"){text = info[i].exchange}
                 if(id == "interval"){text = convertIntervalNumberToText(info[i].interval)}
+                if(!array.includes(text)){
+                    array.push(text)
+                    option = document.createElement("option")
+                    option.text = text
+                    var select = document.getElementById(id);
+                    select.appendChild(option); 
+                }
+            }
+        }
+
+        function createBlockOptions(info, id){
+            array = []
+            for(i = 0 ; i < info.length ; i++){
+                if(id == "block-symbol"){text = info[i].coin}
+                if(id == "block-datatype"){text = info[i].datatype}
+                if(id == "block-interval"){text = convertIntervalNumberToText(info[i].interval)}
                 if(!array.includes(text)){
                     array.push(text)
                     option = document.createElement("option")

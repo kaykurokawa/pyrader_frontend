@@ -38,6 +38,37 @@ var Input = (function(){
                 });
     }
 
+    function getInitialBlock(){
+
+        var interval = '&interval=' + "5min"
+        var interval_i = convertIntervalToNumber(interval)
+        var parameter = 'http://api.blkdat.com/block?coin=LTC&datatype=difficulty&interval=hour' 
+        window.parameter = parameter
+
+        fetch(parameter)
+        .then(
+        function(response) {
+            if (response.status !== 200) {
+                console.log('Looks like there was a problem. Status Code: ' + response.status);
+                High.clearBlockCharts()
+                return;
+                }
+                response.json().then(function(data) {
+                    High.showCharts()
+                    High.showBlockCharts()
+                    data = processDates(data,interval_i)
+                    data = processData(data)
+                    window.apiCall = data
+                    //Here you will pass data to whatever Graphing library asynchronosly
+                    High.drawBlockGraph(data)
+                });
+                }
+            )
+                .catch(function(err) {
+                    console.log('Fetch Error :-S', err);   
+                });
+    }
+
     //call API and Generate the Price and Volume graphs
     function getPriceAPI(){
         var reporting_period = document.getElementById ("reporting-period").value
@@ -218,7 +249,7 @@ var Input = (function(){
           }
           return data.map(function(time){return unixToReg(time)})
     }
-    
+
     //print out the API call URL and the exact time stamps you called for debugging.
     function validateParamtersConsole(parameter, start_stamp, end_stamp){
         console.log(parameter) // you can validate paramter in console. 
@@ -243,7 +274,8 @@ var Input = (function(){
         getBlockAPI: getBlockAPI,
         getData: getData,
         getParameter: getParameter,
-        getInitialData: getInitialData
+        getInitialData: getInitialData,
+        getInitialBlock: getInitialBlock
     } 
 
 }());
