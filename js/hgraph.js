@@ -1,10 +1,16 @@
-
  var High = (function(){
 
 //Create Highcharts for price/volume
 function drawPriceVolumeGraph(json){
 
 Highcharts.setOptions({global:{useUTC: false}});
+coin = json.symbol
+unit = json.unit
+current_price = json.data[2][json.data[2].length-1]
+current_volume = json.data[3][json.data[3].length-1]
+from_date = json.data[4][0].toDateString() + " " + json.data[4][0].toLocaleTimeString('en-US')
+to_date = json.data[4][json.data[4].length-1].toDateString() + " " + json.data[4][json.data[4].length-1].toLocaleTimeString('en-US')
+console.log(json)
 volume = []
 prices = []
 json.data[2].length
@@ -21,6 +27,10 @@ for(i = 0 ; i < json.data[2].length ; i++){
     prices.push([json.data[5][i], json.data[2][i]])
     volume.push([json.data[5][i], json.data[3][i]])
 }
+
+document.getElementById("time-period").innerHTML =  from_date + " to " + to_date 
+document.getElementById("current-price").innerHTML =  coin + ": " + current_price + " " + unit
+document.getElementById("current-volume").innerHTML = coin + ": " + current_volume + " " + unit
 minimum = Math.min.apply(null, json.data[2])
 title = json.symbol + " Charts"
 y_axis1 = "Price of " + json.symbol + " in " + json.unit
@@ -31,10 +41,6 @@ hchart = Highcharts.stockChart('hchart', {
 
  rangeSelector: {
      selected: 1
- },
-
- title: {
-     text: title
  },
 
  yAxis: [{
@@ -72,7 +78,7 @@ hchart = Highcharts.stockChart('hchart', {
 
  series: [{
      type: 'area',
-     name: 'Bitcoin',
+     name: 'Cryptocurrency',
      data: prices,
      dataGrouping: {
          enabled: false,
@@ -100,12 +106,14 @@ hchart = Highcharts.stockChart('hchart', {
     minimum = Math.min.apply(null, json.data[2])
     coin = json.coin
     datatype =json.datatype
-    date = json.data[3][json.data[3].length-1]
+    console.log(json)
     title = json.coin + " " + json.datatype + " " + "chart"
     y_axis = json.datatype + " of " + json.coin
-
-    document.getElementById("h-current-block").innerHTML = "Current " + datatype + " of " + coin + ": " + data[data.length-1][1].toLocaleString()
-    document.getElementById("h-block-time").innerHTML = "As of " + date 
+    from_date = json.data[3][0].toDateString() + " " + json.data[3][0].toLocaleTimeString('en-US')
+    to_date = json.data[3][json.data[3].length-1].toDateString() + " " +  json.data[3][json.data[3].length-1].toLocaleTimeString('en-US')
+    current_block = json.data[2][json.data[2].length-1]
+    document.getElementById("block-time-period").innerHTML =  from_date  + " to " + to_date
+    document.getElementById("current-block").innerHTML = datatype + " for " + coin + " " + current_block
 
        // create the chart
     Highcharts.stockChart('block-hchart', {
@@ -131,8 +139,6 @@ hchart = Highcharts.stockChart('hchart', {
  function clearCharts(){
     document.getElementById("error").innerHTML = "No data for this exchange/interval" 
     document.getElementById("error").className = "well"
-    document.getElementById("chart1").style.display = "none"
-    document.getElementById("chart2").style.display = "none"
     document.getElementById("time").style.display = "none"
     document.getElementById("current-price").style.display = "none"
     document.getElementById("current-volume").style.display = "none"
@@ -143,9 +149,7 @@ hchart = Highcharts.stockChart('hchart', {
  function showCharts(){
     document.getElementById("error").innerHTML = "" 
     document.getElementById("error").classList.remove("well");
-    document.getElementById("chart1").style.display = "block"
-    document.getElementById("chart2").style.display = "block"
-    document.getElementById("time").style.display = "block"
+    document.getElementById("time-period").style.display = "block"
     document.getElementById("current-price").style.display = "block"
     document.getElementById("current-volume").style.display = "block"
  }
@@ -153,11 +157,8 @@ hchart = Highcharts.stockChart('hchart', {
  function clearBlockCharts(){
     document.getElementById("block-error").innerHTML = "No data for this datatype/interval" 
     document.getElementById("block-error").className = "well"
-    document.getElementById("block-chart2").style.display = "none"
     document.getElementById("block-time").style.display = "none"
     document.getElementById("current-block").style.display = "none"
-    document.getElementById("h-block-time").style.display = "none"
-    document.getElementById("h-current-block").style.display = "none"
     $('#block-hchart').highcharts().destroy();
  }
 
@@ -165,11 +166,8 @@ hchart = Highcharts.stockChart('hchart', {
  function showBlockCharts(){
     document.getElementById("block-error").innerHTML = "" 
     document.getElementById("block-error").classList.remove("well");
-    document.getElementById("block-chart2").style.display = "block"
     document.getElementById("block-time").style.display = "block"
     document.getElementById("current-block").style.display = "block"
-    document.getElementById("h-block-time").style.display = "block"
-    document.getElementById("h-current-block").style.display = "block"
  }
 
 return {
