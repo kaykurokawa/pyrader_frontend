@@ -8,8 +8,8 @@ coin = json.symbol
 unit = json.unit
 current_price = json.data[2][json.data[2].length-1]
 current_volume = json.data[3][json.data[3].length-1]
-from_date = json.data[4][0].toDateString() + " " + json.data[4][0].toLocaleTimeString('en-US')
-to_date = json.data[4][json.data[4].length-1].toDateString() + " " + json.data[4][json.data[4].length-1].toLocaleTimeString('en-US')
+from_date = new Date(json.data[4][0]).toDateString() + " " + new Date(json.data[4][0]).toLocaleTimeString('en-US')
+to_date = new Date(json.data[4][json.data[4].length-1]).toDateString() + " " + new Date(json.data[4][json.data[4].length-1]).toLocaleTimeString('en-US')
 volume = []
 prices = []
 json.data[2].length
@@ -23,8 +23,8 @@ json.data[2].length
  ]]
 
 for(i = 0 ; i < json.data[2].length ; i++){
-    prices.push([json.data[5][i], json.data[2][i]])
-    volume.push([json.data[5][i], json.data[3][i]])
+    prices.push([json.data[4][i], json.data[2][i]])
+    volume.push([json.data[4][i], json.data[3][i]])
 }
 
 document.getElementById("time-period").innerHTML =  from_date + " to " + to_date 
@@ -102,7 +102,7 @@ hchart = Highcharts.stockChart('hchart', {
  function drawBlockGraph(json){
     data = []
     for(i = 0 ; i < json.data[2].length ; i++){
-        data.push([json.data[4][i], json.data[2][i]])
+        data.push([json.data[3][i], json.data[2][i]])
     }
     minimum = Math.min.apply(null, json.data[2])
     coin = json.coin
@@ -110,8 +110,8 @@ hchart = Highcharts.stockChart('hchart', {
     console.log(json)
     title = json.coin + " " + json.datatype + " " + "chart"
     y_axis = json.datatype + " of " + json.coin
-    from_date = json.data[3][0].toDateString() + " " + json.data[3][0].toLocaleTimeString('en-US')
-    to_date = json.data[3][json.data[3].length-1].toDateString() + " " +  json.data[3][json.data[3].length-1].toLocaleTimeString('en-US')
+    from_date = new Date(json.data[3][0]).toDateString() + " " + new Date(json.data[3][0]).toLocaleTimeString('en-US')
+    to_date = new Date(json.data[3][json.data[3].length-1]).toDateString() + " " +  new Date(json.data[3][json.data[3].length-1]).toLocaleTimeString('en-US')
     current_block = json.data[2][json.data[2].length-1]
     document.getElementById("block-time-period").innerHTML =  from_date  + " to " + to_date
     document.getElementById("current-block").innerHTML = datatype + " for " + coin + " " + current_block

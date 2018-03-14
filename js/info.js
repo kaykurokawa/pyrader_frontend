@@ -29,9 +29,9 @@
 
 
     function processInfo(json){
-        prices = []
-        prices = json.price
-        prices = eliminateNulls(prices)
+        info_prices = []
+        info_prices = json.price
+        info_prices = eliminateNulls(info_prices)
         n = json.price.length
         enableDropdown("symbol")
         var symbol = document.getElementById("symbol")
@@ -46,28 +46,29 @@
         disableDropdown("exchange")
         disableDropdown("reporting-period")
         disableDropdown("interval")
-        createOptions(prices,"symbol")
+        createOptions(info_prices,"symbol")
         submit.disabled = true
 
         symbol.onchange = function(event){
-            prices = prices.filter(line => line.symbol.includes(document.getElementById("symbol").value))
+            console.log(info_prices)
+            info_prices = info_prices.filter(line => line.symbol.includes(document.getElementById("symbol").value))
             enableDropdown("unit")
-            createOptions(prices,"unit")
+            createOptions(info_prices,"unit")
             disableDropdown("symbol")
         }
 
         unit.onchange = function(event){
-            prices = prices.filter(line => line.unit.includes(document.getElementById("unit").value))
+            info_prices = info_prices.filter(line => line.unit.includes(document.getElementById("unit").value))
             enableDropdown("exchange")
-            createOptions(prices, "exchange")
+            createOptions(info_prices, "exchange")
             disableDropdown("unit")
         } 
 
         exchange.onchange = function(event){
             //info.forEach(function(item){if(item.exchange == null){item.exchange = "none"}})
-            prices = prices.filter(line => line.exchange.includes(document.getElementById("exchange").value))            
+            info_prices = info_prices.filter(line => line.exchange.includes(document.getElementById("exchange").value))            
             enableDropdown("interval")
-            createOptions(prices, "interval")
+            createOptions(info_prices, "interval")
             disableDropdown("exchange")
         }
         
@@ -75,13 +76,13 @@
             enableDropdown("reporting-period")
             submit.disabled = false
             disableDropdown("interval")
-            prices = json.price
+            info_prices = json.price
         }     
 
         reset.onclick  = function(event){
-            prices = json.price
+            info_prices = json.price
             symbol.options.length = 1
-            createOptions(prices,"symbol")
+            createOptions(info_prices,"symbol")
             enableDropdown("symbol")
             disableDropdown("unit")
             unit.options.length = 1
@@ -211,11 +212,11 @@
                 return "5min"
     
         }
-        //given a number 
+        //given a info of prices change the exchanges from null to aggregated.
         function eliminateNulls(info){
             for(i = 0 ; i < info.length ; i++){
                 if (info[i].exchange == null){
-                    info[i].exchange = "None"
+                    info[i].exchange = "Aggregated"
                 }
             }
             return info 
