@@ -1,5 +1,5 @@
-var Input = (function(){
-
+    const High = require('/js/hgraph.js')
+    
     var MICRO = Math.pow(10,6)
     var MILLI = Math.pow(10,3)
     var HUNDREDMIL = Math.pow(10,8)
@@ -111,8 +111,8 @@ var Input = (function(){
     //Call the API and generate graph for Block data
     function getBlockAPI(){
         var reporting_period = document.getElementById("block-reporting-period").value
-        var start_stamp = reporting_period == "None" ? "" : "&start=" + getTimeStamp(reporting_period)[0]
-        var end_stamp = reporting_period == "None" ? "" : "&end=" + getTimeStamp(reporting_period)[1]
+        var start_stamp = reporting_period == "None" || reporting_period == "" ? "" : "&start=" + getTimeStamp(reporting_period)[0]
+        var end_stamp = reporting_period == "None" || reporting_period == "" ? "" : "&end=" + getTimeStamp(reporting_period)[1]
         var symbol = 'coin=' + document.getElementById("block-symbol").value
         var datatype = '&datatype=' + document.getElementById("block-datatype").value
         var interval = '&interval=' + document.getElementById("block-interval").value
@@ -215,7 +215,14 @@ var Input = (function(){
             }
         }
         unit = unit.slice(6,unit.length)
-        json.data[2] = json.data[2].map(function(units){return round(units/conversions[unit],2)})
+        //if you divide your data by the conversion and it is less than 1 (ie. Comparing DOGE to units of BTC) give me 8 decimals
+        if(json.data[2][0]/conversions[unit] < 1){
+            console.log("process 8 decimal")
+            json.data[2] = json.data[2].map(function(units){return round(units/conversions[unit],8)})
+        }else{
+            json.data[2] = json.data[2].map(function(units){return round(units/conversions[unit],2)})
+
+        }
         return json
         }
 
@@ -225,20 +232,20 @@ var Input = (function(){
             json.data[3] = json.data[3].map(function(vol){return round(vol/conversions[unit],2)})
             return json
         }
-     //given a json block data, eliminate zeros by averaging and return the json   
+     //given a json block data, eliminate zeros/falsy/NaN  by reaching out and grabbing the previous values
     function processData(json){
 
         for(i = 0 ; i < json.data[2].length ; i++){
-            if(json.data[2][i] == 0){
-                json.data[2][i] = (json.data[2][i-1] + json.data[2][i+1])/2
-            }else if(json.data[2][i] == 0 && i == 0){
-                json.data[2][0] =  json.data[2][i+1]
-            }else if(json.data[2][i] == 0 && i == json.data[2].length-1){
-                json.data[2][i] =  json.data[2][i-1]
+            if(!json.data[2][i]){
+                json.data[2][i] = json.data[2][i-1]
+            }else if(!json.data[2][i] && i == 0){
+                j = 0
+                while(!json.data[2][j]){j++ }
+                json.data[2][0] = json.data[2][j]
             }else{
                 continue
-                }
             }
+        }
                 return json
     }
         
@@ -269,13 +276,11 @@ var Input = (function(){
         return window.parameter
     }
     
-    return {
+    module.exports = {
         getPriceAPI: getPriceAPI,
         getBlockAPI: getBlockAPI,
         getData: getData,
         getParameter: getParameter,
         getInitialData: getInitialData,
-        getInitialBlock: getInitialBlock
-    } 
-
-}());
+        getInitialBlock: getInitialBlock,
+    }

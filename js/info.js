@@ -1,5 +1,3 @@
-var Info = (function(){
-
     var MICRO = Math.pow(10,6)
     var MILLI = Math.pow(10,3)
     var HUNDREDMIL = Math.pow(10,8)
@@ -35,6 +33,7 @@ var Info = (function(){
         prices = json.price
         prices = eliminateNulls(prices)
         n = json.price.length
+        enableDropdown("symbol")
         var symbol = document.getElementById("symbol")
         var unit = document.getElementById("unit")
         var exchange = document.getElementById("exchange")
@@ -42,7 +41,6 @@ var Info = (function(){
         var interval = document.getElementById("interval")
         var submit = document.getElementById("submit")
         var reset = document.getElementById("reset") 
-       
         enableDropdown("symbol")
         disableDropdown("unit")
         disableDropdown("exchange")
@@ -162,7 +160,7 @@ var Info = (function(){
 
         function enableDropdown(select){
             select_label = select + "-label"
-            arrow_label = select+ "-arrow"
+            arrow_label = select + "-arrow"
             document.getElementById(select).disabled = false
             document.getElementById(arrow_label).classList.add("glyphicon", "glyphicon-arrow-right");
             document.getElementById(select_label).style.color = "black"
@@ -203,6 +201,7 @@ var Info = (function(){
             }
         }
         
+        //given a number in miroseconds return if it is a day, hour, 5 min
         function convertIntervalNumberToText(interval){
             if(interval/MICRO == 86400)
                 return "day"
@@ -212,7 +211,7 @@ var Info = (function(){
                 return "5min"
     
         }
-
+        //given a number 
         function eliminateNulls(info){
             for(i = 0 ; i < info.length ; i++){
                 if (info[i].exchange == null){
@@ -223,8 +222,8 @@ var Info = (function(){
         }
 
 
-    return {
-        getInfo: getInfo
-    } 
-
-}());
+module.exports = {
+        getInfo: getInfo,
+        convertIntervalNumberToText : convertIntervalNumberToText,
+        eliminateNulls: eliminateNulls,
+}

@@ -1,8 +1,8 @@
- var High = (function(){
+
 
 //Create Highcharts for price/volume
 function drawPriceVolumeGraph(json){
-
+console.log(json)
 Highcharts.setOptions({global:{useUTC: false}});
 coin = json.symbol
 unit = json.unit
@@ -10,7 +10,6 @@ current_price = json.data[2][json.data[2].length-1]
 current_volume = json.data[3][json.data[3].length-1]
 from_date = json.data[4][0].toDateString() + " " + json.data[4][0].toLocaleTimeString('en-US')
 to_date = json.data[4][json.data[4].length-1].toDateString() + " " + json.data[4][json.data[4].length-1].toLocaleTimeString('en-US')
-console.log(json)
 volume = []
 prices = []
 json.data[2].length
@@ -53,7 +52,9 @@ hchart = Highcharts.stockChart('hchart', {
      },
      height: '60%',
      lineWidth: 2,
-     floor: minimum,
+     //floor: minimum,
+     type: 'logarithmic',
+     minorTickInterval: 0.1,
      resize: {
          enabled: true
      }
@@ -73,7 +74,7 @@ hchart = Highcharts.stockChart('hchart', {
 
  tooltip: {
      split: true,
-     valueDecimals: 2
+     //valueDecimals: 2
  },
 
  series: [{
@@ -170,13 +171,12 @@ hchart = Highcharts.stockChart('hchart', {
     document.getElementById("current-block").style.display = "block"
  }
 
-return {
+module.exports = {
     drawPriceVolumeGraph : drawPriceVolumeGraph,
     showCharts : showCharts,
     clearCharts : clearCharts,
     drawBlockGraph : drawBlockGraph,
     showBlockCharts : showBlockCharts,
-    clearBlockCharts : clearBlockCharts
+    clearBlockCharts : clearBlockCharts,
   }
   
-  }());
