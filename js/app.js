@@ -1,3 +1,6 @@
+var Info = require('/js/info.js')
+var Input = require('/js/input.js')
+
 $(document).ready(function () {
     Info.getInfo()
     Input.getInitialData()

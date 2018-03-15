@@ -1,5 +1,3 @@
-var Info = (function(){
-
     var MICRO = Math.pow(10,6)
     var MILLI = Math.pow(10,3)
     var HUNDREDMIL = Math.pow(10,8)
@@ -31,10 +29,11 @@ var Info = (function(){
 
 
     function processInfo(json){
-        prices = []
-        prices = json.price
-        prices = eliminateNulls(prices)
+        info_prices = []
+        info_prices = json.price
+        info_prices = eliminateNulls(info_prices)
         n = json.price.length
+        enableDropdown("symbol")
         var symbol = document.getElementById("symbol")
         var unit = document.getElementById("unit")
         var exchange = document.getElementById("exchange")
@@ -42,34 +41,32 @@ var Info = (function(){
         var interval = document.getElementById("interval")
         var submit = document.getElementById("submit")
         var reset = document.getElementById("reset") 
-       
         enableDropdown("symbol")
         disableDropdown("unit")
         disableDropdown("exchange")
         disableDropdown("reporting-period")
         disableDropdown("interval")
-        createOptions(prices,"symbol")
+        createOptions(info_prices,"symbol")
         submit.disabled = true
 
         symbol.onchange = function(event){
-            prices = prices.filter(line => line.symbol.includes(document.getElementById("symbol").value))
+            info_prices = info_prices.filter(line => line.symbol.includes(document.getElementById("symbol").value))
             enableDropdown("unit")
-            createOptions(prices,"unit")
+            createOptions(info_prices,"unit")
             disableDropdown("symbol")
         }
 
         unit.onchange = function(event){
-            prices = prices.filter(line => line.unit.includes(document.getElementById("unit").value))
+            info_prices = info_prices.filter(line => line.unit.includes(document.getElementById("unit").value))
             enableDropdown("exchange")
-            createOptions(prices, "exchange")
+            createOptions(info_prices, "exchange")
             disableDropdown("unit")
         } 
 
         exchange.onchange = function(event){
-            //info.forEach(function(item){if(item.exchange == null){item.exchange = "none"}})
-            prices = prices.filter(line => line.exchange.includes(document.getElementById("exchange").value))            
+            info_prices = info_prices.filter(line => line.exchange.includes(document.getElementById("exchange").value))            
             enableDropdown("interval")
-            createOptions(prices, "interval")
+            createOptions(info_prices, "interval")
             disableDropdown("exchange")
         }
         
@@ -77,13 +74,13 @@ var Info = (function(){
             enableDropdown("reporting-period")
             submit.disabled = false
             disableDropdown("interval")
-            prices = json.price
+            info_prices = json.price
         }     
 
         reset.onclick  = function(event){
-            prices = json.price
+            info_prices = json.price
             symbol.options.length = 1
-            createOptions(prices,"symbol")
+            createOptions(info_prices,"symbol")
             enableDropdown("symbol")
             disableDropdown("unit")
             unit.options.length = 1
@@ -91,7 +88,7 @@ var Info = (function(){
             exchange.options.length = 1
             disableDropdown("interval")
             interval.options.length = 1
-            submit.disabled = false;
+            submit.disabled = true;
             disableDropdown("reporting-period")
             
         }    
@@ -162,7 +159,7 @@ var Info = (function(){
 
         function enableDropdown(select){
             select_label = select + "-label"
-            arrow_label = select+ "-arrow"
+            arrow_label = select + "-arrow"
             document.getElementById(select).disabled = false
             document.getElementById(arrow_label).classList.add("glyphicon", "glyphicon-arrow-right");
             document.getElementById(select_label).style.color = "black"
@@ -171,7 +168,6 @@ var Info = (function(){
         //given info array of objects and string id populate the dropdowns with the info of type id. 
         function createOptions(info, id){
             array = []
-            console.log(info)
             for(i = 0 ; i < info.length ; i++){
                 if(id == "symbol"){text = info[i].symbol}
                 if(id == "unit"){text = info[i].unit}
@@ -203,6 +199,7 @@ var Info = (function(){
             }
         }
         
+        //given a number in miroseconds return if it is a day, hour, 5 min
         function convertIntervalNumberToText(interval){
             if(interval/MICRO == 86400)
                 return "day"
@@ -212,19 +209,19 @@ var Info = (function(){
                 return "5min"
     
         }
-
+        //given a info of prices change the exchanges from null to aggregated.
         function eliminateNulls(info){
             for(i = 0 ; i < info.length ; i++){
                 if (info[i].exchange == null){
-                    info[i].exchange = "None"
+                    info[i].exchange = "Aggregated"
                 }
             }
             return info 
         }
 
 
-    return {
-        getInfo: getInfo
-    } 
-
-}());
+module.exports = {
+        getInfo: getInfo,
+        convertIntervalNumberToText : convertIntervalNumberToText,
+        eliminateNulls: eliminateNulls,
+}
