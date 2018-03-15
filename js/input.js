@@ -70,7 +70,7 @@
     }
 
     //call API and Generate the Price and Volume graphs
-    function getPriceAPI(){
+    function getPriceAPI(){       
         var reporting_period = document.getElementById ("reporting-period").value
         var start_stamp = reporting_period == "All" || reporting_period == "" ? "" : "&start=" + getTimeStamp(reporting_period)[0]
         var end_stamp = reporting_period == "All" || reporting_period == "" ? "" : "&end=" + getTimeStamp(reporting_period)[1]
@@ -96,7 +96,6 @@
                 response.json().then(function(data) {
                     High.showCharts()
                     data = processDates(data,interval_i)
-                    console.log(data)
                     data = processPrices(data,unit)
                     data = processVolume(data,unit)
                     window.apiCall = data
@@ -110,7 +109,7 @@
                 });
     }
     //Call the API and generate graph for Block data
-    function getBlockAPI(){
+    function getBlockAPI(){   
         var reporting_period = document.getElementById("block-reporting-period").value
         var start_stamp = reporting_period == "All" || reporting_period == "" ? "" : "&start=" + getTimeStamp(reporting_period)[0]
         var end_stamp = reporting_period == "All" || reporting_period == "" ? "" : "&end=" + getTimeStamp(reporting_period)[1]
@@ -139,6 +138,7 @@
                     window.apiCall = data
                     //Here you will pass data to whatever Graphing library asynchronosly
                     High.drawBlockGraph(data)
+                    High.drawScatterPlot(data)
                 });
                 }
             )
@@ -216,7 +216,6 @@
         unit = unit.slice(6,unit.length)
         //if you divide your data by the conversion and it is less than 1 (ie. Comparing DOGE to units of BTC) give me 8 decimals
         if(json.data[2][0]/conversions[unit] < 1){
-            console.log("process 8 decimal")
             json.data[2] = json.data[2].map(function(units){return round(units/conversions[unit],8)})
         }else{
             json.data[2] = json.data[2].map(function(units){return round(units/conversions[unit],2)})

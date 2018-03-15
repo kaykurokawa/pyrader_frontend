@@ -2,7 +2,6 @@
 
 //Create Highcharts for price/volume
 function drawPriceVolumeGraph(json){
-console.log(json)
 Highcharts.setOptions({global:{useUTC: false}});
 coin = json.symbol
 unit = json.unit
@@ -100,14 +99,13 @@ hchart = Highcharts.stockChart('hchart', {
  }
 //Create Highcharts for block
  function drawBlockGraph(json){
-    data = []
+    block_data = []
     for(i = 0 ; i < json.data[2].length ; i++){
-        data.push([json.data[3][i], json.data[2][i]])
+        block_data.push([json.data[3][i], json.data[2][i]])
     }
     minimum = Math.min.apply(null, json.data[2])
     coin = json.coin
-    datatype =json.datatype
-    console.log(json)
+    datatype = json.datatype
     title = json.coin + " " + json.datatype + " " + "chart"
     y_axis = json.datatype + " of " + json.coin
     from_date = new Date(json.data[3][0]).toDateString() + " " + new Date(json.data[3][0]).toLocaleTimeString('en-US')
@@ -115,6 +113,7 @@ hchart = Highcharts.stockChart('hchart', {
     current_block = json.data[2][json.data[2].length-1]
     document.getElementById("block-time-period").innerHTML =  from_date  + " to " + to_date
     document.getElementById("current-block").innerHTML = datatype + " for " + coin + " " + current_block
+    document.getElementById("current-block-label").innerHTML = "current "+ datatype + ": "
 
        // create the chart
     Highcharts.stockChart('block-hchart', {
@@ -128,7 +127,7 @@ hchart = Highcharts.stockChart('hchart', {
         
                 series: [{
                     name: y_axis,
-                    data: data,
+                    data: block_data,
                     tooltip: {
                         valueDecimals: 2
                     }
@@ -136,30 +135,64 @@ hchart = Highcharts.stockChart('hchart', {
             });
  }
 
+
+
+ function drawScatterPlot(json){
+    block_data = []
+    for(i = 0 ; i < json.data[2].length ; i++){
+        block_data.push([json.data[3][i], json.data[2][i]])
+    }
+    title = json.coin + " " + json.datatype + " " + "chart"
+    y_axis = json.datatype + " of " + json.coin
+    Highcharts.stockChart('block-hchart-scatter', {
+                rangeSelector: {
+                    selected: 2
+                },
+        
+                title: {
+                    text: title
+                },
+        
+                series: [{
+                    name: y_axis,
+                    data: block_data,
+                    lineWidth: 0,
+                    marker: {
+                        enabled: true,
+                        radius: 5
+                    },
+                    tooltip: {
+                        valueDecimals: 2
+                    },
+                    states: {
+                        hover: {
+                            lineWidthPlus: 0
+                        }
+                    }
+                }]
+            });
+ }
+
 //clear Highcharts and all the HTML associated with it
+
  function clearCharts(){
-    document.getElementById("error").innerHTML = "No data for this exchange/interval" 
+    document.getElementById("error").innerHTML = "No data for this period" 
     document.getElementById("error").className = "well"
-    document.getElementById("time").style.display = "none"
-    document.getElementById("current-price").style.display = "none"
-    document.getElementById("current-volume").style.display = "none"
+    $("#table-of-prices tr").remove(); 
     $('#hchart').highcharts().destroy();
+
  }
 
 //generate the Highcharts
  function showCharts(){
     document.getElementById("error").innerHTML = "" 
     document.getElementById("error").classList.remove("well");
-    document.getElementById("time-period").style.display = "block"
-    document.getElementById("current-price").style.display = "block"
-    document.getElementById("current-volume").style.display = "block"
  }
 
  function clearBlockCharts(){
-    document.getElementById("block-error").innerHTML = "No data for this datatype/interval" 
+    document.getElementById("block-error").innerHTML = "No data for this this period" 
     document.getElementById("block-error").className = "well"
-    document.getElementById("block-time").style.display = "none"
-    document.getElementById("current-block").style.display = "none"
+    $("#table-of-blocks tr").remove(); 
     $('#block-hchart').highcharts().destroy();
  }
 
@@ -178,5 +211,6 @@ module.exports = {
     drawBlockGraph : drawBlockGraph,
     showBlockCharts : showBlockCharts,
     clearBlockCharts : clearBlockCharts,
+    drawScatterPlot : drawScatterPlot,
   }
   

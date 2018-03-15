@@ -110,7 +110,7 @@
                                 <div id="error"></div>
                             </div>
                         </div>
-                        <table class="table">
+                        <table class="table"  id = "table-of-prices" >
                             <thead>
                                 <th>Price/Data Information</th>
                                 <th></th>
@@ -119,8 +119,6 @@
                             <tr>
                               <td>Time Period:</td>
                               <td id="time-period"></td>
-                              
-                              
                             </tr>
                             <tr>
                               <td>Current Price:</td>
@@ -193,7 +191,7 @@
                                          <label id="block-reporting-period-label">Reporting Period:</label>   
                                          <select class="form-control" id="block-reporting-period">
                                          <option></optioin>
-                                         <option>None</option>
+                                         <option>All</option>
                                          <option>Day</option>
                                          <option>Week</option>
                                          <option>Month</option>
@@ -213,7 +211,7 @@
                                 <div id="block-error"></div>
                             </div>
                         </div>
-                        <table class="table">
+                        <table class="table" id="table-of-blocks">
                                 <thead>
                                     <th>Block Information</th>
                                     <th></th>
@@ -224,15 +222,15 @@
                                   <td id="block-time-period"></td>
                                 </tr>
                                 <tr>
-                                  <td>Current Price:</td>
+                                  <td id="current-block-label">Current Block Data:</td>
                                   <td id="current-block"></td>    
                                 </tr>
                               </tbody>
-                        </table>         
-                        <h3>Highcharts</h3>
+                        </table>
                         <h3 id="block-time"></h3>             
                         <h3 id="current-block"></h3>
                         <div id="block-hchart" style="height: 400px; min-width: 310px"></div>
+                        <div id="block-hchart-scatter" style="height: 400px; min-width: 310px"></div>
                         <!-- end of block tab -->
                     </div>
                     <div id="tools" class="tab-pane fade">
@@ -262,7 +260,6 @@
         <script src="/js/highstock.js"></script>
         <script src="/js/exporting.js"></script>
         <script src="/js/drag-panes.js"></script>
-        <script src="/js/utils.js"></script>
         <script src="node_modules/systemjs/dist/system.js"></script>
         <script>
           SystemJS.import('/js/app.js');

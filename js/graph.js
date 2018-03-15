@@ -1,6 +1,5 @@
 var Graph = (function(){
 function drawPriceGraph(json){
-  console.log(json)
   symbol = json.symbol
   var unit = json.unit
   var label = symbol + " in " + unit

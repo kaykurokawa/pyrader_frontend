@@ -50,7 +50,6 @@
         submit.disabled = true
 
         symbol.onchange = function(event){
-            console.log(info_prices)
             info_prices = info_prices.filter(line => line.symbol.includes(document.getElementById("symbol").value))
             enableDropdown("unit")
             createOptions(info_prices,"unit")
@@ -65,7 +64,6 @@
         } 
 
         exchange.onchange = function(event){
-            //info.forEach(function(item){if(item.exchange == null){item.exchange = "none"}})
             info_prices = info_prices.filter(line => line.exchange.includes(document.getElementById("exchange").value))            
             enableDropdown("interval")
             createOptions(info_prices, "interval")
@@ -90,7 +88,7 @@
             exchange.options.length = 1
             disableDropdown("interval")
             interval.options.length = 1
-            submit.disabled = false;
+            submit.disabled = true;
             disableDropdown("reporting-period")
             
         }    
@@ -170,7 +168,6 @@
         //given info array of objects and string id populate the dropdowns with the info of type id. 
         function createOptions(info, id){
             array = []
-            console.log(info)
             for(i = 0 ; i < info.length ; i++){
                 if(id == "symbol"){text = info[i].symbol}
                 if(id == "unit"){text = info[i].unit}
