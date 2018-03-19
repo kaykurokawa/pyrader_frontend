@@ -1,17 +1,22 @@
 
 
 //Create Highcharts for price/volume
-function drawPriceVolumeGraph(json){
+function drawPriceHeader(coin,unit,last_price,last_volume,first_date, last_date){
+
+    from_date = new Date(first_date).toDateString() + " " + new Date(first_date).toLocaleTimeString('en-US')
+    to_date = new Date(last_date).toDateString() + " " + new Date(last_date).toLocaleTimeString('en-US')
+    document.getElementById("time-period").innerHTML =  from_date + " to " + to_date 
+    document.getElementById("current-price").innerHTML =  coin + ": " + last_price + " " + unit
+    document.getElementById("current-volume").innerHTML = coin + ": " + last_volume + " " + unit
+}
+
+function drawPriceVolumeGraph(coin,unit,x,y_prices,y_volume){
+    console.log(x)
+    console.log(y_prices)
 Highcharts.setOptions({global:{useUTC: false}});
-coin = json.symbol
-unit = json.unit
-current_price = json.data[2][json.data[2].length-1]
-current_volume = json.data[3][json.data[3].length-1]
-from_date = new Date(json.data[4][0]).toDateString() + " " + new Date(json.data[4][0]).toLocaleTimeString('en-US')
-to_date = new Date(json.data[4][json.data[4].length-1]).toDateString() + " " + new Date(json.data[4][json.data[4].length-1]).toLocaleTimeString('en-US')
+
 volume = []
 prices = []
-json.data[2].length
  // set the allowed units for data grouping
  groupingUnits = [[
      'week',                         // unit name
@@ -21,18 +26,16 @@ json.data[2].length
      [1, 2, 3, 4, 6]
  ]]
 
-for(i = 0 ; i < json.data[2].length ; i++){
-    prices.push([json.data[4][i], json.data[2][i]])
-    volume.push([json.data[4][i], json.data[3][i]])
+for(i = 0 ; i < x.length ; i++){
+    prices.push([x[i], y_prices[i]])
+    volume.push([x[i], y_volume[i]])
 }
 
-document.getElementById("time-period").innerHTML =  from_date + " to " + to_date 
-document.getElementById("current-price").innerHTML =  coin + ": " + current_price + " " + unit
-document.getElementById("current-volume").innerHTML = coin + ": " + current_volume + " " + unit
-minimum = Math.min.apply(null, json.data[2])
-title = json.symbol + " Charts"
-y_axis1 = "Price of " + json.symbol + " in " + json.unit
-y_axis2 = "Volume of " + json.symbol + " in " + json.unit
+
+minimum = Math.min.apply(null, y_prices)
+title = coin + " Charts"
+y_axis1 = "Price of " + coin + " in " + unit
+y_axis2 = "Volume of " + coin + " in " + unit
 
 // create the chart
 hchart = Highcharts.stockChart('hchart', {
@@ -97,23 +100,27 @@ hchart = Highcharts.stockChart('hchart', {
 });
 
  }
-//Create Highcharts for block
- function drawBlockGraph(json){
-    block_data = []
-    for(i = 0 ; i < json.data[2].length ; i++){
-        block_data.push([json.data[3][i], json.data[2][i]])
-    }
-    minimum = Math.min.apply(null, json.data[2])
-    coin = json.coin
-    datatype = json.datatype
-    title = json.coin + " " + json.datatype + " " + "chart"
-    y_axis = json.datatype + " of " + json.coin
-    from_date = new Date(json.data[3][0]).toDateString() + " " + new Date(json.data[3][0]).toLocaleTimeString('en-US')
-    to_date = new Date(json.data[3][json.data[3].length-1]).toDateString() + " " +  new Date(json.data[3][json.data[3].length-1]).toLocaleTimeString('en-US')
-    current_block = json.data[2][json.data[2].length-1]
+
+ function drawBlockHeader(coin,datatype,last_block,first_date, last_date){
+
+    to_date = new Date(first_date).toDateString() + " " + new Date(first_date).toLocaleTimeString('en-US')
+    from_date = new Date(last_date).toDateString() + " " +  new Date(last_date).toLocaleTimeString('en-US')
+    current_block = last_block
     document.getElementById("block-time-period").innerHTML =  from_date  + " to " + to_date
     document.getElementById("current-block").innerHTML = datatype + " for " + coin + " " + current_block
     document.getElementById("current-block-label").innerHTML = "current "+ datatype + ": "
+ }
+//Create Highcharts for block
+ function drawBlockGraph(coin,datatype,x,y){
+    block_data = []
+    for(i = 0 ; i < x.length ; i++){
+        block_data.push([x[i], y[i]])
+    }
+    minimum = Math.min.apply(null,y)
+
+    title = coin + " " + datatype + " " + "chart"
+    y_axis = datatype + " of " + coin
+
 
        // create the chart
     Highcharts.stockChart('block-hchart', {
@@ -130,44 +137,6 @@ hchart = Highcharts.stockChart('hchart', {
                     data: block_data,
                     tooltip: {
                         valueDecimals: 2
-                    }
-                }]
-            });
- }
-
-
-
- function drawScatterPlot(json){
-    block_data = []
-    for(i = 0 ; i < json.data[2].length ; i++){
-        block_data.push([json.data[3][i], json.data[2][i]])
-    }
-    title = json.coin + " " + json.datatype + " " + "chart"
-    y_axis = json.datatype + " of " + json.coin
-    Highcharts.stockChart('block-hchart-scatter', {
-                rangeSelector: {
-                    selected: 2
-                },
-        
-                title: {
-                    text: title
-                },
-        
-                series: [{
-                    name: y_axis,
-                    data: block_data,
-                    lineWidth: 0,
-                    marker: {
-                        enabled: true,
-                        radius: 5
-                    },
-                    tooltip: {
-                        valueDecimals: 2
-                    },
-                    states: {
-                        hover: {
-                            lineWidthPlus: 0
-                        }
                     }
                 }]
             });
@@ -200,8 +169,6 @@ hchart = Highcharts.stockChart('hchart', {
  function showBlockCharts(){
     document.getElementById("block-error").innerHTML = "" 
     document.getElementById("block-error").classList.remove("well");
-    document.getElementById("block-time").style.display = "block"
-    document.getElementById("current-block").style.display = "block"
  }
 
 module.exports = {
@@ -211,6 +178,7 @@ module.exports = {
     drawBlockGraph : drawBlockGraph,
     showBlockCharts : showBlockCharts,
     clearBlockCharts : clearBlockCharts,
-    drawScatterPlot : drawScatterPlot,
+    drawPriceHeader: drawPriceHeader,
+    drawBlockHeader: drawBlockHeader,
   }
   

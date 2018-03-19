@@ -1,13 +1,7 @@
-    var MICRO = Math.pow(10,6)
-    var MILLI = Math.pow(10,3)
-    var HUNDREDMIL = Math.pow(10,8)
-    var TENTHOUSAND = Math.pow(10,4)
-    var conversions = {"USD": HUNDREDMIL, "BTC" : HUNDREDMIL, "DOGE" : HUNDREDMIL, 
-    "LTC" : HUNDREDMIL, "ETH" : HUNDREDMIL, "EUR" : HUNDREDMIL, "SGD" : HUNDREDMIL, "KRW" : TENTHOUSAND}
-
+const constants = require('./constants.js')
         //Call Info API and pass information to dropdowns 
         function getInfo(){
-            url= 'http://api.blkdat.com/info?'
+            url= 'http://159.65.167.149:8888/info'
              fetch(url)
              .then(
              function(response) {
@@ -17,6 +11,7 @@
                      return;
                      }
                      response.json().then(function(data) {
+                         console.log(data)
                          processInfo(data)
                          processBlockInfo(data)
                      });
@@ -37,17 +32,15 @@
         var symbol = document.getElementById("symbol")
         var unit = document.getElementById("unit")
         var exchange = document.getElementById("exchange")
-        var reporting_period = document.getElementById("reporting-period")
         var interval = document.getElementById("interval")
         var submit = document.getElementById("submit")
         var reset = document.getElementById("reset") 
         enableDropdown("symbol")
         disableDropdown("unit")
         disableDropdown("exchange")
-        disableDropdown("reporting-period")
         disableDropdown("interval")
         createOptions(info_prices,"symbol")
-        submit.disabled = true
+        disableButton("submit")
 
         symbol.onchange = function(event){
             info_prices = info_prices.filter(line => line.symbol.includes(document.getElementById("symbol").value))
@@ -71,8 +64,7 @@
         }
         
         interval.onchange  = function(event){
-            enableDropdown("reporting-period")
-            submit.disabled = false
+            enableButton("submit")
             disableDropdown("interval")
             info_prices = json.price
         }     
@@ -88,8 +80,7 @@
             exchange.options.length = 1
             disableDropdown("interval")
             interval.options.length = 1
-            submit.disabled = true;
-            disableDropdown("reporting-period")
+            disableButton("submit")
             
         }    
     }
@@ -101,7 +92,6 @@
             var m = json.block.length
             var block_symbol = document.getElementById("block-symbol")
             var block_datatype = document.getElementById("block-datatype")
-            var block_reporting_period = document.getElementById("block-reporting-period")
             var block_interval = document.getElementById("block-interval")
             var block_submit = document.getElementById("block-submit")
             var block_reset = document.getElementById("block-reset") 
@@ -109,7 +99,6 @@
             enableDropdown("block-symbol")
             disableDropdown("block-datatype")
             disableDropdown("block-interval")
-            disableDropdown("block-reporting-period")
             createBlockOptions(blocks,"block-symbol")
             block_submit.disabled = true
 
@@ -128,7 +117,6 @@
             }
 
             block_interval.onchange  = function(event){
-                enableDropdown("block-reporting-period")
                 block_submit.disabled = false
                 disableDropdown("block-interval")
                 blocks = json.block
@@ -143,7 +131,6 @@
                 block_datatype.options.length = 1
                 disableDropdown("block-interval")
                 block_interval.options.length = 1
-                disableDropdown("block-reporting-period")
                 block_submit.disabled = true
             }      
             
@@ -165,6 +152,20 @@
             document.getElementById(select_label).style.color = "black"
         }
 
+        function enableButton(select){
+            arrow_label = select + "-arrow"
+            document.getElementById(select).disabled = false
+            document.getElementById(arrow_label).classList.add("glyphicon", "glyphicon-arrow-right");
+        }
+
+        function disableButton(select){
+            arrow_label = select + "-arrow"
+            document.getElementById(arrow_label).classList.remove("glyphicon", "glyphicon-arrow-right");
+            document.getElementById(select).disabled = true
+        }
+
+
+
         //given info array of objects and string id populate the dropdowns with the info of type id. 
         function createOptions(info, id){
             array = []
@@ -180,6 +181,12 @@
                     var select = document.getElementById(id);
                     select.appendChild(option); 
                 }
+            } 
+            if(id == "interval"){
+                option = document.createElement("option")
+                option.text = "None"
+                var select = document.getElementById(id);
+                select.appendChild(option); 
             }
         }
 
@@ -197,15 +204,21 @@
                     select.appendChild(option); 
                 }
             }
+            if(id == "block-interval"){
+                option = document.createElement("option")
+                option.text = "None"
+                var select = document.getElementById(id);
+                select.appendChild(option); 
+            }
         }
         
         //given a number in miroseconds return if it is a day, hour, 5 min
         function convertIntervalNumberToText(interval){
-            if(interval/MICRO == 86400)
+            if(interval/constants.MICRO == 86400)
                 return "day"
-            if(interval/MICRO == 3600)
+            if(interval/constants.MICRO == 3600)
                 return "hour"
-            if(interval/MICRO == 300)
+            if(interval/constants.MICRO == 300)
                 return "5min"
     
         }

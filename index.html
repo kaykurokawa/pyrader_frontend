@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Bitcoin Trader</title>
+        <title>Pyrader</title>
         <link rel="stylesheet" href="/css/project.css">
         <link rel="stylesheet" href="/css/highcharts.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -11,7 +11,7 @@
     </head>
     <body>
         <div class="container">
-            <h1>PyRadar API</h1>
+            <h1>Pyrader API</h1>
             <ul class="nav nav-tabs text-left" role="tablist">
                     <li><a href="#price" role="tab" data-toggle="tab" id="price-tab"> <span class="glyphicon glyphicon-stats text-gray"></span> Prices</a></li>
                     <li><a href="#block" role="tab" data-toggle="tab" id="block-tab"><span class="glyphicon glyphicon-transfer text-gray"></span> Block</a></li>
@@ -78,31 +78,22 @@
                                                 </div>
                                                 </div>
                                             </div>
-                        </div>
+                             </div>
                              <div class="row">
                                 <div>&nbsp</div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-4">
                                         <div class="row">
                                         <div class="col-sm-2 text-center" id="arrow5">
-                                            <span id="reporting-period-arrow"></span>
+                                            <span id="submit-arrow"></span>
                                         </div>
-                                    <div class="col-sm-10">     
-                                    <label id="reporting-period-label">Reporting Period:</label>   
-                                    <select class="form-control" id="reporting-period">
-                                        <option></optioin>
-                                        <option>All</option>
-                                        <option>Day</option>
-                                        <option>Week</option>
-                                        <option>Month</option>
-                                    </select>
+                                    <div class="col-sm-10">
+                                        <div>    
+                                            <button type="button" class="btn btn-primary floated" id="submit">Submit</button>
+                                            <button type="button" class="btn btn-success floated" id="reset">Reset</button>
+                                        </div>     
                                     </div>
                                 </div>
                             </div>
-                                <div>    
-                                    <div>&nbsp</div>
-                                        <button type="button" class="btn btn-primary floated" id="submit">Submit</button>
-                                        <button type="button" class="btn btn-success floated" id="reset">Reset</button>
-                                </div>
                             </div>      
                         <div>&nbsp</div>
                         <div class = "row">
@@ -182,29 +173,20 @@
                         </div>
                         <div class="row">
                                 <div>&nbsp</div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-4">
                                     <div class="row">
                                         <div class="col-sm-2 text-center" id="arrow5">
-                                            <span id="block-reporting-period-arrow"></span>
+                                            <span id="block-submit-arrow"></span>
                                         </div>
-                                         <div class="col-sm-10">     
-                                         <label id="block-reporting-period-label">Reporting Period:</label>   
-                                         <select class="form-control" id="block-reporting-period">
-                                         <option></optioin>
-                                         <option>All</option>
-                                         <option>Day</option>
-                                         <option>Week</option>
-                                         <option>Month</option>
-                                         </select>
+                                         <div class="col-sm-10">
+                                            <div>    
+                                                <button type="button" class="btn btn-primary floated" id="block-submit">Submit</button>
+                                                <button type="button" class="btn btn-success floated" id="block-reset">Reset</button>
+                                            </div>     
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div>    
-                                <div>&nbsp</div>
-                                <button type="button" class="btn btn-primary floated" id="block-submit">Submit</button>
-                                <button type="button" class="btn btn-success floated" id="block-reset">Reset</button>
-                            </div>
-                        </div>  
+                            </div>  
                         <div>&nbsp</div>
                         <div class = "row">
                             <div class ="col-sm-8">     
