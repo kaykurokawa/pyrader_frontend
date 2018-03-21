@@ -18,7 +18,6 @@
   },
   "homepage": "https://github.com/kaykurokawa/pyrader_frontend#readme",
   "dependencies": {
-    "node-fetch": "^2.1.1",
     "systemjs": "^0.21.0"
   },
   "devDependencies": {
