@@ -1,97 +1,63 @@
     const High = require('./hgraph.js')
-    const Scatter = require('./scatter.js')
     const constants = require('./constants.js')
 
-
-    //Call draw the initial conditon of the graph
-    function getInitialData(){
-        parameter = 'http://159.65.167.149:8888/price?symbol=LTC&interval=5min'
-        var unit = '&unit=' + "USD"
-        var interval = '&interval=' + "5min"
-        fetch(parameter)
-        .then(
-        function(response) {
-            if (response.status !== 200) {
-                console.log('Looks like there was a problem. Status Code: ' + response.status);
-                return;
-                }
-                response.json().then(function(data) {
-                    High.showCharts()
-                    var interval_i = data.interval/1000 
-                    var x = processDates(data,interval_i)
-                    var y_prices = processPrices(data,unit)
-                    var y_volume = processVolume(data,unit)
-                    var coin_data = data.symbol
-                    var unit_data = data.unit
-                    var last_price = y_prices[y_prices.length-1]
-                    var last_volume = y_volume[y_volume.length-1]
-                    var first_date = x[0]
-                    var last_date = x[x.length-1]
-                    window.apiCall = data
-                    //Here you will pass data to whatever Graphing library asynchronosly
-                    High.drawPriceHeader(coin_data,unit_data,last_price,last_volume,first_date, last_date)
-                    High.drawPriceVolumeGraph(coin_data,unit_data,x,y_prices,y_volume)
-                });
-                }
-            )
-                .catch(function(err) {
-                    console.log('Fetch Error :-S', err);   
-                });
-    }
-    //Call draw the initial conditon of the block graph
-    function getInitialBlock(){
-
-        var interval = '&interval=' + "hour"
-        var interval_i = convertIntervalToNumber(interval)
-        var parameter = 'http://159.65.167.149:8888/block?coin=LTC&datatype=difficulty&interval=hour' 
-        window.parameter = parameter
-
-        fetch(parameter)
-        .then(
-        function(response) {
-            if (response.status !== 200) {
-                console.log('Looks like there was a problem. Status Code: ' + response.status);
-                High.clearBlockCharts()
-                return;
-                }
-                response.json().then(function(data) {
-                    console.log(data)
-                    High.showCharts()
-                    High.showBlockCharts()
-                    var interval_i = data.interval/1000 
-                    var x = processDates(data,interval_i)
-                    var y = processData(data)
-                    var coin_data = data.symbol
-                    var datatype_data = data.datatype
-                    var first_date = x[0]
-                    var last_date = x[x.length-1]
-                    var last_datatype = data.y[y.length-1]
-                    window.apiCall = data
-                    //Here you will pass data to whatever Graphing library asynchronosly
-                    High.drawBlockGraph(coin_data,datatype_data,x,y)
-                    High.drawBlockHeader(coin_data,datatype_data,last_datatype,first_date, last_date)
-                });
-                }
-            )
-                .catch(function(err) {
-                    console.log('Fetch Error :-S', err);   
-                });
-    }
-
-    //call API and Generate the Price and Volume graphs
-    function getPriceAPI(){       
+    function readPricesValues(){
+        var exchange = document.getElementById("exchange").value
+        exchange = exchange == "Aggregated" ? "" :  exchange
+        var symbol = document.getElementById("symbol").value
+        var unit = document.getElementById("unit").value
+        var interval = document.getElementById("interval").value 
         //var reporting_period = document.getElementById ("reporting-period").value
         //var start_stamp = reporting_period == "All" || reporting_period == "" ? "" : "&start=" + getTimeStamp(reporting_period)[0]
         //var end_stamp = reporting_period == "All" || reporting_period == "" ? "" : "&end=" + getTimeStamp(reporting_period)[1]
-        var exchange = document.getElementById("exchange").value
-            exchange = exchange == "Aggregated" ? "" : '&exchange=' + exchange
-        var symbol = 'symbol=' + document.getElementById("symbol").value
-        var unit = '&unit=' + document.getElementById("unit").value
-        var interval = document.getElementById("interval").value 
-        var interval = interval == "None" ? "" : '&interval=' + interval
-        var parameter = 'http://159.65.167.149:8888/price?' +  symbol + exchange + unit + interval     
+        var parameter = 'http://159.65.167.149:8888/price?' +  'symbol=' + symbol + (exchange == "Aggregated" ? "" : "&exchange=" + exchange ) + '&unit=' + unit + (interval == "None" ? "" : '&interval=' + interval )     
         window.parameter = parameter
         validateParamtersConsole(parameter)
+        return [parameter, exchange, symbol, unit, interval]
+    }
+
+    function readBlockValues(){
+        var symbol =  document.getElementById("block-symbol").value
+        var datatype = document.getElementById("block-datatype").value
+        var interval = document.getElementById("block-interval").value 
+        var parameter = 'http://159.65.167.149:8888/block?' + 'coin=' + symbol 
+        +  '&datatype=' + datatype + (interval == "None" ? "" : '&interval=' + interval ) 
+          //var reporting_period = document.getElementById("block-reporting-period").value
+        //var start_stamp = reporting_period == "All" || reporting_period == "" ? "" : "&start=" + getTimeStamp(reporting_period)[0]
+        //var end_stamp = reporting_period == "All" || reporting_period == "" ? "" : "&end=" + getTimeStamp(reporting_period)[1]
+        window.parameter = parameter
+        validateParamtersConsole(parameter)
+        return [parameter,symbol, datatype, interval]
+    }
+
+    function initialPriceParameter(){
+        var parameter = 'http://159.65.167.149:8888/price?symbol=LTC&interval=5min'
+        var exhcange = "Aggregated" 
+        var symbol = "LTC" 
+        var unit = "USD"
+        var interval = "5min"
+
+        return [parameter,exchange,symbol,unit,interval]
+    }
+
+    function initialBlockParameter(){
+        var interval = '&interval=' + "hour"
+        var parameter = 'http://159.65.167.149:8888/block?coin=LTC&datatype=difficulty&interval=hour'
+        var symbol = "LTC"
+        var datatype = "difficulty"
+        var interval = "hour"
+
+        return [parameter,symbol, datatype, interval]
+    }
+
+    //call API and Generate the Price and Volume graphs
+    function getPriceAPI(arr){ 
+        console.log(arr)
+        parameter = arr[0]
+        exchange = arr[1]
+        symbol = arr[2]
+        unit = arr[3]
+        interval = arr[4]
 
         fetch(parameter)
         .then(
@@ -99,7 +65,7 @@
             if (response.status !== 200) {
                 console.log('Looks like there was a problem. Status Code: ' + response.status);
                 High.clearCharts()
-                return;
+                return false;
                 }
                 response.json().then(function(data) {
                     High.showCharts()
@@ -114,29 +80,24 @@
                     var last_volume = y_volume[y_volume.length-1]
                     var first_date = x[0]
                     var last_date = x[x.length-1]
-                    //Here you will pass data to whatever Graphing library asynchronosly
-                    High.drawPriceHeader(coin_data,unit_data,last_price,last_volume,first_date, last_date)
-                    High.drawPriceVolumeGraph(coin_data,unit_data,x,y_prices,y_volume)
+                     //Here you will pass data to whatever Graphing library asynchronosly
+                        High.drawPriceHeader(coin_data,unit_data,last_price,last_volume,first_date, last_date)
+                        High.drawPriceVolumeGraph(coin_data,unit_data,x,y_prices,y_volume)
+                        return true
                 });
                 }
             )
                 .catch(function(err) {
-                    console.log('Fetch Error :-S', err);   
+                    console.log('Fetch Error :-S', err);
+                    return false   
                 });
     }
     //Call the API and generate graph for Block data
-    function getBlockAPI(){   
-        //var reporting_period = document.getElementById("block-reporting-period").value
-        //var start_stamp = reporting_period == "All" || reporting_period == "" ? "" : "&start=" + getTimeStamp(reporting_period)[0]
-        //var end_stamp = reporting_period == "All" || reporting_period == "" ? "" : "&end=" + getTimeStamp(reporting_period)[1]
-        var symbol = 'coin=' + document.getElementById("block-symbol").value
-        var datatype = '&datatype=' + document.getElementById("block-datatype").value
-        var interval = document.getElementById("block-interval").value 
-        var interval = interval == "None" ? "" : '&interval=' + interval
-        var parameter = 'http://159.65.167.149:8888/block?' + symbol 
-        +  datatype + interval 
-        window.parameter = parameter
-        validateParamtersConsole(parameter)
+    function getBlockAPI(arr){ 
+        parameter = arr[0]
+        symbol = arr[1]
+        datatype = arr[2]
+        interval = arr[3]  
 
         fetch(parameter)
         .then(
@@ -154,15 +115,20 @@
                     var x = processDates(data,interval_i)
                     var y = processData(data)
                     window.apiCall = data
-                    var coin_data = data.symbol
+                    var coin_data = data.coin
                     var datatype_data = data.datatype
                     var first_date = x[0]
                     var last_date = x[x.length-1]
                     var last_datatype = data.y[y.length-1]
+                    var plottype = data.plottype
                     //Here you will pass data to whatever Graphing library asynchronosly
+                    if(plottype == "scatter"){
+                        High.drawScatterPlot(coin_data,datatype_data,x,y)
+                        High.drawBlockHeader(coin_data,datatype_data,last_datatype,first_date, last_date)
+                    }else{
                     High.drawBlockGraph(coin_data,datatype_data,x,y)
                     High.drawBlockHeader(coin_data,datatype_data,last_datatype,first_date, last_date)
-                    //Scatter.drawScatterPlot(data)
+                    }
                 });
                 }
             )
@@ -201,8 +167,8 @@
 
     //given the interval in string format, return the milliseconds in integer in order to be converted into dates. 
     function convertIntervalToNumber(interval){
-        interval_numbers = {"&interval=5min" : 300 * constants.MILLI, 
-            "&interval=hour" : 3600 * constants.MILLI, "&interval=day" : 86400 * constants.MILLI }
+        interval_numbers = {"5min" : 300 * constants.MILLI, 
+            "hour" : 3600 * constants.MILLI, "day" : 86400 * constants.MILLI }
         interval_i = interval_numbers[interval]
         return interval_i
     }
@@ -224,7 +190,6 @@
 
     //given a json with prices, and units in string, eliminate zeros, convert the prices to those units and return an array of prices
     function processPrices(json,unit){
-        console.log(json)
         for(i = 0 ; i < json.y.length ; i++){
             if(json.y[i] == 0){
                 json.y[i] = json.y[i-1]
@@ -236,7 +201,6 @@
                 continue
             }
         }
-        unit = unit.slice(6,unit.length)
         pricesArray = []
         //if you divide your data by the conversion and it is less than 1 (ie. Comparing DOGE to units of BTC) give me 8 decimals
         if(json.y[0]/constants.conversions[unit] < 1){
@@ -264,7 +228,7 @@
                 continue
             }
         }
-            unit = unit.slice(6,unit.length)
+        
              json.w = json.w.map(function(vol){return round(vol/constants.conversions[unit],2)})
             return json.w
         }
@@ -315,15 +279,13 @@
     module.exports = {
         getPriceAPI: getPriceAPI,
         getBlockAPI: getBlockAPI,
-        getData: getData,
-        getParameter: getParameter,
-        getInitialData: getInitialData,
-        getInitialBlock: getInitialBlock,
-        getTimeStamp: getTimeStamp,
-        processDates: processDates,
-        convertIntervalToNumber: convertIntervalToNumber,
-        round: round,
-        processPrices: processPrices,
-        processVolume: processVolume,
-        processData: processData,
+        readPricesValues : readPricesValues,
+        readBlockValues : readBlockValues,
+        initialPriceParameter : initialPriceParameter,
+        initialBlockParameter : initialBlockParameter,
+        round : round,
+        processDates : processDates,
+        processPrices : processPrices,
+        processVolume : processVolume,
+        processData : processData,
     }

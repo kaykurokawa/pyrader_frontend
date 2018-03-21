@@ -1,24 +1,71 @@
+var chai = require('chai');
 var assert = require('chai').assert;
 var expect = require('chai').expect;
 var Info = require('../js/info')
 var Input = require('../js/input')
-var mock_info = require('./mock_info.js')
 var mock_input = require('./mock_input.js')
+var constants = require('../js/constants')
+var chaiHttp = require('chai-http');
+chai.use(chaiHttp);
 
-var MICRO = Math.pow(10,6)
-var MILLI = Math.pow(10,3)
-var HUNDREDMIL = Math.pow(10,8)
-var TENTHOUSAND = Math.pow(10,4)
-var conversions = {"USD": HUNDREDMIL, "BTC" : HUNDREDMIL, "DOGE" : HUNDREDMIL, 
-"LTC" : HUNDREDMIL, "ETH" : HUNDREDMIL, "EUR" : HUNDREDMIL, "SGD" : HUNDREDMIL, "KRW" : TENTHOUSAND}
+describe('fetchAPI', function() {
+  describe('test various API calls on the Info', function() {
+    it('gives you the info', function() {
+      chai.request('http://159.65.167.149:8888')
+      .get('/info')
+      .end(function(err, res){
+        if (err) done(err);
+       expect(res.body).to.have.property("y")
+       expect(res.body).to.have.property("w")
+       expect(res.body).to.have.property("x1")
+       expect(res.body).to.have.property("x2")
+       expect(res.body).to.have.property("interval")
+       expect(res.body).to.have.property("symbol")   
+        done();
+      });
+    });
+  });
+  describe('test out the  ?price', function() {
+    it('should get the API for prices', function(done) {
+      chai.request('http://159.65.167.149:8888')
+        .get('/price?symbol=LTC&interval=5min')
+        .end(function(err, res){
+          if (err) done(err);
+         expect(res.body).to.have.property("y")
+         expect(res.body).to.have.property("w")
+         expect(res.body).to.have.property("x1")
+         expect(res.body).to.have.property("x2")
+         expect(res.body).to.have.property("interval")
+         expect(res.body).to.have.property("symbol")   
+          done();
+        });
+    });  
+    it('you can pass in timestamps', function() {
+    
+    });
+  });
+  describe('test out the ?block', function() {
+    it('gives you successfull call', function() {
+      chai.request('http://159.65.167.149:8888')
+      .get('/block?coin=LTC&datatype=difficulty&interval=hour')
+      .end(function(err, res){
+        if (err) done(err);
+       expect(res.body).to.have.property("y")
+       expect(res.body).to.have.property("x1")
+       expect(res.body).to.have.property("x2")
+       expect(res.body).to.have.property("interval")
+       expect(res.body).to.have.property("coin")   
+        done();
+      });
+    });
+    it('you can pass in time stamps', function() {
+    
+    });
+  });
+});
 
-//getTimeStamp
-//processDates*
-//convertIntervalToNumber
-//round*
-//processPrices*
-//processVolume*
-//procesSData*
+
+
 
 describe('Info', function() {
   describe('given a time in microseconds return what the time interval is', function() {
@@ -38,9 +85,7 @@ describe('Info', function() {
   });
   describe('given an info API call, change and nulls to "Aggregated" for exchange', function() {
     it('test eliminate nulls into aggregated', function() {
-      mock = mock_info.getMockInfo().price
-        assert.deepEqual(Info.eliminateNulls(mock), mock_info.getMockInfoResult())
-
+        assert.deepEqual(Info.eliminateNulls([{exchange : null}]),[{exchange : "Aggregated"}]  )
     });
   });
 });
@@ -59,37 +104,38 @@ describe('Input', function() {
     });
   });
   describe('processDates', function() {
-    it('given json, output the date in milliseconds', function() {
-      assert.deepEqual(Input.processDates(mock_input.getMockInput(),3600 * MILLI).data[4], mock_input.getMockDateResults().data[4]);  
+    it('given json, make sure the return has adequete length', function() {
+      assert.equal(Input.processDates(mock_input.getMockInput(),3600 * constants.MILLI).length, mock_input.getMockInput().y.length);  
+    });
+    it('given json, make sure the return is in milliseconds', function() {
+      assert.equal(Input.processDates(mock_input.getMockInput(),3600 * constants.MILLI)[0], mock_input.getMockInput().x1/1000);  
     });
   });
   describe('processPrices', function() {
     it('given json, convert prices and change the prices such that there are no zeros, ', function() {
-      assert.deepEqual(Input.processPrices(mock_input.getMockInput(), "&unit=USD").data[2], mock_input.getMockPriceResults().data[2]);  
+      expect(Input.processPrices({"y": [1882750.375, 0,0,0, 1910363.75]}, "USD")).to.not.include(0);  
     });
-  });
-
-  describe('processPrices', function() {
-    it('given json, if the prices are small then it should return 8 decimal places, ', function() {
-      assert.deepEqual(Input.processPrices(mock_input.getMockInput1(),"&unit=BTC").data[2], mock_input.getMockPriceResults1().data[2]);  
+    it('given json, if the prices are small (LTC to BTC) then it should return greater than 6 decimal places, ', function() {
+      assert.isAbove(Input.processPrices(mock_input.getMockInput1(),"BTC")[0].toString().split(".")[1].length, 6);
+      assert.isAbove(Input.processPrices(mock_input.getMockInput(),"USD")[0].toString().split(".")[1].length, 1);
+    });
+    it('given json, if the prices in USD return at least 1 decimal places, ', function() {
+      assert.isAbove(Input.processPrices(mock_input.getMockInput(),"USD")[0].toString().split(".")[1].length, 1);
     });
   });
 
   describe('processVolume', function() {
     it('given json, convert Volumes and change the prices such that there are no zeros ', function() {
-      assert.deepEqual(Input.processVolume(mock_input.getMockInput(),"&unit=USD").data[3], mock_input.getMockVolumeResults().data[3]);  
+      expect(Input.processVolume({"w": [2243243278336.0, 0.0, 424294744064.0, 0.0]}, "USD")).to.not.include(0); 
+    });
+    it('given json, convert Volumes and the decmial must be at least 1 ', function() {
+      assert.isAbove(Input.processPrices(mock_input.getMockInput(),"USD")[0].toString().split(".")[1].length, 1);
     });
   });
 
-  describe('processVolume', function() {
-    it('given json, convert Volumes if the units were BTC ', function() {
-      assert.deepEqual(Input.processVolume(mock_input.getMockInput1(),"&unit=BTC").data[3], mock_input.getMockVolumeResults1().data[3]);  
-    });
-  })
-
   describe('processData', function() {
     it('given json, make sure the block data has no zeros', function() {
-      expect(Input.processData(mock_input.getMockInput2()).data[2]).to.not.include(0 || null || NaN)
+      expect(Input.processData({"y":[100000000,0.0,0.0,null,NaN]})).to.not.include(0 || null || NaN)
     });
   })
 

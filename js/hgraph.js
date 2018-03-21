@@ -142,6 +142,36 @@ hchart = Highcharts.stockChart('hchart', {
             });
  }
 
+ function drawScatterPlot(coin_data,datatype_data,x,y){
+    block_data = []
+    for(i = 0 ; i < json.x.length ; i++){
+        block_data.push([x[i], y[i]])
+    }
+    title = coin_data + " " + datatype + " " + "chart"
+    y_axis = datatype + " of " + coin_data
+    Highcharts.stockChart('block-hchart', {
+                rangeSelector: {
+                    selected: 2
+                },
+        
+                title: {
+                    text: title
+                },
+                series: [{
+                    type: 'scatter',
+                    name: y_axis,
+                    data: block_data,
+                    marker: {
+                        enabled: true,
+                        radius: 5
+                    },
+                    tooltip: {
+                        valueDecimals: 2
+                    },
+                }]
+            });
+ }
+
 //clear Highcharts and all the HTML associated with it
 
  function clearCharts(){
@@ -180,5 +210,6 @@ module.exports = {
     clearBlockCharts : clearBlockCharts,
     drawPriceHeader: drawPriceHeader,
     drawBlockHeader: drawBlockHeader,
+    drawScatterPlot : drawScatterPlot,
   }
   
