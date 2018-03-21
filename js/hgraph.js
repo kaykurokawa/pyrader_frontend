@@ -191,7 +191,22 @@ hchart = Highcharts.stockChart('hchart', {
  function clearBlockCharts(){
     document.getElementById("block-error").innerHTML = "No data for this this period" 
     document.getElementById("block-error").className = "well"
-    $("#table-of-blocks tr").remove(); 
+    $("#table-of-blocks td").remove(); 
+    var row1 = document.getElementById("block-row1")
+    var row2 = document.getElementById("block-row2")
+    td1 = document.createElement("td")
+    td1.text = "Time Period:"
+    td2 = document.createElement("td")
+    td2.id = "block-time-period"
+    td3 = document.createElement("td")
+    td3.id = "current-block-label"
+    td3.text = "Current Block Data:"
+    td4 =  document.createElement("td")
+    td4.id = "current-block"
+    row1.appendChild(td1)
+    row1.appendChild(td2)
+    row2.appendChild(td3)
+    row2.appendChild(td4)
     $('#block-hchart').highcharts().destroy();
  }
 
