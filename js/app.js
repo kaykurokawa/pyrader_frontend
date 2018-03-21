@@ -3,16 +3,16 @@ var Input = require('/js/input.js')
 
 $(document).ready(function () {
     Info.getInfo()
-    Input.getInitialData()
+    Input.getPriceAPI(Input.initialPriceParameter())
     document.getElementById("submit").onclick = function(event){
         event.preventDefault();
-        Input.getPriceAPI()
+        Input.getPriceAPI(Input.readPricesValues())
     }
     document.getElementById("block-tab").onclick = function(event){
-        Input.getInitialBlock()
+        Input.getBlockAPI(Input.initialBlockParameter())
         document.getElementById("block-submit").onclick = function(event){
             event.preventDefault();
-            Input.getBlockAPI()
+            Input.getBlockAPI(Input.readBlockValues())
         }
     }
   });
