@@ -6,19 +6,11 @@
     function readPricesValues(){
         view.MODEL.type = "price"
         var exchange = document.getElementById("exchange").value
-        exchange = exchange == "Aggregated" ? "" :  exchange
-        view.MODEL.exchange = exchange
-        var symbol = document.getElementById("symbol").value
-        view.MODEL.symbol = symbol
-        var unit = document.getElementById("unit").value
-        view.MODEL.unit = unit
-        var interval = document.getElementById("interval").value
-        view.MODEL.interval = interval 
-        console.log(view.MODEL)
-        //var reporting_period = document.getElementById ("reporting-period").value
-        //var start_stamp = reporting_period == "All" || reporting_period == "" ? "" : "&start=" + getTimeStamp(reporting_period)[0]
-        //var end_stamp = reporting_period == "All" || reporting_period == "" ? "" : "&end=" + getTimeStamp(reporting_period)[1]
-        var parameter = 'http://159.65.167.149:8888/price?' +  'symbol=' + symbol + (exchange == "Aggregated" ? "" : "&exchange=" + exchange ) + '&unit=' + unit + (interval == "None" ? "" : '&interval=' + interval )     
+        exchange = view.MODEL.exchange = (exchange == "Aggregated" ? "" : exchange )
+        var symbol = view.MODEL.symbol = document.getElementById("symbol").value
+        var unit = view.MODEL.unit  = document.getElementById("unit").value
+        var interval = view.MODEL.interval = document.getElementById("interval").value
+        var parameter = 'http://159.65.167.149:8888/price?' +  'symbol=' + symbol + '&exchange=' + exchange + '&unit=' + unit + (interval == "None" ? "" : '&interval=' + interval )     
         window.parameter = parameter
         url.changeURL()
         validateParamtersConsole(parameter)
@@ -26,15 +18,14 @@
     }
 
     function readBlockValues(){
-        var symbol =  document.getElementById("block-symbol").value
-        var datatype = document.getElementById("block-datatype").value
-        var interval = document.getElementById("block-interval").value 
+        view.MODEL.type = "block"
+        var symbol = view.MODEL.symbol =  document.getElementById("block-symbol").value
+        var datatype = view.MODEL.datatype = document.getElementById("block-datatype").value
+        var interval = view.MODEL.interval = document.getElementById("block-interval").value 
         var parameter = 'http://159.65.167.149:8888/block?' + 'coin=' + symbol 
         +  '&datatype=' + datatype + (interval == "None" ? "" : '&interval=' + interval ) 
-          //var reporting_period = document.getElementById("block-reporting-period").value
-        //var start_stamp = reporting_period == "All" || reporting_period == "" ? "" : "&start=" + getTimeStamp(reporting_period)[0]
-        //var end_stamp = reporting_period == "All" || reporting_period == "" ? "" : "&end=" + getTimeStamp(reporting_period)[1]
         window.parameter = parameter
+        url.changeURL()
         validateParamtersConsole(parameter)
         return [parameter,symbol, datatype, interval]
     }
@@ -67,23 +58,29 @@
             var interval = "5min"
 
         }
-
+        validateParamtersConsole(parameter)
         return [parameter,exchange,symbol,unit,interval]
     }
 
-    function initialBlockParameter(){
-        var interval = '&interval=' + "hour"
-        var parameter = 'http://159.65.167.149:8888/block?coin=LTC&datatype=difficulty&interval=hour'
-        var symbol = "LTC"
-        var datatype = "difficulty"
-        var interval = "hour"
-
+    function initialBlockParameter(url){
+        if(getParameterByName("block",url) != null){
+            view.MODEL.symbol = symbol = getParameterByName("symbol",url)
+            view.MODEL.interval = interval =  getParameterByName("interval",url)
+            view.MODEL.datatype = datatype =  getParameterByName("datatype",url) 
+            parameter = "http://159.65.167.149:8888/block?" + "coin=" + view.MODEL.symbol + "&interval=" + view.MODEL.interval + "&datatype=" + view.MODEL.datatype 
+        }else{
+            var interval = '&interval=' + "hour"
+            var parameter = 'http://159.65.167.149:8888/block?coin=LTC&datatype=difficulty&interval=hour'
+            var symbol = "LTC"
+            var datatype = "difficulty"
+            var interval = "hour"    
+        }
+        validateParamtersConsole(parameter)
         return [parameter,symbol, datatype, interval]
     }
 
     //call API and Generate the Price and Volume graphs
     function getPriceAPI(arr){ 
-        console.log(arr)
         parameter = arr[0]
         exchange = arr[1]
         symbol = arr[2]

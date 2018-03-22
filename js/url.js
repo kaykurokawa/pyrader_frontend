@@ -2,14 +2,28 @@ const view = require('./urlModel.js')
 const parse = require('/node_modules/url-parse/dist/url-parse.js');
 
 
-function createUrl(model){
+function createPriceUrl(model){
     url = ""
-    url += "/?" + model.type + "&symbol=" + model.symbol + "&unit=" + model.unit + "&exchange=" + model.exchange + "&interval=" + model.interval
+    if(model.type == "price"){
+        url += "/?" + model.type + "&symbol=" + model.symbol + "&unit=" + model.unit + "&exchange=" + model.exchange + "&interval=" + model.interval
+    }else{
+        url += "/?" + model.type + "&symbol=" + model.symbol + "&datatype=" + model.datatype +  "&interval=" + model.interval
+    }
     return url
 }
 
+function isBlockUrl(){
+if(window.location.href.includes("?block"))
+{
+  return true  
+}else{
+    return false
+}
+
+}
+
 function changeURL(){
-    var url = createUrl(view.MODEL)
+    var url = createPriceUrl(view.MODEL)  
     history.pushState(null,"",url)
 }
 
@@ -19,4 +33,5 @@ function  getURL(){
 }
 
 module.exports = {changeURL : changeURL,
-                getURL : getURL,}
+                getURL : getURL,
+                isBlockUrl : isBlockUrl,}
