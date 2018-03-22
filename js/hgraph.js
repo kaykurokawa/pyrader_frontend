@@ -11,8 +11,6 @@ function drawPriceHeader(coin,unit,last_price,last_volume,first_date, last_date)
 }
 
 function drawPriceVolumeGraph(coin,unit,x,y_prices,y_volume){
-    console.log(x)
-    console.log(y_prices)
 Highcharts.setOptions({global:{useUTC: false}});
 
 volume = []

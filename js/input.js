@@ -1,58 +1,86 @@
     const High = require('./hgraph.js')
     const constants = require('./constants.js')
+    const view = require('./urlModel.js')
+    const url = require('./url.js')
 
     function readPricesValues(){
+        view.MODEL.type = "price"
         var exchange = document.getElementById("exchange").value
-        exchange = exchange == "Aggregated" ? "" :  exchange
-        var symbol = document.getElementById("symbol").value
-        var unit = document.getElementById("unit").value
-        var interval = document.getElementById("interval").value 
-        //var reporting_period = document.getElementById ("reporting-period").value
-        //var start_stamp = reporting_period == "All" || reporting_period == "" ? "" : "&start=" + getTimeStamp(reporting_period)[0]
-        //var end_stamp = reporting_period == "All" || reporting_period == "" ? "" : "&end=" + getTimeStamp(reporting_period)[1]
-        var parameter = 'http://159.65.167.149:8888/price?' +  'symbol=' + symbol + (exchange == "Aggregated" ? "" : "&exchange=" + exchange ) + '&unit=' + unit + (interval == "None" ? "" : '&interval=' + interval )     
+        exchange = view.MODEL.exchange = (exchange == "Aggregated" ? "" : exchange )
+        var symbol = view.MODEL.symbol = document.getElementById("symbol").value
+        var unit = view.MODEL.unit  = document.getElementById("unit").value
+        var interval = view.MODEL.interval = document.getElementById("interval").value
+        var parameter = 'http://159.65.167.149:8888/price?' +  'symbol=' + symbol + '&exchange=' + exchange + '&unit=' + unit + (interval == "None" ? "" : '&interval=' + interval )     
         window.parameter = parameter
+        url.changeURL()
         validateParamtersConsole(parameter)
         return [parameter, exchange, symbol, unit, interval]
     }
 
     function readBlockValues(){
-        var symbol =  document.getElementById("block-symbol").value
-        var datatype = document.getElementById("block-datatype").value
-        var interval = document.getElementById("block-interval").value 
+        view.MODEL.type = "block"
+        var symbol = view.MODEL.symbol =  document.getElementById("block-symbol").value
+        var datatype = view.MODEL.datatype = document.getElementById("block-datatype").value
+        var interval = view.MODEL.interval = document.getElementById("block-interval").value 
         var parameter = 'http://159.65.167.149:8888/block?' + 'coin=' + symbol 
         +  '&datatype=' + datatype + (interval == "None" ? "" : '&interval=' + interval ) 
-          //var reporting_period = document.getElementById("block-reporting-period").value
-        //var start_stamp = reporting_period == "All" || reporting_period == "" ? "" : "&start=" + getTimeStamp(reporting_period)[0]
-        //var end_stamp = reporting_period == "All" || reporting_period == "" ? "" : "&end=" + getTimeStamp(reporting_period)[1]
         window.parameter = parameter
+        url.changeURL()
         validateParamtersConsole(parameter)
         return [parameter,symbol, datatype, interval]
     }
 
-    function initialPriceParameter(){
-        var parameter = 'http://159.65.167.149:8888/price?symbol=LTC&interval=5min'
-        var exhcange = "Aggregated" 
-        var symbol = "LTC" 
-        var unit = "USD"
-        var interval = "5min"
+    function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+    //get the intial price from the url and pass it to view model. Read from the view model to create paramteter url to pass to graph
+    function initialPriceParameter(url){
+        if(getParameterByName("price",url) != null){
+            
+            view.MODEL.symbol = symbol =  getParameterByName("symbol", url) 
+            view.MODEL.exchange = exchange = getParameterByName("exchange", url)
+            view.MODEL.unit = unit = getParameterByName("unit", url)
+            view.MODEL.interval = interval = getParameterByName("interval", url)
+            p_exchange = view.MODEL.exchange == null ? "" : "&exchange=" + view.MODEL.exchange 
+            parameter = "http://159.65.167.149:8888/price?" + "symbol=" + view.MODEL.symbol + "&interval=" + view.MODEL.interval + p_exchange + "&unit=" + view.MODEL.unit
+        
+        }else{
+            var parameter = 'http://159.65.167.149:8888/price?symbol=LTC&interval=5min'
+            var exhcange = "Aggregated" 
+            var symbol = "LTC" 
+            var unit = "USD"
+            var interval = "5min"
 
+        }
+        validateParamtersConsole(parameter)
         return [parameter,exchange,symbol,unit,interval]
     }
 
-    function initialBlockParameter(){
-        var interval = '&interval=' + "hour"
-        var parameter = 'http://159.65.167.149:8888/block?coin=LTC&datatype=difficulty&interval=hour'
-        var symbol = "LTC"
-        var datatype = "difficulty"
-        var interval = "hour"
-
+    function initialBlockParameter(url){
+        if(getParameterByName("block",url) != null){
+            view.MODEL.symbol = symbol = getParameterByName("symbol",url)
+            view.MODEL.interval = interval =  getParameterByName("interval",url)
+            view.MODEL.datatype = datatype =  getParameterByName("datatype",url) 
+            parameter = "http://159.65.167.149:8888/block?" + "coin=" + view.MODEL.symbol + "&interval=" + view.MODEL.interval + "&datatype=" + view.MODEL.datatype 
+        }else{
+            var interval = '&interval=' + "hour"
+            var parameter = 'http://159.65.167.149:8888/block?coin=LTC&datatype=difficulty&interval=hour'
+            var symbol = "LTC"
+            var datatype = "difficulty"
+            var interval = "hour"    
+        }
+        validateParamtersConsole(parameter)
         return [parameter,symbol, datatype, interval]
     }
 
     //call API and Generate the Price and Volume graphs
     function getPriceAPI(arr){ 
-        console.log(arr)
         parameter = arr[0]
         exchange = arr[1]
         symbol = arr[2]
