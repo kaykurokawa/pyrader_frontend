@@ -1,5 +1,8 @@
-In order to run in your environment:
-
-1. clone to your machine
-2. python -m SimpleHTTPServer 
-3. go to localhost:8000 in your browser
+Running in local local environment:
+Requires NPM and Node for development
+1. npm intall
+installs all node packages
+2. npm start
+starts http server
+3. npm test
+runs tests
