@@ -1,7 +1,7 @@
 const constants = require('./constants.js')
         //Call Info API and pass information to dropdowns 
         function getInfo(){
-            url= 'http://159.65.167.149:8888/info'
+            url= constants.REST_URL + "/info"
              fetch(url)
              .then(
              function(response) {
@@ -220,7 +220,8 @@ const constants = require('./constants.js')
                 return "hour"
             if(interval/constants.MICRO == 300)
                 return "5min"
-    
+             if(interval == 0)
+                return "0"   
         }
         //given a info of prices change the exchanges from null to aggregated.
         function eliminateNulls(info){

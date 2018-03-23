@@ -11,96 +11,94 @@ function drawPriceHeader(coin,unit,last_price,last_volume,first_date, last_date)
 }
 
 function drawPriceVolumeGraph(coin,unit,x,y_prices,y_volume){
-Highcharts.setOptions({global:{useUTC: false}});
+    Highcharts.setOptions({global:{useUTC: false}});
 
-volume = []
-prices = []
- // set the allowed units for data grouping
- groupingUnits = [[
-     'week',                         // unit name
-     [1]                             // allowed multiples
- ], [
-     'month',
-     [1, 2, 3, 4, 6]
- ]]
+    volume = []
+    prices = []
+    // set the allowed units for data grouping
+    groupingUnits = [[
+        'week',                         // unit name
+        [1]                             // allowed multiples
+    ], [
+        'month',
+        [1, 2, 3, 4, 6]
+    ]]
 
-for(i = 0 ; i < x.length ; i++){
-    prices.push([x[i], y_prices[i]])
-    volume.push([x[i], y_volume[i]])
-}
+    for(i = 0 ; i < x.length ; i++){
+        prices.push([x[i], y_prices[i]])
+        volume.push([x[i], y_volume[i]])
+    }
 
 
-minimum = Math.min.apply(null, y_prices)
-title = coin + " Charts"
-y_axis1 = "Price of " + coin + " in " + unit
-y_axis2 = "Volume of " + coin + " in " + unit
+    minimum = Math.min.apply(null, y_prices)
+    title = coin + " Charts"
+    y_axis1 = "Price of " + coin + " in " + unit
+    y_axis2 = "Volume of " + coin + " in " + unit
 
-// create the chart
-hchart = Highcharts.stockChart('hchart', {
+    // create the chart
+    hchart = Highcharts.stockChart('hchart', {
 
- rangeSelector: {
-     selected: 1
- },
+    rangeSelector: {
+        selected: 1
+    },
 
- yAxis: [{
-     labels: {
-         align: 'right',
-         x: -3
-     },
-     title: {
-         text:  y_axis1
-     },
-     height: '60%',
-     lineWidth: 2,
-     //floor: minimum,
-     type: 'logarithmic',
-     minorTickInterval: 0.1,
-     resize: {
-         enabled: true
-     }
- }, {
-     labels: {
-         align: 'right',
-         x: -3
-     },
-     title: {
-         text: y_axis2
-     },
-     top: '65%',
-     height: '35%',
-     offset: 0,
-     lineWidth: 2
- }],
+    yAxis: [{
+        labels: {
+            align: 'right',
+            x: -3
+        },
+        title: {
+            text:  y_axis1
+        },
+        height: '60%',
+        lineWidth: 2,
+        //floor: minimum,
+        type: 'logarithmic',
+        minorTickInterval: 0.1,
+        resize: {
+            enabled: true
+        }
+    }, {
+        labels: {
+            align: 'right',
+            x: -3
+        },
+        title: {
+            text: y_axis2
+        },
+        top: '65%',
+        height: '35%',
+        offset: 0,
+        lineWidth: 2
+    }],
 
- tooltip: {
-     split: true,
-     //valueDecimals: 2
- },
+    tooltip: {
+        split: true,
+        //valueDecimals: 2
+    },
 
- series: [{
-     type: 'area',
-     name: 'Cryptocurrency',
-     data: prices,
-     dataGrouping: {
-         enabled: false,
-         units: groupingUnits
-     }
- }, {
-     type: 'column',
-     name: 'Volume',
-     data: volume,
-     yAxis: 1,
-     dataGrouping: {
-         enabled: false,
-         units: groupingUnits
-     }
- }]
-});
-
+    series: [{
+        type: 'area',
+        name: 'Cryptocurrency',
+        data: prices,
+        dataGrouping: {
+            enabled: false,
+            units: groupingUnits
+        }
+    }, {
+        type: 'column',
+        name: 'Volume',
+        data: volume,
+        yAxis: 1,
+        dataGrouping: {
+            enabled: false,
+            units: groupingUnits
+        }
+    }]
+    });
  }
 
  function drawBlockHeader(coin,datatype,last_block,first_date, last_date){
-
     to_date = new Date(first_date).toDateString() + " " + new Date(first_date).toLocaleTimeString('en-US')
     from_date = new Date(last_date).toDateString() + " " +  new Date(last_date).toLocaleTimeString('en-US')
     current_block = last_block
@@ -140,13 +138,15 @@ hchart = Highcharts.stockChart('hchart', {
             });
  }
 
- function drawScatterPlot(coin_data,datatype_data,x,y){
+ function drawScatterPlot(coin,datatype,x,y){
     block_data = []
-    for(i = 0 ; i < json.x.length ; i++){
+    for(i = 0 ; i < x.length ; i++){
         block_data.push([x[i], y[i]])
     }
-    title = coin_data + " " + datatype + " " + "chart"
-    y_axis = datatype + " of " + coin_data
+    console.log(block_data)
+    title = coin + " " + datatype + " " + "chart"
+    y_axis = datatype + " of " + coin
+    console.log("here")
     Highcharts.stockChart('block-hchart', {
                 rangeSelector: {
                     selected: 2
@@ -154,6 +154,12 @@ hchart = Highcharts.stockChart('hchart', {
         
                 title: {
                     text: title
+                },
+                tooltip: {
+                    formatter: function () {
+                        return Highcharts.dateFormat('%B %e, %Y %H:%M', this.x) + '<br/>' + 
+                            Highcharts.numberFormat(this.y, 2);
+                    }
                 },
                 series: [{
                     type: 'scatter',

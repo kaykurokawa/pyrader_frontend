@@ -11,10 +11,9 @@ chai.use(chaiHttp);
 describe('fetchAPI', function() {
   describe('test various API calls on the Info', function() {
     it('gives you the info', function() {
-      chai.request('http://159.65.167.149:8888')
+      chai.request('REST_URL')
       .get('/info')
       .end(function(err, res){
-        if (err) done(err);
        expect(res.body).to.have.property("y")
        expect(res.body).to.have.property("w")
        expect(res.body).to.have.property("x1")
@@ -27,10 +26,9 @@ describe('fetchAPI', function() {
   });
   describe('test out the  ?price', function() {
     it('should get the API for prices', function(done) {
-      chai.request('http://159.65.167.149:8888')
+      chai.request('REST_URL')
         .get('/price?symbol=LTC&interval=5min')
         .end(function(err, res){
-          if (err) done(err);
          expect(res.body).to.have.property("y")
          expect(res.body).to.have.property("w")
          expect(res.body).to.have.property("x1")
@@ -40,16 +38,12 @@ describe('fetchAPI', function() {
           done();
         });
     });  
-    it('you can pass in timestamps', function() {
-    
-    });
   });
   describe('test out the ?block', function() {
     it('gives you successfull call', function() {
-      chai.request('http://159.65.167.149:8888')
+      chai.request('REST_URL')
       .get('/block?coin=LTC&datatype=difficulty&interval=hour')
       .end(function(err, res){
-        if (err) done(err);
        expect(res.body).to.have.property("y")
        expect(res.body).to.have.property("x1")
        expect(res.body).to.have.property("x2")
@@ -58,13 +52,8 @@ describe('fetchAPI', function() {
         done();
       });
     });
-    it('you can pass in time stamps', function() {
-    
-    });
   });
 });
-
-
 
 
 describe('Info', function() {

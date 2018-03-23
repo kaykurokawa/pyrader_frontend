@@ -10,7 +10,7 @@
         var symbol = view.MODEL.symbol = document.getElementById("symbol").value
         var unit = view.MODEL.unit  = document.getElementById("unit").value
         var interval = view.MODEL.interval = document.getElementById("interval").value
-        var parameter = 'http://159.65.167.149:8888/price?' +  'symbol=' + symbol + '&exchange=' + exchange + '&unit=' + unit + (interval == "None" ? "" : '&interval=' + interval )     
+        var parameter = constants.REST_URL + '/price?' +  'symbol=' + symbol + '&exchange=' + exchange + '&unit=' + unit + (interval == "None" ? "" : '&interval=' + interval )     
         window.parameter = parameter
         url.changeURL()
         validateParamtersConsole(parameter)
@@ -22,7 +22,7 @@
         var symbol = view.MODEL.symbol =  document.getElementById("block-symbol").value
         var datatype = view.MODEL.datatype = document.getElementById("block-datatype").value
         var interval = view.MODEL.interval = document.getElementById("block-interval").value 
-        var parameter = 'http://159.65.167.149:8888/block?' + 'coin=' + symbol 
+        var parameter = constants.REST_URL + '/block?' + 'coin=' + symbol 
         +  '&datatype=' + datatype + (interval == "None" ? "" : '&interval=' + interval ) 
         window.parameter = parameter
         url.changeURL()
@@ -43,15 +43,15 @@
     function initialPriceParameter(url){
         if(getParameterByName("price",url) != null){
             
-            view.MODEL.symbol = symbol =  getParameterByName("symbol", url) 
+            view.MODEL.symbol = symbol =  getParameterByName("coin", url) 
             view.MODEL.exchange = exchange = getParameterByName("exchange", url)
             view.MODEL.unit = unit = getParameterByName("unit", url)
             view.MODEL.interval = interval = getParameterByName("interval", url)
             p_exchange = view.MODEL.exchange == null ? "" : "&exchange=" + view.MODEL.exchange 
-            parameter = "http://159.65.167.149:8888/price?" + "symbol=" + view.MODEL.symbol + "&interval=" + view.MODEL.interval + p_exchange + "&unit=" + view.MODEL.unit
+            parameter = constants.REST_URL + "/price?" + "coin=" + view.MODEL.symbol + "&interval=" + view.MODEL.interval + p_exchange + "&unit=" + view.MODEL.unit
         
         }else{
-            var parameter = 'http://159.65.167.149:8888/price?symbol=LTC&interval=5min'
+            var parameter = constants.REST_URL + '/price?coin=LTC&interval=5min'
             var exhcange = "Aggregated" 
             var symbol = "LTC" 
             var unit = "USD"
@@ -64,16 +64,18 @@
 
     function initialBlockParameter(url){
         if(getParameterByName("block",url) != null){
-            view.MODEL.symbol = symbol = getParameterByName("symbol",url)
-            view.MODEL.interval = interval =  getParameterByName("interval",url)
-            view.MODEL.datatype = datatype =  getParameterByName("datatype",url) 
-            parameter = "http://159.65.167.149:8888/block?" + "coin=" + view.MODEL.symbol + "&interval=" + view.MODEL.interval + "&datatype=" + view.MODEL.datatype 
+             symbol = getParameterByName("coin",url)
+             view.MODEL.symbol = symbol
+             interval =  getParameterByName("interval",url)
+             view.MODEL.interval = interval
+             datatype =  getParameterByName("datatype",url)
+             view.MODEL.datatype = datatype
+             parameter = constants.REST_URL + '/block?coin=' + view.MODEL.symbol + "&interval=" + view.MODEL.interval + "&datatype=" + view.MODEL.datatype 
         }else{
-            var interval = '&interval=' + "hour"
-            var parameter = 'http://159.65.167.149:8888/block?coin=LTC&datatype=difficulty&interval=hour'
+            var interval = "hour"
+            var parameter = constants.REST_URL + '/block?coin=LTC&datatype=difficulty&interval=hour'
             var symbol = "LTC"
             var datatype = "difficulty"
-            var interval = "hour"    
         }
         validateParamtersConsole(parameter)
         return [parameter,symbol, datatype, interval]
@@ -140,7 +142,13 @@
                     High.showCharts()
                     High.showBlockCharts()
                     interval_i = data.interval/1000
-                    var x = processDates(data,interval_i)
+                    var plottype = data.plottype
+                    if(plottype == "scatter"){
+                        x = data.x.map(function(x){return x = x/1000 })
+
+                    }else{
+                        var x = processDates(data,interval_i)
+                    }
                     var y = processData(data)
                     window.apiCall = data
                     var coin_data = data.coin
@@ -148,14 +156,15 @@
                     var first_date = x[0]
                     var last_date = x[x.length-1]
                     var last_datatype = data.y[y.length-1]
-                    var plottype = data.plottype
+                
                     //Here you will pass data to whatever Graphing library asynchronosly
                     if(plottype == "scatter"){
+                        
                         High.drawScatterPlot(coin_data,datatype_data,x,y)
                         High.drawBlockHeader(coin_data,datatype_data,last_datatype,first_date, last_date)
                     }else{
-                    High.drawBlockGraph(coin_data,datatype_data,x,y)
-                    High.drawBlockHeader(coin_data,datatype_data,last_datatype,first_date, last_date)
+                        High.drawBlockGraph(coin_data,datatype_data,x,y)
+                        High.drawBlockHeader(coin_data,datatype_data,last_datatype,first_date, last_date)
                     }
                 });
                 }

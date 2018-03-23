@@ -1,5 +1,4 @@
 const view = require('./urlModel.js')
-const parse = require('/node_modules/url-parse/dist/url-parse.js');
 
 
 function createPriceUrl(model){
@@ -7,18 +6,18 @@ function createPriceUrl(model){
     if(model.type == "price"){
         url += "/?" + model.type + "&symbol=" + model.symbol + "&unit=" + model.unit + "&exchange=" + model.exchange + "&interval=" + model.interval
     }else{
-        url += "/?" + model.type + "&symbol=" + model.symbol + "&datatype=" + model.datatype +  "&interval=" + model.interval
+        url += "/?" + model.type + "&coin=" + model.symbol + "&datatype=" + model.datatype +  "&interval=" + model.interval
     }
-    return url
+        return url
 }
 
 function isBlockUrl(){
-if(window.location.href.includes("?block"))
-{
-  return true  
-}else{
-    return false
-}
+    if(window.location.href.includes("?block"))
+    {
+        return true  
+    }else{
+        return false
+    }
 
 }
 
