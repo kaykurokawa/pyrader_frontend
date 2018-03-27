@@ -117,7 +117,7 @@ const constants = require('./constants.js')
             }
 
             block_interval.onchange  = function(event){
-                block_submit.disabled = false
+                enableButton("block-submit")
                 disableDropdown("block-interval")
                 blocks = json.block
             }
@@ -131,7 +131,7 @@ const constants = require('./constants.js')
                 block_datatype.options.length = 1
                 disableDropdown("block-interval")
                 block_interval.options.length = 1
-                block_submit.disabled = true
+                disableButton("block-submit")
             }      
             
         }
@@ -139,17 +139,22 @@ const constants = require('./constants.js')
         function disableDropdown(select){
             select_label = select + "-label"
             arrow_label = select + "-arrow"
+            x_label = select + "-x"
             document.getElementById(arrow_label).classList.remove("glyphicon", "glyphicon-arrow-right");
             document.getElementById(select).disabled = true
             document.getElementById(select_label).style.color = "silver"
+            document.getElementById(x_label).classList.remove("glyphicon", "glyphicon-remove");
         }
 
         function enableDropdown(select){
             select_label = select + "-label"
             arrow_label = select + "-arrow"
+            x_label = select + "-x"
             document.getElementById(select).disabled = false
             document.getElementById(arrow_label).classList.add("glyphicon", "glyphicon-arrow-right");
-            document.getElementById(select_label).style.color = "black"
+            document.getElementById(x_label).classList.add("glyphicon", "glyphicon-remove");
+            //document.getElementById(select_label).style.color = "black"
+            //document.getElementById(x_label).style.color = "red"
         }
 
         function enableButton(select){

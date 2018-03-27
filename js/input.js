@@ -1,35 +1,48 @@
     const High = require('./hgraph.js')
     const constants = require('./constants.js')
-    const view = require('./urlModel.js')
-    const url = require('./url.js')
+    var view = require('./urlModel.js')
+    const URL = require('./url.js')
 
+     //reads dropdown and converts it into url and returns it to be passed to Ajax call
     function readPricesValues(){
         view.MODEL.type = "price"
         var exchange = document.getElementById("exchange").value
-        exchange = view.MODEL.exchange = (exchange == "Aggregated" ? "" : exchange )
-        var symbol = view.MODEL.symbol = document.getElementById("symbol").value
-        var unit = view.MODEL.unit  = document.getElementById("unit").value
-        var interval = view.MODEL.interval = document.getElementById("interval").value
-        var parameter = constants.REST_URL + '/price?' +  'symbol=' + symbol + '&exchange=' + exchange + '&unit=' + unit + (interval == "None" ? "" : '&interval=' + interval )     
+        exchange  = (exchange == "Aggregated" ? "" : exchange )
+        view.MODEL.exchange = exchange
+        var symbol = document.getElementById("symbol").value
+        view.MODEL.symbol = symbol
+        var unit = document.getElementById("unit").value
+        view.MODEL.unit  = unit 
+        var interval =  document.getElementById("interval").value
+        interval = (interval == "None" ? "" : interval)
+        view.MODEL.interval = interval
+        p_exchange = (exchange == "" ? "" : '&exchange' + exchange) 
+        p_interval = (interval == "" ? "" : '&interval' + interval)
+        var parameter = constants.REST_URL + '/price?' +  'symbol=' + symbol + '&unit=' + unit + p_exchange + p_interval      
         window.parameter = parameter
-        url.changeURL()
+        URL.changeURL()
         validateParamtersConsole(parameter)
         return [parameter, exchange, symbol, unit, interval]
     }
-
+    //reads and converts dropdown and converts it into url and returns it to be passed to Ajax call
     function readBlockValues(){
         view.MODEL.type = "block"
-        var symbol = view.MODEL.symbol =  document.getElementById("block-symbol").value
-        var datatype = view.MODEL.datatype = document.getElementById("block-datatype").value
-        var interval = view.MODEL.interval = document.getElementById("block-interval").value 
-        var parameter = constants.REST_URL + '/block?' + 'coin=' + symbol 
-        +  '&datatype=' + datatype + (interval == "None" ? "" : '&interval=' + interval ) 
+        var symbol = document.getElementById("block-symbol").value
+        view.MODEL.symbol =  symbol
+        var datatype = document.getElementById("block-datatype").value
+        view.MODEL.datatype = datatype
+        var interval = document.getElementById("block-interval").value 
+        interval = (interval == "None" ? "" : interval)  
+        view.MODEL.interval = interval
+        p_interval = (exchange == "" ? "" : '&interval=' + view.MODEL.interval)
+        var parameter = constants.REST_URL + '/block?' + 'coin=' + view.MODEL.symbol +  '&datatype=' + view.MODEL.datatype + p_interval
         window.parameter = parameter
-        url.changeURL()
+        URL.changeURL()
         validateParamtersConsole(parameter)
         return [parameter,symbol, datatype, interval]
     }
 
+    //function that parses the url by interval, units, symbol... or whatever name
     function getParameterByName(name, url) {
         if (!url) url = window.location.href;
         name = name.replace(/[\[\]]/g, "\\$&");
@@ -39,38 +52,59 @@
         if (!results[2]) return '';
         return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
-    //get the intial price from the url and pass it to view model. Read from the view model to create paramteter url to pass to graph
+    //sets the intial paramteters for the price graph, if no url query is passed in just set a default one. 
     function initialPriceParameter(url){
         if(getParameterByName("price",url) != null){
             
-            view.MODEL.symbol = symbol =  getParameterByName("coin", url) 
-            view.MODEL.exchange = exchange = getParameterByName("exchange", url)
-            view.MODEL.unit = unit = getParameterByName("unit", url)
-            view.MODEL.interval = interval = getParameterByName("interval", url)
-            p_exchange = view.MODEL.exchange == null ? "" : "&exchange=" + view.MODEL.exchange 
-            parameter = constants.REST_URL + "/price?" + "coin=" + view.MODEL.symbol + "&interval=" + view.MODEL.interval + p_exchange + "&unit=" + view.MODEL.unit
-        
+            symbol =  getParameterByName("symbol", url)
+            symbol = (symbol == null ? "" : symbol) 
+            view.MODEL.symbol = symbol 
+            unit = getParameterByName("unit", url)
+            unit = unit == null ? "" : unit
+            view.MODEL.unit = unit
+            exchange = getParameterByName("exchange", url)
+            exchange  = (exchange == "Aggregated" ? "" : exchange)
+            exchange = (exchange == null ? "" : exchange)
+            view.MODEL.exchange = exchange
+            interval = getParameterByName("interval", url)
+            interval = (interval == "None" ? "" : interval)
+            interval = (interval == null ? "" : interval)
+            view.MODEL.interval = interval
+            p_symbol = view.MODEL.symbol == "" ? "" : "symbol=" + view.MODEL.symbol
+            p_unit = view.MODEL.unit == "" ? "" : "&unit=" + view.MODEL.unit
+            p_exchange = view.MODEL.exchange == "" ? "" : "&exchange=" + view.MODEL.exchange
+            p_interval = view.MODEL.interval == "" ? "" : "&interval=" + view.MODEL.interval
+            parameter = constants.REST_URL + "/price?" + p_symbol + p_unit + p_interval + p_exchange
+
         }else{
             var parameter = constants.REST_URL + '/price?coin=LTC&interval=5min'
             var exhcange = "Aggregated" 
             var symbol = "LTC" 
             var unit = "USD"
             var interval = "5min"
-
         }
         validateParamtersConsole(parameter)
         return [parameter,exchange,symbol,unit,interval]
     }
 
+    //sets the intial paramteters for the block graph, if no url query is passed in just set a default one. 
     function initialBlockParameter(url){
         if(getParameterByName("block",url) != null){
              symbol = getParameterByName("coin",url)
+             symbol = (symbol == null ? "" : symbol)
              view.MODEL.symbol = symbol
              interval =  getParameterByName("interval",url)
+             interval = (interval == "None" ? "" : interval)
+             interval = (interval == null ? "" : interval)
              view.MODEL.interval = interval
              datatype =  getParameterByName("datatype",url)
+             datatype = (datatype == null ? "" : datatype)
              view.MODEL.datatype = datatype
-             parameter = constants.REST_URL + '/block?coin=' + view.MODEL.symbol + "&interval=" + view.MODEL.interval + "&datatype=" + view.MODEL.datatype 
+             p_symbol = "?coin=" + view.MODEL.symbol
+             p_interval = "&interval=" + view.MODEL.interval
+             p_datatype =  "&datatype=" + view.MODEL.datatype
+             parameter = constants.REST_URL + '/block' + p_symbol + p_datatype + p_interval 
+             console.log(parameter)
         }else{
             var interval = "hour"
             var parameter = constants.REST_URL + '/block?coin=LTC&datatype=difficulty&interval=hour'

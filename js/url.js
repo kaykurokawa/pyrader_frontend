@@ -4,9 +4,16 @@ const view = require('./urlModel.js')
 function createPriceUrl(model){
     url = ""
     if(model.type == "price"){
-        url += "/?" + model.type + "&symbol=" + model.symbol + "&unit=" + model.unit + "&exchange=" + model.exchange + "&interval=" + model.interval
+        p_symbol = (model.symbol == "" ? "" : "&symbol=" + model.symbol)
+        p_unit = (model.unit == "" ? "" : "&unit=" + model.unit)
+        p_exhcange = (model.exchange == "" ? "" : "&exchange=" + model.exchange) 
+        p_interval = (model.interval == "" ? "" : "&interval=" + model.interval)
+        url = "/?" + model.type + p_symbol + p_unit + p_exchange + p_interval
     }else{
-        url += "/?" + model.type + "&coin=" + model.symbol + "&datatype=" + model.datatype +  "&interval=" + model.interval
+        p_coin = (model.symbol == "" ? "" : "&coin=" + model.symbol)
+        p_datatype = (model.datatype == "" ? "" : "&datatype=" + model.datatype)
+        p_interval = (model.interval == "" ? "" : "&interval=" + model.interval)
+        url = "/?" + model.type + p_coin + p_datatype +  p_interval
     }
         return url
 }

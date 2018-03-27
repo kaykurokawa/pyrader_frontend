@@ -181,9 +181,31 @@ function drawPriceVolumeGraph(coin,unit,x,y_prices,y_volume){
  function clearCharts(){
     document.getElementById("error").innerHTML = "No data for this period" 
     document.getElementById("error").className = "well"
-    $("#table-of-prices tr").remove(); 
+    $("#table-of-prices td").remove();
+    var row1 = document.getElementById("prices-row1")
+    var row2 = document.getElementById("prices-row2")
+    var row3 = document.getElementById("prices-row3")
+    td1 = document.createElement("td")
+    td1.text = "Time Period:"
+    td2 = document.createElement("td")
+    td2.id = "time-period"
+    td3 = document.createElement("td")
+    td3.id = "price-label"
+    td3.text = "Current Price Data:"
+    td4 =  document.createElement("td")
+    td4.id = "current-price"
+    td5 = document.createElement("td")
+    td3.id = "volume-label"
+    td5.text = "Current Volume Data:"
+    td6 = document.createElement("td")
+    td6.id = "current-volume" 
+    row1.appendChild(td1)
+    row1.appendChild(td2)
+    row2.appendChild(td3)
+    row2.appendChild(td4) 
+    row3.appendChild(td5)
+    row3.appendChild(td6)
     $('#hchart').highcharts().destroy();
-
  }
 
 //generate the Highcharts

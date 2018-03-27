@@ -1,0 +1,5 @@
+1. ?price&symbol=BTC&unit=USD&exchange=bitstamp&interval=5min
+2. ?price&symbol=BTC&unit=USD&exchange=bitstamp&interval=hour
+3. ?price&symbol=LTC&unit=BTC&exchange=&interval=None - does not work 
+4. ?price&symbol=LTC&unit=USD&exchange=&interval=None -does not work
+/?price&symbol=LTC&unit=USD&exchange=&interval=

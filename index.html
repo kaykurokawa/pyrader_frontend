@@ -25,57 +25,73 @@
                                 <div class="col-sm-3">
                                     <div class="row">
                                     <div class="col-sm-2 text-center">
-                                    &nbsp&nbsp
+                                        &nbsp&nbsp
                                     <span id="symbol-arrow"></span>
                                     </div>
-                                    <div class="col-sm-10"> 
-                                    <label id="symbol-label">Symbol:</label>       
-                                    <select class="form-control" id="symbol">
-                                        <option></option>
-                                    </select>
+                                    <div class="col-sm-8"> 
+                                        <label id="symbol-label">Symbol:</label>       
+                                            <select class="form-control" id="symbol">
+                                                <option></option>
+                                            </select>
                                     </div>
+                                    <div class= "col-sm-1 text-center">
+                                        &nbsp&nbsp
+                                            <span id="symbol-x"></span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-3">
                                         <div class="row">
-                                        <div class="col-sm-2 text-center">
-                                        &nbsp&nbsp
-                                        <span id="unit-arrow"></span>
-                                        </div>
-                                        <div class="col-sm-10"> 
-                                        <label id="unit-label">Unit:</label>       
-                                        <select class="form-control" id="unit">
-                                            <option></option>
-                                        </select>
-                                        </div>
+                                            <div class="col-sm-2 text-center">
+                                                &nbsp&nbsp
+                                                <span id="unit-arrow"></span>
+                                            </div>
+                                             <div class="col-sm-8"> 
+                                                <label id="unit-label">Unit:</label>       
+                                                <select class="form-control" id="unit">
+                                                <option></option>
+                                                </select>
+                                            </div>
+                                            <div class= "col-sm-1 text-center">
+                                                &nbsp&nbsp
+                                                <span id="unit-x"></span>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                             <div class="row">
-                                            <div class="col-sm-2 text-center">
-                                            &nbsp&nbsp
-                                            <span id="exchange-arrow"></span>
+                                                <div class="col-sm-2 text-center">
+                                                    &nbsp&nbsp
+                                                    <span id="exchange-arrow"></span>
+                                                </div>
+                                            <div class="col-sm-8"> 
+                                                <label id="exchange-label">Exchange:</label>       
+                                                    <select class="form-control" id="exchange">
+                                                    <option></option>
+                                                </select>
                                             </div>
-                                            <div class="col-sm-10"> 
-                                            <label id="exchange-label">Exchange:</label>       
-                                            <select class="form-control" id="exchange">
-                                                <option></option>
-                                            </select>
+                                            <div class= "col-sm-1 text-center">
+                                                &nbsp&nbsp
+                                                <span id="exchange-x"></span>
                                             </div>
                                             </div>
                                         </div>
                                         <div class="col-sm-3">
                                                 <div class="row">
                                                 <div class="col-sm-2 text-center" id="arrow4">
-                                                &nbsp&nbsp
-                                                <span id="interval-arrow"></span>
+                                                    &nbsp&nbsp
+                                                    <span id="interval-arrow"></span>
                                                 </div>
-                                                <div class="col-sm-10"> 
-                                                <label id="interval-label">Interval:</label>       
-                                                <select class="form-control" id="interval">
-                                                    <option></option>
-                                                </select>
+                                                <div class="col-sm-8"> 
+                                                    <label id="interval-label">Interval:</label>       
+                                                    <select class="form-control" id="interval">
+                                                        <option></option>
+                                                    </select>
                                                 </div>
+                                                    <div class= "col-sm-1 text-center">
+                                                        &nbsp&nbsp
+                                                        <span id="interval-x"></span>
+                                                    </div>
                                                 </div>
                                             </div>
                              </div>
@@ -107,16 +123,16 @@
                                 <th></th>
                             </thead>    
                           <tbody>
-                            <tr>
+                            <tr id="prices-row1">
                               <td>Time Period:</td>
                               <td id="time-period"></td>
                             </tr>
-                            <tr>
+                            <tr id="prices-row2">
                               <td>Current Price:</td>
                               <td id="current-price"></td>
                               
                             </tr>
-                            <tr>
+                            <tr id="prices-row3">
                                 <td>Current volume:</td>
                                 <td id="current-volume"></td>
                             </tr>
@@ -134,11 +150,15 @@
                                             &nbsp&nbsp
                                             <span id="block-symbol-arrow"></span>
                                         </div>
-                                        <div class="col-sm-10"> 
+                                        <div class="col-sm-8"> 
                                             <label id="block-symbol-label">Symbol:</label>       
                                             <select class="form-control" id="block-symbol">
                                                 <option></option>
                                             </select>
+                                        </div>
+                                        <div class= "col-sm-1 text-center">
+                                            &nbsp&nbsp
+                                            <span id="block-symbol-x"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -148,11 +168,15 @@
                                             &nbsp&nbsp
                                             <span id="block-datatype-arrow"></span>
                                         </div>
-                                        <div class="col-sm-10"> 
+                                        <div class="col-sm-8"> 
                                             <label id="block-datatype-label">Data Type:</label>       
                                             <select class="form-control" id="block-datatype">
                                                 <option></option>
                                             </select>
+                                        </div>
+                                        <div class= "col-sm-1 text-center">
+                                            &nbsp&nbsp
+                                            <span id="block-datatype-x"></span>
                                         </div>
                                      </div>
                                 </div>
@@ -162,14 +186,18 @@
                                                 &nbsp&nbsp
                                                 <span id="block-interval-arrow"></span>
                                             </div>
-                                            <div class="col-sm-10"> 
+                                            <div class="col-sm-8"> 
                                                 <label id="block-interval-label">Interval:</label>       
                                                 <select class="form-control" id="block-interval">
                                                     <option></option>
                                                 </select>
                                             </div>
+                                            <div class= "col-sm-1 text-center">
+                                                &nbsp&nbsp
+                                                <span id="block-interval-x"></span>
+                                            </div>
                                         </div>
-                                </div>
+                                    </div>
                         </div>
                         <div class="row">
                                 <div>&nbsp</div>
