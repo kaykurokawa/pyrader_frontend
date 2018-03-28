@@ -60,13 +60,19 @@ const constants = require('./constants.js')
                     if(id == "interval"){
                         enableButton("submit")
                         disableDropdown("interval")
+                        submit_x = document.querySelector("#submit-x")
+                        submit_x.classList.add("glyphicon", "glyphicon-remove")
+                        submit_x.onclick = function(event){
+                            document.getElementById(arrow_label).classList.remove("glyphicon", "glyphicon-arrow-right");
+                            enableDropdown("interval")
+                            disableButton("submit")
+                        }
                     }else{
                         states.push(current)
                         enableDropdown(next_id)
                         console.log(current)
                         createOptions(states[states.length-1],next_id)
                         disableDropdown(id)
-
                         var cancel = document.querySelector("#" + next_id + "-x")                
                         cancel.onclick = function(event){
                             enableDropdown(id)
