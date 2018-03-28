@@ -11,8 +11,7 @@ const constants = require('./constants.js')
                      return;
                      }
                      response.json().then(function(data) {
-                         console.log(data)
-                         processInfo(data)
+                         processInfo(data.price)
                          processBlockInfo(data)
                      });
                      }
@@ -23,54 +22,80 @@ const constants = require('./constants.js')
          }
 
 
-    function processInfo(json){
-        info_prices = []
-        info_prices = json.price
-        info_prices = eliminateNulls(info_prices)
-        n = json.price.length
-        enableDropdown("symbol")
-        var symbol = document.getElementById("symbol")
-        var unit = document.getElementById("unit")
-        var exchange = document.getElementById("exchange")
-        var interval = document.getElementById("interval")
-        var submit = document.getElementById("submit")
-        var reset = document.getElementById("reset") 
-        enableDropdown("symbol")
-        disableDropdown("unit")
-        disableDropdown("exchange")
-        disableDropdown("interval")
-        createOptions(info_prices,"symbol")
-        disableButton("submit")
+        function processInfo(price){
+            info_prices = price
+            info_prices = eliminateNulls(info_prices)
+            n = price.length
+            enableDropdown("symbol")
 
-        symbol.onchange = function(event){
-            info_prices = info_prices.filter(line => line.symbol.includes(document.getElementById("symbol").value))
-            enableDropdown("unit")
-            createOptions(info_prices,"unit")
-            disableDropdown("symbol")
-        }
-
-        unit.onchange = function(event){
-            info_prices = info_prices.filter(line => line.unit.includes(document.getElementById("unit").value))
-            enableDropdown("exchange")
-            createOptions(info_prices, "exchange")
+            var symbol = document.querySelector("#symbol")
+            var unit = document.querySelector("#unit")
+            var exchange = document.querySelector("#exchange")
+            var interval = document.querySelector("#interval")
+            var submit = document.querySelector("#submit")
+            var reset = document.getElementById("reset") 
+            enableDropdown("symbol")
             disableDropdown("unit")
-        } 
-
-        exchange.onchange = function(event){
-            info_prices = info_prices.filter(line => line.exchange.includes(document.getElementById("exchange").value))            
-            enableDropdown("interval")
-            createOptions(info_prices, "interval")
             disableDropdown("exchange")
+            disableDropdown("interval")
+            createOptions(info_prices,"symbol")
+            disableButton("submit")
+
+        // given the id of the dropdown and the id of the next dropdwon in sequence, take care of all of the logic: enable, disable, load options...etc
+        var states = []
+        states.push(info_prices)
+
+        function LoadOptions(id,prev_id,next_id){
+            var tag = document.querySelector("#" + id)
+            tag.onchange = function(event){
+                current = states[states.length-1]
+                if(id == "symbol"){
+                    current = current.filter(line => line.symbol.includes(document.getElementById(id).value))
+                }else if(id == "unit"){
+                    current = current.filter(line => line.unit.includes(document.getElementById(id).value))
+                }else if(id == "exchange"){
+                    current = current.filter(line => line.exchange.includes(document.getElementById(id).value))
+                }else{
+                }
+                    if(id == "interval"){
+                        enableButton("submit")
+                        disableDropdown("interval")
+                    }else{
+                        states.push(current)
+                        enableDropdown(next_id)
+                        console.log(current)
+                        createOptions(states[states.length-1],next_id)
+                        disableDropdown(id)
+
+                        var cancel = document.querySelector("#" + next_id + "-x")                
+                        cancel.onclick = function(event){
+                            enableDropdown(id)
+                            disableDropdown(next_id)
+                            resetDropdown(next_id)
+                            states.pop()
+                        }
+                    }
+                }
         }
         
-        interval.onchange  = function(event){
+        LoadOptions("symbol","none","unit")
+        LoadOptions("unit","symbol","exchange")
+        LoadOptions("exchange","unit","interval")
+        LoadOptions("interval","unit","none")
+        
+        /*interval.onchange  = function(event){
+            info_prices_state = info_prices
             enableButton("submit")
             disableDropdown("interval")
-            info_prices = json.price
-        }     
+            document.querySelector("#interval-x").onclick = function(event){
+                enableDropdown("exchange")
+                disableDropdown("interval")
+                info_prices = into_prices_state
+            }
+        } */ 
 
         reset.onclick  = function(event){
-            info_prices = json.price
+            info_prices = price
             symbol.options.length = 1
             createOptions(info_prices,"symbol")
             enableDropdown("symbol")
@@ -81,7 +106,8 @@ const constants = require('./constants.js')
             disableDropdown("interval")
             interval.options.length = 1
             disableButton("submit")
-            
+            states = []
+            states.push(info_prices)
         }    
     }
 
@@ -95,7 +121,6 @@ const constants = require('./constants.js')
             var block_interval = document.getElementById("block-interval")
             var block_submit = document.getElementById("block-submit")
             var block_reset = document.getElementById("block-reset") 
-
             enableDropdown("block-symbol")
             disableDropdown("block-datatype")
             disableDropdown("block-interval")
@@ -144,6 +169,10 @@ const constants = require('./constants.js')
             document.getElementById(select).disabled = true
             document.getElementById(select_label).style.color = "silver"
             document.getElementById(x_label).classList.remove("glyphicon", "glyphicon-remove");
+        }
+
+        function resetDropdown(select){
+            document.getElementById(select).options.length = 1
         }
 
         function enableDropdown(select){

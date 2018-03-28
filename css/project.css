@@ -6,7 +6,7 @@
     margin-right:5px;
  }
 
-#unit-label{color: grey}
+#unit-label{color: grey;}
 
 .glyphicon.glyphicon-arrow-right{
     font-size: 25px;
@@ -22,3 +22,4 @@
     font-size:22px;
     color: red;
     }
+#symbol-x{visibility: hidden;}
