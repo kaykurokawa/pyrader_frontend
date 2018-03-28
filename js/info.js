@@ -30,7 +30,9 @@ const constants = require('./constants.js')
             var exchange = document.querySelector("#exchange")
             var interval = document.querySelector("#interval")
             var submit = document.querySelector("#submit")
-            var reset = document.getElementById("reset") 
+            var reset = document.getElementById("reset")
+            submit_x = document.querySelector("#submit-x")
+            
             enableDropdown("symbol")
             disableDropdown("unit")
             disableDropdown("exchange")
@@ -57,7 +59,7 @@ const constants = require('./constants.js')
                     if(id == "interval"){
                         enableButton("submit")
                         disableDropdown("interval")
-                        submit_x = document.querySelector("#submit-x")
+                        
                         submit_x.classList.add("glyphicon", "glyphicon-remove")
                         submit_x.onclick = function(event){
                             document.getElementById("submit-arrow").classList.remove("glyphicon", "glyphicon-arrow-right");
@@ -135,8 +137,7 @@ const constants = require('./constants.js')
                         if(id == "block-interval"){
                             enableButton("block-submit")
                             disableDropdown("block-interval")
-                            block_submit_x = document.querySelector("#block_submit-x")
-                            block_submit_x.classList.add("glyphicon", "glyphicon-remove")
+                            block_submit_x = document.querySelector("#block-submit-x")
                             block_submit_x.onclick = function(event){
                                 document.getElementById("block-submit-arrow").classList.remove("glyphicon", "glyphicon-arrow-right");
                                 enableDropdown("block-interval")
@@ -144,7 +145,6 @@ const constants = require('./constants.js')
                             }
                         }else{
                             states.push(current)
-                            console.log(states)
                             enableDropdown(next_id)
                             console.log(current)
                             createBlockOptions(states[states.length-1],next_id)
@@ -177,7 +177,7 @@ const constants = require('./constants.js')
                 block_interval.options.length = 1
                 disableButton("block-submit")
                 states = []
-                states.push(info_prices)
+                states.push(info_blocks)
             }      
         }
 
@@ -212,14 +212,18 @@ const constants = require('./constants.js')
 
         function enableButton(select){
             arrow_label = select + "-arrow"
+            x_label = select + "-x"
             document.getElementById(select).disabled = false
-            document.getElementById(arrow_label).classList.add("glyphicon", "glyphicon-arrow-right");
+            document.getElementById(arrow_label).classList.add("glyphicon", "glyphicon-arrow-right")
+            document.getElementById(x_label).classList.add("glyphicon", "glyphicon-remove")
+
         }
 
         function disableButton(select){
             arrow_label = select + "-arrow"
             document.getElementById(arrow_label).classList.remove("glyphicon", "glyphicon-arrow-right");
             document.getElementById(select).disabled = true
+            document.getElementById(select+ "-x").classList.remove("glyphicon", "glyphicon-remove") 
         }
 
 

@@ -16,8 +16,8 @@
         var interval =  document.getElementById("interval").value
         interval = (interval == "None" ? "" : interval)
         view.MODEL.interval = interval
-        p_exchange = (exchange == "" ? "" : '&exchange' + exchange) 
-        p_interval = (interval == "" ? "" : '&interval' + interval)
+        p_exchange = (exchange == "" ? "" : '&exchange=' + exchange) 
+        p_interval = (interval == "" ? "" : '&interval=' + interval)
         var parameter = constants.REST_URL + '/price?' +  'symbol=' + symbol + '&unit=' + unit + p_exchange + p_interval      
         window.parameter = parameter
         URL.changeURL()
