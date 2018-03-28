@@ -12,7 +12,7 @@ const constants = require('./constants.js')
                      }
                      response.json().then(function(data) {
                          processInfo(data.price)
-                         processBlockInfo(data)
+                         processBlockInfo(data.block)
                      });
                      }
                  )
@@ -25,9 +25,6 @@ const constants = require('./constants.js')
         function processInfo(price){
             info_prices = price
             info_prices = eliminateNulls(info_prices)
-            n = price.length
-            enableDropdown("symbol")
-
             var symbol = document.querySelector("#symbol")
             var unit = document.querySelector("#unit")
             var exchange = document.querySelector("#exchange")
@@ -63,7 +60,7 @@ const constants = require('./constants.js')
                         submit_x = document.querySelector("#submit-x")
                         submit_x.classList.add("glyphicon", "glyphicon-remove")
                         submit_x.onclick = function(event){
-                            document.getElementById(arrow_label).classList.remove("glyphicon", "glyphicon-arrow-right");
+                            document.getElementById("submit-arrow").classList.remove("glyphicon", "glyphicon-arrow-right");
                             enableDropdown("interval")
                             disableButton("submit")
                         }
@@ -79,6 +76,8 @@ const constants = require('./constants.js')
                             disableDropdown(next_id)
                             resetDropdown(next_id)
                             states.pop()
+                            deleteOptions(id)//delete all options of id
+                            createOptions(states[states.length-1],id)//create them again
                         }
                     }
                 }
@@ -88,17 +87,6 @@ const constants = require('./constants.js')
         LoadOptions("unit","symbol","exchange")
         LoadOptions("exchange","unit","interval")
         LoadOptions("interval","unit","none")
-        
-        /*interval.onchange  = function(event){
-            info_prices_state = info_prices
-            enableButton("submit")
-            disableDropdown("interval")
-            document.querySelector("#interval-x").onclick = function(event){
-                enableDropdown("exchange")
-                disableDropdown("interval")
-                info_prices = into_prices_state
-            }
-        } */ 
 
         reset.onclick  = function(event){
             info_prices = price
@@ -118,53 +106,79 @@ const constants = require('./constants.js')
     }
 
         //get info from API and append to drop down menu for block charts
-        function processBlockInfo(json){
-            blocks = []
-            blocks = json.block
-            var m = json.block.length
-            var block_symbol = document.getElementById("block-symbol")
-            var block_datatype = document.getElementById("block-datatype")
-            var block_interval = document.getElementById("block-interval")
-            var block_submit = document.getElementById("block-submit")
-            var block_reset = document.getElementById("block-reset") 
+        function processBlockInfo(block){
+            info_blocks = block
+            var block_symbol = document.querySelector("#block-symbol")
+            var block_datatype = document.querySelector("#block-datatype")
+            var block_interval = document.querySelector("#block-interval")
+            var block_submit = document.querySelector("#block-submit")
+            var block_reset = document.querySelector("#block-reset") 
             enableDropdown("block-symbol")
             disableDropdown("block-datatype")
             disableDropdown("block-interval")
-            createBlockOptions(blocks,"block-symbol")
-            block_submit.disabled = true
+            createBlockOptions(info_blocks,"block-symbol")
+            disableButton("block-submit")
 
-            block_symbol.onchange = function(event){
-                blocks = blocks.filter(line => line.coin.includes(document.getElementById("block-symbol").value))
-                enableDropdown("block-datatype")
-                createBlockOptions(blocks,"block-datatype")
-                disableDropdown("block-symbol")
-            }
+            var states = []
+            states.push(info_blocks)
 
-            block_datatype.onchange = function(event){
-                blocks = blocks.filter(line => line.datatype.includes(document.getElementById("block-datatype").value))
-                enableDropdown("block-interval")
-                createBlockOptions(blocks,"block-interval")
-                disableDropdown("block-datatype")
-            }
+            function LoadBlockOptions(id,prev_id,next_id){
+                var tag = document.querySelector("#" + id)
+                tag.onchange = function(event){
+                    current = states[states.length-1]
+                    if(id == "block-symbol"){
+                        current = current.filter(line => line.coin.includes(document.getElementById(id).value))
+                    }else if(id == "block-datatype"){
+                        current = current.filter(line => line.datatype.includes(document.getElementById(id).value))
+                    }else{
+                    }
+                        if(id == "block-interval"){
+                            enableButton("block-submit")
+                            disableDropdown("block-interval")
+                            block_submit_x = document.querySelector("#block_submit-x")
+                            block_submit_x.classList.add("glyphicon", "glyphicon-remove")
+                            block_submit_x.onclick = function(event){
+                                document.getElementById("block-submit-arrow").classList.remove("glyphicon", "glyphicon-arrow-right");
+                                enableDropdown("block-interval")
+                                disableButton("block-submit")
+                            }
+                        }else{
+                            states.push(current)
+                            console.log(states)
+                            enableDropdown(next_id)
+                            console.log(current)
+                            createBlockOptions(states[states.length-1],next_id)
+                            disableDropdown(id)
+                            var cancel = document.querySelector("#" + next_id + "-x")                
+                            cancel.onclick = function(event){
+                                enableDropdown(id)
+                                disableDropdown(next_id)
+                                resetDropdown(next_id)
+                                states.pop()
+                                deleteOptions(id)//delete all options of id
+                                createBlockOptions(states[states.length-1],id)//create them again
+                            }
+                        }
+                    }
+                }
 
-            block_interval.onchange  = function(event){
-                enableButton("block-submit")
-                disableDropdown("block-interval")
-                blocks = json.block
-            }
+                LoadBlockOptions("block-symbol","none","block-datatype")
+                LoadBlockOptions("block-datatype", "block-symbol", "block-interval")
+                LoadBlockOptions("block-interval", "block-datatype", "none")
 
             block_reset.onclick  = function(event){
-                blocks = json.block
+                info_blocks = block
                 block_symbol.options.length = 1
-                createBlockOptions(blocks,"block-symbol")
+                createBlockOptions(info_blocks,"block-symbol")
                 enableDropdown("block-symbol")
                 disableDropdown("block-datatype")
                 block_datatype.options.length = 1
                 disableDropdown("block-interval")
                 block_interval.options.length = 1
                 disableButton("block-submit")
+                states = []
+                states.push(info_prices)
             }      
-            
         }
 
         function disableDropdown(select){
@@ -175,6 +189,10 @@ const constants = require('./constants.js')
             document.getElementById(select).disabled = true
             document.getElementById(select_label).style.color = "silver"
             document.getElementById(x_label).classList.remove("glyphicon", "glyphicon-remove");
+        }
+
+        function deleteOptions(select){
+            document.getElementById(select).options.length = 1
         }
 
         function resetDropdown(select){
