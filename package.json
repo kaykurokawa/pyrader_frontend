@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/kaykurokawa/pyrader_frontend#readme",
   "dependencies": {
+    "live-server": "^1.2.0",
     "systemjs": "^0.21.0"
   },
   "devDependencies": {

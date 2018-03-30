@@ -13,15 +13,16 @@
         <div class="container">
             <h1>Pyrader API</h1>
             <ul class="nav nav-tabs text-left" role="tablist">
-                    <li><a href="#price" role="tab" data-toggle="tab" id="price-tab"> <span class="glyphicon glyphicon-stats text-gray"></span> Prices</a></li>
-                    <li><a href="#block" role="tab" data-toggle="tab" id="block-tab"><span class="glyphicon glyphicon-transfer text-gray"></span> Block</a></li>
-                    <li><a href="#tools" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-wrench text-gray"></span> Tools</a></li>
-                    <li><a href="#data" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-calendar text-gray"></span> Data</a></li>
+                    <li><a href="#price" role="tab" data-toggle="tab" id="charts-tab"> <span class="glyphicon glyphicon-stats text-gray"></span> Charts</a></li>
+                    <li><a href="#tools" role="tab" data-toggle="tab" id="tools-tab"><span class="glyphicon glyphicon-transfer text-gray"></span> Tools</a></li>
+                    <li><a href="#data" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-wrench text-gray"></span> Data</a></li>
+                    <li><a href="#options" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-calendar text-gray"></span> Options</a></li>
              </ul>
              <div class="tab-content">
                     <div id="price" class="tab-pane fade in active">
-                        <!-- Write your code for the Prices tab here -->
+                        <!-- Charts tab -->
                         <div class="row">
+                            <h3>Price Data:</h3>
                                 <div class="col-xs-3">
                                     <div class="row">
                                     <div class="col-xs-2 text-center">
@@ -82,7 +83,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                             </div>
+                                 </div>
                              <div class="row">
                                 <div>&nbsp</div>
                                 <div class="col-xs-4">
@@ -106,6 +107,78 @@
                                 <div id="error"></div>
                             </div>
                         </div>
+                        <div class="row">
+                            <h3>Block Data:</h3>
+                            <div class="col-xs-3">
+                                <div class="row">
+                                    <div class="col-xs-2 text-center">
+                                        &nbsp&nbsp
+                                        <span id="block-symbol-arrow"></span>
+                                        <span id="block-symbol-x"></span>
+                                    </div>
+                                    <div class="col-xs-8"> 
+                                        <label id="block-symbol-label">Symbol:</label>       
+                                        <select class="form-control" id="block-symbol">
+                                            <option></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-3">
+                                <div class="row">
+                                    <div class="col-xs-2 text-center">
+                                        &nbsp&nbsp
+                                        <span id="block-datatype-arrow"></span>
+                                        <span id="block-datatype-x"></span>
+                                    </div>
+                                    <div class="col-xs-8"> 
+                                        <label id="block-datatype-label">Data Type:</label>       
+                                        <select class="form-control" id="block-datatype">
+                                            <option></option>
+                                        </select>
+                                    </div>
+                                 </div>
+                            </div>
+                            <div class="col-xs-3">
+                                    <div class="row">
+                                        <div class="col-xs-2 text-center">
+                                            &nbsp&nbsp
+                                            <span id="block-interval-arrow"></span>
+                                            <span id="block-interval-x"></span>
+                                        </div>
+                                        <div class="col-xs-8"> 
+                                            <label id="block-interval-label">Interval:</label>       
+                                            <select class="form-control" id="block-interval">
+                                                <option></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                            </div>
+                    </div>
+                    <div class="row">
+                            <div>&nbsp</div>
+                            <div class="col-xs-4">
+                                <div class="row">
+                                    <div class="col-xs-2 text-center" id="arrow5">
+                                        <span id="block-submit-arrow"></span>
+                                        <span id="block-submit-x"></span>
+                                    </div>
+                                     <div class="col-xs-8">
+                                        <div>    
+                                            <button type="button" class="btn btn-primary floated" id="block-submit">Submit</button>
+                                            <button type="button" class="btn btn-success floated" id="block-reset">Reset</button>
+                                        </div>     
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  
+                    <div>&nbsp</div>
+                    <div class = "row">
+                        <div class ="col-xs-8">     
+                            <div id="block-error"></div>
+                        </div>
+                    </div>
+
                         <table class="table"  id = "table-of-prices" >
                             <thead>
                                 <th>Price/Data Information</th>
@@ -126,102 +199,35 @@
                                 <td id="current-volume"></td>
                             </tr>
                           </tbody>
-                        </table>  
-                        <div id="hchart" style="height: 800px; min-width: 310px"></div>
-                        <!-- end of prices tab -->
-                    </div>
-                    <div id="block" class="tab-pane fade">
-                        <!-- Write your code for the Block tab here -->
-                        <div class="row">
-                                <div class="col-xs-3">
-                                    <div class="row">
-                                        <div class="col-xs-2 text-center">
-                                            &nbsp&nbsp
-                                            <span id="block-symbol-arrow"></span>
-                                            <span id="block-symbol-x"></span>
-                                        </div>
-                                        <div class="col-xs-8"> 
-                                            <label id="block-symbol-label">Symbol:</label>       
-                                            <select class="form-control" id="block-symbol">
-                                                <option></option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xs-3">
-                                    <div class="row">
-                                        <div class="col-xs-2 text-center">
-                                            &nbsp&nbsp
-                                            <span id="block-datatype-arrow"></span>
-                                            <span id="block-datatype-x"></span>
-                                        </div>
-                                        <div class="col-xs-8"> 
-                                            <label id="block-datatype-label">Data Type:</label>       
-                                            <select class="form-control" id="block-datatype">
-                                                <option></option>
-                                            </select>
-                                        </div>
-                                     </div>
-                                </div>
-                                <div class="col-xs-3">
-                                        <div class="row">
-                                            <div class="col-xs-2 text-center">
-                                                &nbsp&nbsp
-                                                <span id="block-interval-arrow"></span>
-                                                <span id="block-interval-x"></span>
-                                            </div>
-                                            <div class="col-xs-8"> 
-                                                <label id="block-interval-label">Interval:</label>       
-                                                <select class="form-control" id="block-interval">
-                                                    <option></option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                </div>
-                        </div>
-                        <div class="row">
-                                <div>&nbsp</div>
-                                <div class="col-xs-4">
-                                    <div class="row">
-                                        <div class="col-xs-2 text-center" id="arrow5">
-                                            <span id="block-submit-arrow"></span>
-                                            <span id="block-submit-x"></span>
-                                        </div>
-                                         <div class="col-xs-8">
-                                            <div>    
-                                                <button type="button" class="btn btn-primary floated" id="block-submit">Submit</button>
-                                                <button type="button" class="btn btn-success floated" id="block-reset">Reset</button>
-                                            </div>     
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>  
-                        <div>&nbsp</div>
-                        <div class = "row">
-                            <div class ="col-xs-8">     
-                                <div id="block-error"></div>
-                            </div>
-                        </div>
-                        <table class="table" id="table-of-blocks">
-                                <thead>
-                                    <th>Block Information</th>
-                                    <th></th>
-                                </thead>    
-                              <tbody>
-                                <tr id="block-row1">
-                                  <td>Time Period:</td>
-                                  <td id="block-time-period"></td>
-                                </tr>
-                                <tr id="block-row2">
-                                  <td id="current-block-label">Current Block Data:</td>
-                                  <td id="current-block"></td>    
-                                </tr>
-                              </tbody>
                         </table>
-                        <h3 id="block-time"></h3>             
-                        <h3 id="current-block"></h3>
+                        <table class="table" id="table-of-blocks">
+                            <thead>
+                                <th>Block Information</th>
+                                <th></th>
+                            </thead>    
+                          <tbody>
+                            <tr id="block-row1">
+                              <td>Time Period:</td>
+                              <td id="block-time-period"></td>
+                            </tr>
+                            <tr id="block-row2">
+                              <td id="current-block-label">Current Block Data:</td>
+                              <td id="current-block"></td>    
+                            </tr>
+                          </tbody>
+                    </table>
+                        
+                        <div id="hchart" style="height: 800px; min-width: 310px"></div>
                         <div id="block-hchart" style="height: 400px; min-width: 310px"></div>
                         <div id="block-hchart-scatter" style="height: 400px; min-width: 310px"></div>
+                        
+                        <!-- end of charts tab -->
+                    </div>
+                    <div id="tools" class="tab-pane fade">
+                        <!-- Write your code for the Block tab here -->
+                        <h3>Coming soon</h3>
+                        <p>Placeholder</p>
+                
                         <!-- end of block tab -->
                     </div>
                     <div id="tools" class="tab-pane fade">

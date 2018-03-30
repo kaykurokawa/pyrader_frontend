@@ -116,7 +116,33 @@
     }
 
     //call API and Generate the Price and Volume graphs
-    function getPriceAPI(arr){ 
+    function getPriceAPI(arr,option){ 
+        parameter = arr[0]
+        exchange = arr[1]
+        symbol = arr[2]
+        unit = arr[3]
+        interval = arr[4]
+
+        return fetch(parameter).then(handleResponse, handleNetworkError)
+    }
+
+    function handleResponse(response){
+        if(response.ok){
+            return response.json();
+        }else{
+            return response.json().then(function(error){
+                throw error;
+            })
+        }
+    }
+
+    function handleNetworkError(response){
+        throw{
+            msg: error.message
+        };
+    }
+
+    function addPriceAPI(arr,count){
         parameter = arr[0]
         exchange = arr[1]
         symbol = arr[2]
@@ -155,7 +181,7 @@
                     console.log('Fetch Error :-S', err);
                     return false   
                 });
-    }
+    } 
     //Call the API and generate graph for Block data
     function getBlockAPI(arr){ 
         parameter = arr[0]

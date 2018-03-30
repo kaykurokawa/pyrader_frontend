@@ -1,4 +1,4 @@
-
+var Input = require('./input.js')
 
 //Create Highcharts for price/volume
 function drawPriceHeader(coin,unit,last_price,last_volume,first_date, last_date){
@@ -10,11 +10,13 @@ function drawPriceHeader(coin,unit,last_price,last_volume,first_date, last_date)
     document.getElementById("current-volume").innerHTML = coin + ": " + last_volume + " " + unit
 }
 
-function drawPriceVolumeGraph(coin,unit,x,y_prices,y_volume){
-    Highcharts.setOptions({global:{useUTC: false}});
 
+function drawPriceVolumeGraph(coin,unit,x,y_prices,y_volume){
+    
+    Highcharts.setOptions({global:{useUTC: false}});
     volume = []
     prices = []
+    rand = []
     // set the allowed units for data grouping
     groupingUnits = [[
         'week',                         // unit name
@@ -27,6 +29,7 @@ function drawPriceVolumeGraph(coin,unit,x,y_prices,y_volume){
     for(i = 0 ; i < x.length ; i++){
         prices.push([x[i], y_prices[i]])
         volume.push([x[i], y_volume[i]])
+        rand.push([x[i], Math.floor((Math.random() * 1000) + 1)])
     }
 
 
@@ -36,7 +39,7 @@ function drawPriceVolumeGraph(coin,unit,x,y_prices,y_volume){
     y_axis2 = "Volume of " + coin + " in " + unit
 
     // create the chart
-    hchart = Highcharts.stockChart('hchart', {
+    var priceChart = Highcharts.stockChart('hchart', {
 
     rangeSelector: {
         selected: 1
@@ -96,6 +99,16 @@ function drawPriceVolumeGraph(coin,unit,x,y_prices,y_volume){
         }
     }]
     });
+
+    priceChart.addSeries({
+        type: 'line',
+        name: 'other',
+        data: rand,
+        dataGrouping: {
+            enabled: false,
+            units: groupingUnits
+        }
+    });
  }
 
  function drawBlockHeader(coin,datatype,last_block,first_date, last_date){
@@ -106,8 +119,13 @@ function drawPriceVolumeGraph(coin,unit,x,y_prices,y_volume){
     document.getElementById("current-block").innerHTML = datatype + " for " + coin + " " + current_block
     document.getElementById("current-block-label").innerHTML = "current "+ datatype + ": "
  }
+
 //Create Highcharts for block
  function drawBlockGraph(coin,datatype,x,y){
+    document.getElementById("submit").addEventListener("click", function(){
+        Input.getBlockAPI(Input.readBlockValues())
+    });
+
     block_data = []
     for(i = 0 ; i < x.length ; i++){
         block_data.push([x[i], y[i]])
@@ -119,7 +137,7 @@ function drawPriceVolumeGraph(coin,unit,x,y_prices,y_volume){
 
 
        // create the chart
-    Highcharts.stockChart('block-hchart', {
+    var blockChart = Highcharts.stockChart('block-hchart', {
                 rangeSelector: {
                     selected: 1
                 },
@@ -146,8 +164,7 @@ function drawPriceVolumeGraph(coin,unit,x,y_prices,y_volume){
     console.log(block_data)
     title = coin + " " + datatype + " " + "chart"
     y_axis = datatype + " of " + coin
-    console.log("here")
-    Highcharts.stockChart('block-hchart', {
+    var blockScatter = Highcharts.stockChart('block-hchart', {
                 rangeSelector: {
                     selected: 2
                 },
@@ -208,8 +225,8 @@ function drawPriceVolumeGraph(coin,unit,x,y_prices,y_volume){
     $('#hchart').highcharts().destroy();
  }
 
-//generate the Highcharts
- function showCharts(){
+//remove the error class for the wells
+ function removeErrors(){
     document.getElementById("error").innerHTML = "" 
     document.getElementById("error").classList.remove("well");
  }
@@ -244,7 +261,7 @@ function drawPriceVolumeGraph(coin,unit,x,y_prices,y_volume){
 
 module.exports = {
     drawPriceVolumeGraph : drawPriceVolumeGraph,
-    showCharts : showCharts,
+    removeErrors : removeErrors,
     clearCharts : clearCharts,
     drawBlockGraph : drawBlockGraph,
     showBlockCharts : showBlockCharts,
