@@ -145,8 +145,9 @@
                     var first_date = x[0]
                     var last_date = x[x.length-1]
                      //Here you will pass data to whatever Graphing library asynchronosly
+                     //add data to price volume
                         High.drawPriceHeader(coin_data,unit_data,last_price,last_volume,first_date, last_date)
-                        High.drawPriceVolumeGraph(coin_data,unit_data,x,y_prices,y_volume)
+                        High.addPriceVolumeGraph(coin_data,unit_data,x,y_prices,y_volume)
                         return true
                 });
                 }
@@ -194,11 +195,11 @@
                     //Here you will pass data to whatever Graphing library asynchronosly
                     if(plottype == "scatter"){
                         
-                        High.drawScatterPlot(coin_data,datatype_data,x,y)
-                        High.drawBlockHeader(coin_data,datatype_data,last_datatype,first_date, last_date)
+                        High.addScatterPlot(coin_data,datatype_data,x,y)
+                        High.addBlockHeader(coin_data,datatype_data,last_datatype,first_date, last_date)
                     }else{
-                        High.drawBlockGraph(coin_data,datatype_data,x,y)
-                        High.drawBlockHeader(coin_data,datatype_data,last_datatype,first_date, last_date)
+                        High.addBlockGraph(coin_data,datatype_data,x,y)
+                        High.addBlockHeader(coin_data,datatype_data,last_datatype,first_date, last_date)
                     }
                 });
                 }
