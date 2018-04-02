@@ -25,13 +25,20 @@ function addPriceTable(id1,id2,coin,unit,last_price,last_volume,first_date, last
 }
 
 
-function addBlockTable(coin,datatype,last_block,first_date, last_date){
-    /*to_date = new Date(first_date).toDateString() + " " + new Date(first_date).toLocaleTimeString('en-US')
+function addBlockTable(id,coin,datatype,last_block,first_date, last_date){
+    var newRow1 = document.querySelector("#table-of-prices").insertRow()
+    to_date = new Date(first_date).toDateString() + " " + new Date(first_date).toLocaleTimeString('en-US')
     from_date = new Date(last_date).toDateString() + " " +  new Date(last_date).toLocaleTimeString('en-US')
     current_block = last_block
-    document.getElementById("block-time-period").innerHTML =  from_date  + " to " + to_date
-    document.getElementById("current-block").innerHTML = datatype + " for " + coin + " " + current_block
-    document.getElementById("current-block-label").innerHTML = "current "+ datatype + ": "*/
+    newRow1.setAttribute("id",id)
+    newRow1.innerHTML = "<td>Block</td>" + "<td>" + datatype +"</td>" + "<td>" + coin + "</td>" 
+    + "<td>" + from_date + " to " + to_date + "</td>"
+    + "<td>"+ current_block + "</td>" + "<td>units</td>" + "<td class = 'text-center'><span id='remove-row1' class = 'glyphicon glyphicon-remove'></span></td>" 
+    document.querySelector("#remove-row1").setAttribute("id", "remove" + id)
+    document.querySelector("#remove" + id).onclick= function(btn){ 
+        $("#" + id).remove()
+        hchart.get(id).remove()
+    }
  }
 
  function clearTable(){

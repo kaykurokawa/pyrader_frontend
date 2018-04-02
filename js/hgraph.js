@@ -39,7 +39,7 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
 
 
 //Create Highcharts for block
- function addBlockGraph(coin,datatype,x,y){
+ function addBlockGraph(id,coin,datatype,x,y){
     block_data = []
     for(i = 0 ; i < x.length ; i++){
         block_data.push([x[i], y[i]])
@@ -48,6 +48,7 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     title = coin + " " + datatype + " " + "chart"
     y_axis = datatype + " of " + coin
     hchart.addSeries({
+        id: id,
         name: y_axis,
         data: block_data,
         tooltip: {
@@ -60,7 +61,7 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     })
 }
 
-function addScatterPlot(coin,datatype,x,y){
+function addScatterPlot(id,coin,datatype,x,y){
     block_data = []
     for(i = 0 ; i < x.length ; i++){
         block_data.push([x[i], y[i]])
@@ -69,6 +70,7 @@ function addScatterPlot(coin,datatype,x,y){
     y_axis = datatype + " of " + coin
 
     hchart.addSeries({
+        id : id,
         type: 'scatter',
         name: y_axis,
         data: block_data,

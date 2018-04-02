@@ -195,15 +195,16 @@
                     var first_date = x[0]
                     var last_date = x[x.length-1]
                     var last_datatype = data.y[y.length-1]
-                
+                    
                     //Here you will pass data to whatever Graphing library asynchronosly
                     if(plottype == "scatter"){
-                        
-                        High.addScatterPlot(coin_data,datatype_data,x,y)
-                        Table.addBlockTable(coin_data,datatype_data,last_datatype,first_date, last_date)
+                        seriesID++
+                        High.addScatterPlot(seriesID,coin_data,datatype_data,x,y)
+                        Table.addBlockTable(seriesID,coin_data,datatype_data,last_datatype,first_date, last_date)
                     }else{
-                        High.addBlockGraph(coin_data,datatype_data,x,y)
-                        High.addBlockTable(coin_data,datatype_data,last_datatype,first_date, last_date)
+                        seriesID++
+                        High.addBlockGraph(seriesID,coin_data,datatype_data,x,y)
+                        Table.addBlockTable(seriesID,coin_data,datatype_data,last_datatype,first_date, last_date)
                     }
                 });
                 }
