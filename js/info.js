@@ -1,5 +1,7 @@
 const constants = require('./constants.js')
-        //Call Info API and pass information to dropdowns 
+
+//Call Info API and pass information to dropdowns
+
         function getInfo(){
             url= constants.REST_URL + "/info"
              fetch(url)

@@ -2,6 +2,8 @@
     const constants = require('./constants.js')
     var view = require('./urlModel.js')
     const URL = require('./url.js')
+    const Table = require('./table.js')
+    var seriesID = 0
 
      //reads dropdown and converts it into url and returns it to be passed to Ajax call
     function readPricesValues(){
@@ -146,8 +148,10 @@
                     var last_date = x[x.length-1]
                      //Here you will pass data to whatever Graphing library asynchronosly
                      //add data to price volume
-                        High.drawPriceHeader(coin_data,unit_data,last_price,last_volume,first_date, last_date)
-                        High.addPriceVolumeGraph(coin_data,unit_data,x,y_prices,y_volume)
+                        id1 = ++seriesID 
+                        id2 = ++seriesID
+                        Table.addPriceTable(id1,id2,coin_data,unit_data,last_price,last_volume,first_date, last_date)
+                        High.addPriceVolumeGraph(id1,id2,coin_data,unit_data,x,y_prices,y_volume)
                         return true
                 });
                 }
@@ -196,10 +200,10 @@
                     if(plottype == "scatter"){
                         
                         High.addScatterPlot(coin_data,datatype_data,x,y)
-                        High.addBlockHeader(coin_data,datatype_data,last_datatype,first_date, last_date)
+                        Table.addBlockTable(coin_data,datatype_data,last_datatype,first_date, last_date)
                     }else{
                         High.addBlockGraph(coin_data,datatype_data,x,y)
-                        High.addBlockHeader(coin_data,datatype_data,last_datatype,first_date, last_date)
+                        High.addBlockTable(coin_data,datatype_data,last_datatype,first_date, last_date)
                     }
                 });
                 }
@@ -349,8 +353,8 @@
     }
     
     module.exports = {
-        getPriceAPI: getPriceAPI,
-        getBlockAPI: getBlockAPI,
+        getPriceAPI : getPriceAPI,
+        getBlockAPI : getBlockAPI,
         readPricesValues : readPricesValues,
         readBlockValues : readBlockValues,
         initialPriceParameter : initialPriceParameter,

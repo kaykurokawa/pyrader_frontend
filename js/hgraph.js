@@ -1,15 +1,7 @@
 
 //Create Highcharts for price/volume
-function drawPriceHeader(coin,unit,last_price,last_volume,first_date, last_date){
 
-    from_date = new Date(first_date).toDateString() + " " + new Date(first_date).toLocaleTimeString('en-US')
-    to_date = new Date(last_date).toDateString() + " " + new Date(last_date).toLocaleTimeString('en-US')
-    document.getElementById("time-period").innerHTML =  from_date + " to " + to_date 
-    document.getElementById("current-price").innerHTML =  coin + ": " + last_price + " " + unit
-    document.getElementById("current-volume").innerHTML = coin + ": " + last_volume + " " + unit
-}
-
-function addPriceVolumeGraph(coin,unit,x,y_prices,y_volume){
+function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     volume = []
     prices = []
     for(i = 0 ; i < x.length ; i++){
@@ -21,6 +13,7 @@ function addPriceVolumeGraph(coin,unit,x,y_prices,y_volume){
     y_axis1 = "Price of " + coin + " in " + unit
     y_axis2 = "Volume of " + coin + " in " + unit
     hchart.addSeries({
+        id: id1,
         type: 'line',
         name: y_axis1,
         data: prices,
@@ -30,9 +23,11 @@ function addPriceVolumeGraph(coin,unit,x,y_prices,y_volume){
         }
     })
     hchart.addSeries({
+        id: id2,
         type: 'line',
         name: y_axis2,
         data: volume,
+        yAxis: 1,
         dataGrouping: {
             enabled: false,
             units: groupingUnits
@@ -42,14 +37,7 @@ function addPriceVolumeGraph(coin,unit,x,y_prices,y_volume){
     hchart.setTitle({text: title})
 }
 
-function drawBlockHeader(coin,datatype,last_block,first_date, last_date){
-    to_date = new Date(first_date).toDateString() + " " + new Date(first_date).toLocaleTimeString('en-US')
-    from_date = new Date(last_date).toDateString() + " " +  new Date(last_date).toLocaleTimeString('en-US')
-    current_block = last_block
-    document.getElementById("block-time-period").innerHTML =  from_date  + " to " + to_date
-    document.getElementById("current-block").innerHTML = datatype + " for " + coin + " " + current_block
-    document.getElementById("current-block-label").innerHTML = "current "+ datatype + ": "
- }
+
 //Create Highcharts for block
  function addBlockGraph(coin,datatype,x,y){
     block_data = []
@@ -88,71 +76,69 @@ function addScatterPlot(coin,datatype,x,y){
             enabled: true,
             radius: 5
         },
+        
         tooltip: {
             valueDecimals: 2
         },
     })
 }
 
+groupingUnits = [['week',[1]], ['month',[1, 2, 3, 4, 6]]]
 
-    Highcharts.setOptions({global:{useUTC: false}});
-
-    // set the allowed units for data grouping
-    groupingUnits = [[
-        'week',                         // unit name
-        [1]                             // allowed multiples
-    ], [
-        'month',
-        [1, 2, 3, 4, 6]
-    ]]
-
-    // create the chart
-    hchart = Highcharts.stockChart('hchart', {
-
-    rangeSelector: {
-        selected: 1
-    },
-
-    yAxis: [{
-        labels: {
-            align: 'right',
-            x: -3
+hchart = Highcharts.stockChart('hchart', {
+    
+        rangeSelector: {
+            selected: 1
         },
-        title: {
-            text:  ""
+    
+        yAxis: [{
+            labels: {
+                align: 'right',
+                x: -3
+            },
+            title: {
+                text:  "Price of BTC"
+            },
+            height: '60%',
+            lineWidth: 2,
+            //floor: minimum,
+            type: 'logarithmic',
+            minorTickInterval: 0.1,
+            resize: {
+                enabled: true
+            }
+        }, {
+            labels: {
+                align: 'right',
+                x: -3
+            },
+            title: {
+                text: "Volume of BTC"
+            },
+            top: '65%',
+            height: '35%',
+            offset: 0,
+            lineWidth: 2
+        }],
+        legend: {
+            enabled: true,
+            itemStyle: {
+                color: '#000000',
+                fontWeight: 'bold'
+            }
         },
-        height: '100%',
-        lineWidth: 2,
-        //floor: minimum,
-        type: 'logarithmic',
-        minorTickInterval: 0.1,
-        resize: {
-            enabled: true
-        }
-    }
-    ],
-    legend: {
-        enabled: true,
-        itemStyle: {
-            color: '#000000',
-            fontWeight: 'bold'
-        }
-    },
-    tooltip: {
-        split: true,
-        valueDecimals: 2
-        //valueDecimals: 2
-    },
-
-    series: []
-    });
-
-
-
+        tooltip: {
+            split: true,
+            shared: false
+            //valueDecimals: 2
+        },
+    
+        series: []
+        });
 
 //clear Highcharts and all the HTML associated with it
 
- function clearCharts(){
+function clearCharts(){
     document.getElementById("error").innerHTML = "No data for this period" 
     document.getElementById("error").className = "well"
     $("#table-of-prices td").remove();
@@ -179,10 +165,10 @@ function addScatterPlot(coin,datatype,x,y){
     row2.appendChild(td4) 
     row3.appendChild(td5)
     row3.appendChild(td6)
-    $('#hchart').highcharts().destroy();
+    //$('#hchart').highcharts().destroy();
  }
 
-//generate the Highcharts
+
  function showCharts(){
     document.getElementById("error").innerHTML = "" 
     document.getElementById("error").classList.remove("well");
@@ -219,12 +205,10 @@ function addScatterPlot(coin,datatype,x,y){
 module.exports = {
     showCharts : showCharts,
     clearCharts : clearCharts,
-    drawBlockGraph : drawBlockGraph,
+    addBlockGraph : addBlockGraph,
     showBlockCharts : showBlockCharts,
     clearBlockCharts : clearBlockCharts,
-    drawPriceHeader: drawPriceHeader,
-    drawBlockHeader: drawBlockHeader,
-    drawScatterPlot : drawScatterPlot,
+    addScatterPlot : addScatterPlot,
     addPriceVolumeGraph : addPriceVolumeGraph
   }
   

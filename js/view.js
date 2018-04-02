@@ -1,4 +1,5 @@
-    var MODEL = {
+
+    var VIEW_MODEL = {
         type: "",
         symbol : "",
         unit : "",
