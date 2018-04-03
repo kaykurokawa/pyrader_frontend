@@ -24,7 +24,7 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     })
     hchart.addSeries({
         id: id2,
-        type: 'line',
+        type: 'column',
         name: y_axis2,
         data: volume,
         yAxis: 1,
@@ -78,10 +78,6 @@ function addScatterPlot(id,coin,datatype,x,y){
             enabled: true,
             radius: 5
         },
-        
-        tooltip: {
-            valueDecimals: 2
-        },
     })
 }
 
@@ -90,7 +86,7 @@ groupingUnits = [['week',[1]], ['month',[1, 2, 3, 4, 6]]]
 hchart = Highcharts.stockChart('hchart', {
     
         rangeSelector: {
-            selected: 1
+            selected: 4
         },
     
         yAxis: [{
@@ -120,6 +116,7 @@ hchart = Highcharts.stockChart('hchart', {
             top: '65%',
             height: '35%',
             offset: 0,
+            type: 'logarithmic',
             lineWidth: 2
         }],
         legend: {
@@ -129,10 +126,13 @@ hchart = Highcharts.stockChart('hchart', {
                 fontWeight: 'bold'
             }
         },
+        plotOptions: {
+            series: {stickyTracking: false}
+        },
         tooltip: {
             split: true,
-            shared: false
-            //valueDecimals: 2
+            shared: true,
+            valueDecimals: 2
         },
     
         series: []
@@ -144,7 +144,7 @@ function clearCharts(){
     document.getElementById("error").innerHTML = "No data for this period" 
     document.getElementById("error").className = "well"
     $("#table-of-prices td").remove();
-    var row1 = document.getElementById("prices-row1")
+    let row1 = document.getElementById("prices-row1")
     var row2 = document.getElementById("prices-row2")
     var row3 = document.getElementById("prices-row3")
     td1 = document.createElement("td")
@@ -199,16 +199,11 @@ function clearCharts(){
  }
 
 //generate the Highcharts
- function showBlockCharts(){
-    document.getElementById("block-error").innerHTML = "" 
-    document.getElementById("block-error").classList.remove("well");
- }
 
 module.exports = {
     showCharts : showCharts,
     clearCharts : clearCharts,
     addBlockGraph : addBlockGraph,
-    showBlockCharts : showBlockCharts,
     clearBlockCharts : clearBlockCharts,
     addScatterPlot : addScatterPlot,
     addPriceVolumeGraph : addPriceVolumeGraph

@@ -107,11 +107,6 @@
              p_datatype =  "&datatype=" + view.MODEL.datatype
              parameter = constants.REST_URL + '/block' + p_symbol + p_datatype + p_interval 
              console.log(parameter)
-        }else{
-            var interval = "hour"
-            var parameter = constants.REST_URL + '/block?coin=LTC&datatype=difficulty&interval=hour'
-            var symbol = "LTC"
-            var datatype = "difficulty"
         }
         validateParamtersConsole(parameter)
         return [parameter,symbol, datatype, interval]
@@ -179,7 +174,6 @@
                 }
                 response.json().then(function(data) {
                     High.showCharts()
-                    High.showBlockCharts()
                     interval_i = data.interval/1000
                     var plottype = data.plottype
                     if(plottype == "scatter"){
@@ -289,22 +283,8 @@
         return json.y
         }
 
-    //given a json with volumes, and units in string,eliminate zeros convert the volumes to those units and return the array of volumes
+    //given a json with volumes,convert the volumes to those units.
     function processVolume(json,unit){
-
-        for(i = 0 ; i < json.w.length ; i++){
-
-            if(json.w[i] == 0 && i ==0){
-                j = 0
-              while(json.w[j] == 0){j++}  
-                json.w[0] = json.w[j]
-                    
-            }else if(json.w[i] == 0){
-                json.w[i] = json.w[i-1]
-            }else{
-                continue
-            }
-        }
         
              json.w = json.w.map(function(vol){return round(vol/constants.conversions[unit],2)})
             return json.w
@@ -365,4 +345,5 @@
         processPrices : processPrices,
         processVolume : processVolume,
         processData : processData,
+        getParameterByName : getParameterByName,
     }

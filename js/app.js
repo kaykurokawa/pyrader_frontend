@@ -11,7 +11,9 @@ $(document).ready(function () {
         event.preventDefault();
         Input.getPriceAPI(Input.readPricesValues())
     }
-    Input.getBlockAPI(Input.initialBlockParameter(url))
+    if(Input.getParameterByName("block",url) != null){
+        Input.getBlockAPI(Input.initialBlockParameter(url))
+    }
         document.getElementById("block-submit").onclick = function(event){
             event.preventDefault();
             Input.getBlockAPI(Input.readBlockValues())

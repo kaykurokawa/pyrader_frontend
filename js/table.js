@@ -27,9 +27,9 @@ function addPriceTable(id1,id2,coin,unit,last_price,last_volume,first_date, last
 
 function addBlockTable(id,coin,datatype,last_block,first_date, last_date){
     var newRow1 = document.querySelector("#table-of-prices").insertRow()
-    to_date = new Date(first_date).toDateString() + " " + new Date(first_date).toLocaleTimeString('en-US')
-    from_date = new Date(last_date).toDateString() + " " +  new Date(last_date).toLocaleTimeString('en-US')
-    current_block = last_block
+    from_date = new Date(first_date).toDateString() + " " + new Date(first_date).toLocaleTimeString('en-US')
+    to_date = new Date(last_date).toDateString() + " " +  new Date(last_date).toLocaleTimeString('en-US')
+    current_block = (last_block).toFixed(4)
     newRow1.setAttribute("id",id)
     newRow1.innerHTML = "<td>Block</td>" + "<td>" + datatype +"</td>" + "<td>" + coin + "</td>" 
     + "<td>" + from_date + " to " + to_date + "</td>"

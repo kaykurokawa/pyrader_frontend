@@ -27,12 +27,12 @@ const constants = require('./constants.js')
         function processInfo(price){
             info_prices = price
             info_prices = eliminateNulls(info_prices)
-            var symbol = document.querySelector("#symbol")
-            var unit = document.querySelector("#unit")
-            var exchange = document.querySelector("#exchange")
-            var interval = document.querySelector("#interval")
-            var submit = document.querySelector("#submit")
-            var reset = document.getElementById("reset")
+            let symbol = document.querySelector("#symbol")
+            let unit = document.querySelector("#unit")
+            let exchange = document.querySelector("#exchange")
+            let interval = document.querySelector("#interval")
+            let submit = document.querySelector("#submit")
+            let reset = document.getElementById("reset")
             submit_x = document.querySelector("#submit-x")
             
             enableDropdown("symbol")
@@ -43,11 +43,11 @@ const constants = require('./constants.js')
             disableButton("submit")
 
         // given the id of the dropdown and the id of the next dropdwon in sequence, take care of all of the logic: enable, disable, load options...etc
-        var states = []
+        let states = []
         states.push(info_prices)
 
         function LoadOptions(id,prev_id,next_id){
-            var tag = document.querySelector("#" + id)
+            let tag = document.querySelector("#" + id)
             tag.onchange = function(event){
                 current = states[states.length-1]
                 if(id == "symbol"){
@@ -74,7 +74,7 @@ const constants = require('./constants.js')
                         console.log(current)
                         createOptions(states[states.length-1],next_id)
                         disableDropdown(id)
-                        var cancel = document.querySelector("#" + next_id + "-x")                
+                        let cancel = document.querySelector("#" + next_id + "-x")                
                         cancel.onclick = function(event){
                             enableDropdown(id)
                             disableDropdown(next_id)
@@ -106,28 +106,60 @@ const constants = require('./constants.js')
             disableButton("submit")
             states = []
             states.push(info_prices)
-        }    
+        }
+
+        submit.addEventListener("click", function(){
+            info_prices = price
+            symbol.options.length = 1
+            createOptions(info_prices,"symbol")
+            enableDropdown("symbol")
+            disableDropdown("unit")
+            unit.options.length = 1
+            disableDropdown("exchange")
+            exchange.options.length = 1
+            disableDropdown("interval")
+            interval.options.length = 1
+            disableButton("submit")
+            states = []
+            states.push(info_prices)
+        })
     }
+  
+    
+            info_prices = price
+            symbol.options.length = 1
+            createOptions(info_prices,"symbol")
+            enableDropdown("symbol")
+            disableDropdown("unit")
+            unit.options.length = 1
+            disableDropdown("exchange")
+            exchange.options.length = 1
+            disableDropdown("interval")
+            interval.options.length = 1
+            disableButton("submit")
+            states = []
+            states.push(info_prices)
+        
 
         //get info from API and append to drop down menu for block charts
         function processBlockInfo(block){
             info_blocks = block
-            var block_symbol = document.querySelector("#block-symbol")
-            var block_datatype = document.querySelector("#block-datatype")
-            var block_interval = document.querySelector("#block-interval")
-            var block_submit = document.querySelector("#block-submit")
-            var block_reset = document.querySelector("#block-reset") 
+            let block_symbol = document.querySelector("#block-symbol")
+            let block_datatype = document.querySelector("#block-datatype")
+            let block_interval = document.querySelector("#block-interval")
+            let block_submit = document.querySelector("#block-submit")
+            let block_reset = document.querySelector("#block-reset") 
             enableDropdown("block-symbol")
             disableDropdown("block-datatype")
             disableDropdown("block-interval")
             createBlockOptions(info_blocks,"block-symbol")
             disableButton("block-submit")
 
-            var states = []
+            let states = []
             states.push(info_blocks)
 
             function LoadBlockOptions(id,prev_id,next_id){
-                var tag = document.querySelector("#" + id)
+                let tag = document.querySelector("#" + id)
                 tag.onchange = function(event){
                     current = states[states.length-1]
                     if(id == "block-symbol"){
@@ -151,7 +183,7 @@ const constants = require('./constants.js')
                             console.log(current)
                             createBlockOptions(states[states.length-1],next_id)
                             disableDropdown(id)
-                            var cancel = document.querySelector("#" + next_id + "-x")                
+                            let cancel = document.querySelector("#" + next_id + "-x")                
                             cancel.onclick = function(event){
                                 enableDropdown(id)
                                 disableDropdown(next_id)
@@ -180,7 +212,21 @@ const constants = require('./constants.js')
                 disableButton("block-submit")
                 states = []
                 states.push(info_blocks)
-            }      
+            } 
+            
+            block_submit.addEventListener("click", function(){
+                info_blocks = block
+                block_symbol.options.length = 1
+                createBlockOptions(info_blocks,"block-symbol")
+                enableDropdown("block-symbol")
+                disableDropdown("block-datatype")
+                block_datatype.options.length = 1
+                disableDropdown("block-interval")
+                block_interval.options.length = 1
+                disableButton("block-submit")
+                states = []
+                states.push(info_blocks)
+            })
         }
 
         function disableDropdown(select){
@@ -242,16 +288,10 @@ const constants = require('./constants.js')
                     array.push(text)
                     option = document.createElement("option")
                     option.text = text
-                    var select = document.getElementById(id);
+                    let select = document.getElementById(id);
                     select.appendChild(option); 
                 }
             } 
-            if(id == "interval"){
-                option = document.createElement("option")
-                option.text = "None"
-                var select = document.getElementById(id);
-                select.appendChild(option); 
-            }
         }
 
         function createBlockOptions(info, id){
@@ -264,16 +304,16 @@ const constants = require('./constants.js')
                     array.push(text)
                     option = document.createElement("option")
                     option.text = text
-                    var select = document.getElementById(id);
+                    let select = document.getElementById(id);
                     select.appendChild(option); 
                 }
             }
-            if(id == "block-interval"){
+            /*if(id == "block-interval"){
                 option = document.createElement("option")
                 option.text = "None"
-                var select = document.getElementById(id);
+                let select = document.getElementById(id);
                 select.appendChild(option); 
-            }
+            }*/
         }
         
         //given a number in miroseconds return if it is a day, hour, 5 min
