@@ -1,16 +1,16 @@
-function addPriceTable(id1,id2,coin,unit,last_price,last_volume,first_date, last_date){
+function addPriceTable(id1,id2,coin,unit,last_price,last_volume,first_date, last_date,interval,exchange){
     var newRow1 = document.querySelector("#table-of-prices").insertRow()
     var newRow2 = document.querySelector("#table-of-prices").insertRow()
     var from_date = new Date(first_date).toDateString() + " " + new Date(first_date).toLocaleTimeString('en-US')
     var to_date = new Date(last_date).toDateString() + " " + new Date(last_date).toLocaleTimeString('en-US')
     newRow1.setAttribute("id",id1)
     newRow2.setAttribute("id",id2)
-    newRow1.innerHTML = "<td>Price/Volume</td>" + "<td>Price</td>" + "<td>" + coin + "</td>" 
+    newRow1.innerHTML = "<td>Price/Volume</td>" + "<td>Price</td>" + "<td>" + coin + "</td>" + "<td>" + exchange + "</td>" 
     + "<td>" + from_date + " to " + to_date + "</td>"
-    + "<td>"+ last_price + "</td>" + "<td>" + unit + "</td>" + "<td class = 'text-center'><span id='remove-row1' class = 'glyphicon glyphicon-remove'></span></td>" 
-    newRow2.innerHTML = "<td>Price/Volume</td>" + "<td>Volume</td>" + "<td>" + coin + "</td>" 
+    + "<td>"+ last_price + "</td>" + "<td>" + unit + "</td>"  + "<td>" + interval +"</td>" + "<td class = 'text-center'><span id='remove-row1' class = 'glyphicon glyphicon-remove'></span></td>" 
+    newRow2.innerHTML = "<td>Price/Volume</td>" + "<td>Volume</td>" + "<td>" + coin + "</td>" + "<td>" + exchange + "</td>" 
     + "<td>" + from_date + " to " + to_date + "</td>"
-    + "<td>"+ last_volume + "</td>" + "<td>" + unit +"</td>" + "<td class = 'text-center'><span id='remove-row2' class = 'glyphicon glyphicon-remove'></span></td>" 
+    + "<td>"+ last_volume + "</td>" + "<td>" + unit +"</td>" + "<td>" + interval +"</td>" + "<td class = 'text-center'><span id='remove-row2' class = 'glyphicon glyphicon-remove'></span></td>" 
     document.querySelector("#remove-row1").setAttribute("id", "remove" + id1)
     document.querySelector("#remove-row2").setAttribute("id", "remove" + id2)
     document.querySelector("#remove" + id1).onclick= function(btn){ 
@@ -25,15 +25,15 @@ function addPriceTable(id1,id2,coin,unit,last_price,last_volume,first_date, last
 }
 
 
-function addBlockTable(id,coin,datatype,last_block,first_date, last_date){
+function addBlockTable(id,coin,datatype,last_block,first_date, last_date,interval,exchange){
     var newRow1 = document.querySelector("#table-of-prices").insertRow()
     from_date = new Date(first_date).toDateString() + " " + new Date(first_date).toLocaleTimeString('en-US')
     to_date = new Date(last_date).toDateString() + " " +  new Date(last_date).toLocaleTimeString('en-US')
     current_block = (last_block).toFixed(4)
     newRow1.setAttribute("id",id)
-    newRow1.innerHTML = "<td>Block</td>" + "<td>" + datatype +"</td>" + "<td>" + coin + "</td>" 
+    newRow1.innerHTML = "<td>Block</td>" + "<td>" + datatype +"</td>" + "<td>" + coin + "</td>" + "<td>Aggregated</td>"
     + "<td>" + from_date + " to " + to_date + "</td>"
-    + "<td>"+ current_block + "</td>" + "<td>units</td>" + "<td class = 'text-center'><span id='remove-row1' class = 'glyphicon glyphicon-remove'></span></td>" 
+    + "<td>"+ current_block + "</td>" + "<td>units</td>" + + "<td>" + interval +"</td>" + "<td class = 'text-center'><span id='remove-row1' class = 'glyphicon glyphicon-remove'></span></td>" 
     document.querySelector("#remove-row1").setAttribute("id", "remove" + id)
     document.querySelector("#remove" + id).onclick= function(btn){ 
         $("#" + id).remove()

@@ -51,13 +51,6 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
         id: id,
         name: y_axis,
         data: block_data,
-        tooltip: {
-            formatter: function () {
-                return Highcharts.dateFormat('%B %e, %Y %H:%M', this.x) + '<br/>' + 
-                    Highcharts.numberFormat(this.y, 2);
-            },
-            valueDecimals: 2
-        }
     })
 }
 
@@ -95,28 +88,25 @@ hchart = Highcharts.stockChart('hchart', {
                 x: -3
             },
             title: {
-                text:  "Price of BTC"
+                text:  "Price/Block Data"
             },
-            height: '60%',
+            height: '70%',
             lineWidth: 2,
             //floor: minimum,
             type: 'logarithmic',
-            minorTickInterval: 0.1,
-            resize: {
-                enabled: true
-            }
+            minorTickInterval: 0.1
         }, {
             labels: {
                 align: 'right',
                 x: -3
             },
             title: {
-                text: "Volume of BTC"
+                text: "Volumes"
             },
-            top: '65%',
-            height: '35%',
+            top: '70%',
+            height: '30%',
             offset: 0,
-            type: 'logarithmic',
+            type: 'linear',
             lineWidth: 2
         }],
         legend: {
@@ -130,8 +120,17 @@ hchart = Highcharts.stockChart('hchart', {
             series: {stickyTracking: false}
         },
         tooltip: {
-            split: true,
-            shared: true,
+             formatter: function () {
+                 if(this.hasOwnProperty('points') && this.points.length == 2){
+                    return this.points[0].series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.points[0].x) + ': ' + Highcharts.numberFormat(this.points[0].y, 2)
+                    + '<br/>' + this.points[1].series.name +  ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.points[1].x) + ': ' + Highcharts.numberFormat(this.points[1].y, 2)
+                 }else if(this.hasOwnProperty('points') && this.points.length == 1){
+                    return this.points[0].series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.x) + '<br/>' + Highcharts.numberFormat(this.y, 2)
+                 }else{
+                    return this.series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.x) + '<br/>' + Highcharts.numberFormat(this.y, 2) 
+                 }
+             },
+             shared: true,
             valueDecimals: 2
         },
     

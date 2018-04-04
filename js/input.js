@@ -80,7 +80,7 @@
 
         }else{
             var parameter = constants.REST_URL + '/price?coin=LTC&interval=5min'
-            var exhcange = "Aggregated" 
+            var exchange = "Aggregated" 
             var symbol = "LTC" 
             var unit = "USD"
             var interval = "5min"
@@ -145,7 +145,7 @@
                      //add data to price volume
                         id1 = ++seriesID 
                         id2 = ++seriesID
-                        Table.addPriceTable(id1,id2,coin_data,unit_data,last_price,last_volume,first_date, last_date)
+                        Table.addPriceTable(id1,id2,coin_data,unit_data,last_price,last_volume,first_date, last_date, interval, exchange)
                         High.addPriceVolumeGraph(id1,id2,coin_data,unit_data,x,y_prices,y_volume)
                         return true
                 });
@@ -174,6 +174,7 @@
                 }
                 response.json().then(function(data) {
                     High.showCharts()
+                    interval =data.interval
                     interval_i = data.interval/1000
                     var plottype = data.plottype
                     if(plottype == "scatter"){
@@ -194,11 +195,11 @@
                     if(plottype == "scatter"){
                         seriesID++
                         High.addScatterPlot(seriesID,coin_data,datatype_data,x,y)
-                        Table.addBlockTable(seriesID,coin_data,datatype_data,last_datatype,first_date, last_date)
+                        Table.addBlockTable(seriesID,coin_data,datatype_data,last_datatype,first_date, last_date, interval, exchange)
                     }else{
                         seriesID++
                         High.addBlockGraph(seriesID,coin_data,datatype_data,x,y)
-                        Table.addBlockTable(seriesID,coin_data,datatype_data,last_datatype,first_date, last_date)
+                        Table.addBlockTable(seriesID,coin_data,datatype_data,last_datatype,first_date, last_date, interval, exchange)
                     }
                 });
                 }
