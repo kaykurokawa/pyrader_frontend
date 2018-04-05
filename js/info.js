@@ -256,8 +256,7 @@ const constants = require('./constants.js')
             document.getElementById(select).disabled = false
             document.getElementById(arrow_label).classList.add("glyphicon", "glyphicon-arrow-right");
             document.getElementById(x_label).classList.add("glyphicon", "glyphicon-remove");
-            //document.getElementById(select_label).style.color = "black"
-            //document.getElementById(x_label).style.color = "red"
+            document.getElementById(select_label).style.color = "black"
         }
 
         function enableButton(select){

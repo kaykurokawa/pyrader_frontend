@@ -109,7 +109,7 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
              },
              height: '65%',
              lineWidth: 2,
-             offset: 30*id,
+             offset: 40*id,
              type: 'linear',
              minorTickInterval: 0.1,
              opposite: true,
@@ -117,9 +117,9 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
      )
 
     hchart.addSeries({
-        id: id1,
+        id: id,
         type: 'line',
-        name: y_axis1,
+        name: y_axis,
         data: block_data,
         yAxis: hchart.yAxis.length-1,
         dataGrouping: {
@@ -137,11 +137,37 @@ function addScatterPlot(id,coin,datatype,x,y){
     title = coin + " " + datatype + " " + "chart"
     y_axis = datatype + " of " + coin
 
+    hchart.addAxis(
+        
+         {   
+             id: Number.toString(id),
+             className: 'highcharts-color-' + (styl = (id == 1 ? 0 : id)),
+             labels: {
+                 align: 'right',
+                 x: 5,
+             },
+             title: {
+                 text:  '<div class="highcharts-color-' + (styl = (id == 1 ? 0 : id)) + '">' + y_axis + '</div>'
+             },
+             height: '65%',
+             lineWidth: 2,
+             offset: 40*id,
+             type: 'scatter',
+             minorTickInterval: 0.1,
+             opposite: true,
+          }
+     )
+
     hchart.addSeries({
         id : id,
         type: 'scatter',
         name: y_axis,
         data: block_data,
+        yAxis: hchart.yAxis.length-1,
+        dataGrouping: {
+            enabled: false,
+            units: groupingUnits
+        },
         marker: {
             enabled: true,
             radius: 5
@@ -170,14 +196,17 @@ hchart = Highcharts.stockChart('hchart', {
         },
         tooltip: {
              formatter: function () {
-                 console.log(this)
                  if(this.hasOwnProperty('points') && this.points.length == 2){
-                    return this.points[0].series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.points[0].x) + ': <b>' + Highcharts.numberFormat(this.points[0].y, 2) + " " + unit +'</b>'
-                    + '<br/>' + this.points[1].series.name +  ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.points[1].x) + ': <b>' + Highcharts.numberFormat(this.points[1].y, 2) + " " + unit +'</b>'
+                    styl1 = (this.points[0].colorIndex == 1 ? 0 : this.points[0].colorIndex)
+                    styl2 = (this.points[1].colorIndex == 1 ? 0 : this.points[1].colorIndex)
+                    return '<span class="highcharts-color-' + styl1 + '">▣ </span>' + this.points[0].series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.points[0].x) + ':<b>' + Highcharts.numberFormat(this.points[0].y, 2) + " " + unit +'</b>'
+                    +  '<br/>' +'<span class="highcharts-color-' + styl2 + '">▣ </span>'  +this.points[1].series.name +  ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.points[1].x) + ': <b>' + Highcharts.numberFormat(this.points[1].y, 2) + " " + unit +'</b>'
                  }else if(this.hasOwnProperty('points') && this.points.length == 1){
-                    return this.points[0].series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.x) + ': <b>' + Highcharts.numberFormat(this.y, 2) + '</b>'
+                    styl = (this.points[0].colorIndex == 1 ? 0 : this.points[0].colorIndex)
+                    return '<span class="highcharts-color-' + styl + '">▣ </span>' + this.points[0].series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.x) + ': <b>' + Highcharts.numberFormat(this.y, 2) + '</b>'
                  }else{
-                    return this.series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.x) + ': <b>' +  Highcharts.numberFormat(this.y, 2) + '</b>'
+                    styl = (this.colorIndex == 1 ? 0 : this.colorIndex)
+                    return '<span class="highcharts-color-' + styl + '">▣ </span>' + this.series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.x) + ': <b>' +  Highcharts.numberFormat(this.y, 2) + '</b>'
                  }
              },
              shared: true,

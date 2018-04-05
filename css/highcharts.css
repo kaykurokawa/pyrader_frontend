@@ -226,31 +226,37 @@ g.highcharts-series,
 .highcharts-color-4 {
   fill: #8085e9;
   stroke: #8085e9;
+  color: #8085e9;
 }
 
 .highcharts-color-5 {
   fill: #f15c80;
   stroke: #f15c80;
+  color: #f15c80;
 }
 
 .highcharts-color-6 {
   fill: #e4d354;
   stroke: #e4d354;
+  color: #e4d354;
 }
 
 .highcharts-color-7 {
   fill: #2b908f;
   stroke: #2b908f;
+  color: #2b908f;
 }
 
 .highcharts-color-8 {
   fill: #f45b5b;
   stroke: #f45b5b;
+  color: #f45b5b;
 }
 
 .highcharts-color-9 {
   fill: #91e8e1;
   stroke: #91e8e1;
+  color: #91e8e1;
 }
 
 .highcharts-area {

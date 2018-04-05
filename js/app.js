@@ -6,7 +6,9 @@ var Url = require('/js/url.js')
 $(document).ready(function () {
     Info.getInfo()
     url = Url.getURL()
-    Input.getPriceAPI(Input.initialPriceParameter(url))
+    if(Input.getParameterByName("price",url) != null){
+        Input.getPriceAPI(Input.initialPriceParameter(url))
+    }
     document.getElementById("submit").onclick = function(event){
         event.preventDefault();
         Input.getPriceAPI(Input.readPricesValues())

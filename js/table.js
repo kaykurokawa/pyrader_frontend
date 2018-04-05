@@ -16,12 +16,13 @@ function addPriceTable(id1,id2,coin,unit,last_price,last_volume,first_date, last
     document.querySelector("#remove" + id1).onclick= function(btn){ 
         $("#" + id1).remove()
         hchart.get(id1).remove()
+        hchart.get(Number.toString(id1)).remove()
     }
     document.querySelector("#remove" + id2).onclick= function(btn){ 
         $("#" + id2).remove()
         hchart.get(id2).remove()
+        hchart.get(Number.toString(id2)).remove()
     }
-
 }
 
 
@@ -33,11 +34,12 @@ function addBlockTable(id,coin,datatype,last_block,first_date, last_date,interva
     newRow1.setAttribute("id",id)
     newRow1.innerHTML = "<td>Block</td>" + "<td>" + datatype +"</td>" + "<td>" + coin + "</td>" + "<td>Aggregated</td>"
     + "<td>" + from_date + " to " + to_date + "</td>"
-    + "<td>"+ current_block + "</td>" + "<td>units</td>" + + "<td>" + interval +"</td>" + "<td class = 'text-center'><span id='remove-row1' class = 'glyphicon glyphicon-remove'></span></td>" 
+    + "<td>"+ current_block + "</td>" + "<td>units</td>" +  "<td>" + interval +"</td>" + "<td class = 'text-center'><span id='remove-row1' class = 'glyphicon glyphicon-remove'></span></td>" 
     document.querySelector("#remove-row1").setAttribute("id", "remove" + id)
     document.querySelector("#remove" + id).onclick= function(btn){ 
         $("#" + id).remove()
-        hchart.get(id).remove()
+        hchart.get(id).remove()     
+        hchart.get(Number.toString(id)).remove()
     }
  }
 
