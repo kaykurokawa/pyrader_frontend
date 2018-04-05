@@ -12,21 +12,20 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     title = coin + " Charts"
     y_axis1 = "Price of " + coin + " in " + unit
     y_axis2 = "Volume of " + coin + " in " + unit
+    console.log(id1)
+    console.log(id2)
 
-    console.log( Highcharts.getOptions())
     hchart.addAxis(
        
         {   
             id: Number.toString(id1),
+            className: 'highcharts-color-' + (styl = (id1 == 1 ? 0 : id1)),
             labels: {
                 align: 'right',
                 x: 5,
-                style:{ 
-                    color: 'x'
-                }
             },
             title: {
-                text:  y_axis1
+                text:  '<div class="highcharts-color-' + (styl = (id1 == 1 ? 0 : id1)) + '">' + y_axis1 + '</div>'
             },
             height: '65%',
             lineWidth: 2,
@@ -34,24 +33,31 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
             type: 'linear',
             minorTickInterval: 0.1,
             opposite: true,
-            resize : {
-                enabled: true
-            }
          }
     )
+
+    hchart.addSeries({
+        id: id1,
+        type: 'line',
+        name: y_axis1,
+        data: prices,
+        yAxis: hchart.yAxis.length-1,
+        dataGrouping: {
+            enabled: false,
+            units: groupingUnits
+        }
+    })
 
     hchart.addAxis(
         {            
             id: Number.toString(id2),
+            className: 'highcharts-color-' + id2,
             labels: {
                 align: 'right',
                 x: -4,
-                style:{ 
-                    color: 'green'
-                }
             },
             title: {
-                text: y_axis2
+                text: '<div class="highcharts-color-' + (styl = (id2 == 1 ? 0 : id2)) + '">' + y_axis2 + '</div>'
             },
             top: '70%',
             height: '30%',
@@ -64,23 +70,11 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     )
 
     hchart.addSeries({
-        id: id1,
-        type: 'line',
-        name: y_axis1,
-        data: prices,
-        yAxis: id1,
-        dataGrouping: {
-            enabled: false,
-            units: groupingUnits
-        }
-    })
-    
-    hchart.addSeries({
         id: id2,
         type: 'column',
         name: y_axis2,
         data: volume,
-        yAxis: id2,
+        yAxis: hchart.yAxis.length-1,
         dataGrouping: {
             enabled: false,
             units: groupingUnits
@@ -100,10 +94,38 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
 
     title = coin + " " + datatype + " " + "chart"
     y_axis = datatype + " of " + coin
+    console.log(id)
+    hchart.addAxis(
+        
+         {   
+             id: Number.toString(id),
+             className: 'highcharts-color-' + (styl = (id == 1 ? 0 : id)),
+             labels: {
+                 align: 'right',
+                 x: 5,
+             },
+             title: {
+                 text:  '<div class="highcharts-color-' + (styl = (id == 1 ? 0 : id)) + '">' + y_axis + '</div>'
+             },
+             height: '65%',
+             lineWidth: 2,
+             offset: 30*id,
+             type: 'linear',
+             minorTickInterval: 0.1,
+             opposite: true,
+          }
+     )
+
     hchart.addSeries({
-        id: id,
-        name: y_axis,
+        id: id1,
+        type: 'line',
+        name: y_axis1,
         data: block_data,
+        yAxis: hchart.yAxis.length-1,
+        dataGrouping: {
+            enabled: false,
+            units: groupingUnits
+        }
     })
 }
 

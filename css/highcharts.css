@@ -202,21 +202,25 @@ g.highcharts-series,
 .highcharts-color-0 {
   fill: #7cb5ec;
   stroke: #7cb5ec;
+  color:  #7cb5ec;
 }
 
 .highcharts-color-1 {
   fill: #434348;
   stroke: #434348;
+  color: #434348;
 }
 
 .highcharts-color-2 {
   fill: #90ed7d;
   stroke: #90ed7d;
+  color: #90ed7d;
 }
 
 .highcharts-color-3 {
   fill: #f7a35c;
   stroke: #f7a35c;
+  color: #f7a35c;
 }
 
 .highcharts-color-4 {
