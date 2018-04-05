@@ -12,29 +12,82 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     title = coin + " Charts"
     y_axis1 = "Price of " + coin + " in " + unit
     y_axis2 = "Volume of " + coin + " in " + unit
+
+    console.log( Highcharts.getOptions())
+    hchart.addAxis(
+       
+        {   
+            id: Number.toString(id1),
+            labels: {
+                align: 'right',
+                x: 5,
+                style:{ 
+                    color: 'x'
+                }
+            },
+            title: {
+                text:  y_axis1
+            },
+            height: '65%',
+            lineWidth: 2,
+            offset: 30*id1,
+            type: 'linear',
+            minorTickInterval: 0.1,
+            opposite: true,
+            resize : {
+                enabled: true
+            }
+         }
+    )
+
+    hchart.addAxis(
+        {            
+            id: Number.toString(id2),
+            labels: {
+                align: 'right',
+                x: -4,
+                style:{ 
+                    color: 'green'
+                }
+            },
+            title: {
+                text: y_axis2
+            },
+            top: '70%',
+            height: '30%',
+            offset: 30*id1,
+            type: 'linear',
+            lineWidth: 2,
+            opposite: true,
+
+        }
+    )
+
     hchart.addSeries({
         id: id1,
         type: 'line',
         name: y_axis1,
         data: prices,
+        yAxis: id1,
         dataGrouping: {
             enabled: false,
             units: groupingUnits
         }
     })
+    
     hchart.addSeries({
         id: id2,
         type: 'column',
         name: y_axis2,
         data: volume,
-        yAxis: 1,
+        yAxis: id2,
         dataGrouping: {
             enabled: false,
             units: groupingUnits
         }
     })
-    hchart.yAxis[0].setTitle({text: y_axis1})  
-    hchart.setTitle({text: title})
+    //hchart.yAxis[0].setTitle({text: y_axis1})  
+    //hchart.setTitle({text: title})
 }
 
 
@@ -82,33 +135,7 @@ hchart = Highcharts.stockChart('hchart', {
             selected: 4
         },
     
-        yAxis: [{
-            labels: {
-                align: 'right',
-                x: -3
-            },
-            title: {
-                text:  "Price/Block Data"
-            },
-            height: '70%',
-            lineWidth: 2,
-            //floor: minimum,
-            type: 'logarithmic',
-            minorTickInterval: 0.1
-        }, {
-            labels: {
-                align: 'right',
-                x: -3
-            },
-            title: {
-                text: "Volumes"
-            },
-            top: '70%',
-            height: '30%',
-            offset: 0,
-            type: 'linear',
-            lineWidth: 2
-        }],
+        yAxis: [],
         legend: {
             enabled: true,
             itemStyle: {
@@ -121,13 +148,14 @@ hchart = Highcharts.stockChart('hchart', {
         },
         tooltip: {
              formatter: function () {
+                 console.log(this)
                  if(this.hasOwnProperty('points') && this.points.length == 2){
-                    return this.points[0].series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.points[0].x) + ': ' + Highcharts.numberFormat(this.points[0].y, 2)
-                    + '<br/>' + this.points[1].series.name +  ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.points[1].x) + ': ' + Highcharts.numberFormat(this.points[1].y, 2)
+                    return this.points[0].series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.points[0].x) + ': <b>' + Highcharts.numberFormat(this.points[0].y, 2) + " " + unit +'</b>'
+                    + '<br/>' + this.points[1].series.name +  ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.points[1].x) + ': <b>' + Highcharts.numberFormat(this.points[1].y, 2) + " " + unit +'</b>'
                  }else if(this.hasOwnProperty('points') && this.points.length == 1){
-                    return this.points[0].series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.x) + '<br/>' + Highcharts.numberFormat(this.y, 2)
+                    return this.points[0].series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.x) + ': <b>' + Highcharts.numberFormat(this.y, 2) + '</b>'
                  }else{
-                    return this.series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.x) + '<br/>' + Highcharts.numberFormat(this.y, 2) 
+                    return this.series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.x) + ': <b>' +  Highcharts.numberFormat(this.y, 2) + '</b>'
                  }
              },
              shared: true,
@@ -143,9 +171,9 @@ function clearCharts(){
     document.getElementById("error").innerHTML = "No data for this period" 
     document.getElementById("error").className = "well"
     $("#table-of-prices td").remove();
-    let row1 = document.getElementById("prices-row1")
-    var row2 = document.getElementById("prices-row2")
-    var row3 = document.getElementById("prices-row3")
+    row1 = document.getElementById("prices-row1")
+    row2 = document.getElementById("prices-row2")
+    row3 = document.getElementById("prices-row3")
     td1 = document.createElement("td")
     td1.text = "Time Period:"
     td2 = document.createElement("td")

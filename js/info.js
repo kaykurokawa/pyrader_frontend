@@ -25,15 +25,15 @@ const constants = require('./constants.js')
 
 
         function processInfo(price){
-            info_prices = price
-            info_prices = eliminateNulls(info_prices)
-            let symbol = document.querySelector("#symbol")
-            let unit = document.querySelector("#unit")
-            let exchange = document.querySelector("#exchange")
-            let interval = document.querySelector("#interval")
-            let submit = document.querySelector("#submit")
-            let reset = document.getElementById("reset")
-            submit_x = document.querySelector("#submit-x")
+            var info_prices = price
+            var info_prices = eliminateNulls(info_prices)
+            var symbol = document.querySelector("#symbol")
+            var unit = document.querySelector("#unit")
+            var exchange = document.querySelector("#exchange")
+            var interval = document.querySelector("#interval")
+            var submit = document.querySelector("#submit")
+            var reset = document.getElementById("reset")
+            var submit_x = document.querySelector("#submit-x")
             
             enableDropdown("symbol")
             disableDropdown("unit")
@@ -43,13 +43,15 @@ const constants = require('./constants.js')
             disableButton("submit")
 
         // given the id of the dropdown and the id of the next dropdwon in sequence, take care of all of the logic: enable, disable, load options...etc
-        let states = []
+        var states = []
+    
         states.push(info_prices)
-
+       
         function LoadOptions(id,prev_id,next_id){
-            let tag = document.querySelector("#" + id)
-            tag.onchange = function(event){
+             tag = document.querySelector("#" + id)
+                tag.onchange = function(event){
                 current = states[states.length-1]
+                console.log(current)
                 if(id == "symbol"){
                     current = current.filter(line => line.symbol.includes(document.getElementById(id).value))
                 }else if(id == "unit"){
@@ -74,7 +76,7 @@ const constants = require('./constants.js')
                         console.log(current)
                         createOptions(states[states.length-1],next_id)
                         disableDropdown(id)
-                        let cancel = document.querySelector("#" + next_id + "-x")                
+                        cancel = document.querySelector("#" + next_id + "-x")                
                         cancel.onclick = function(event){
                             enableDropdown(id)
                             disableDropdown(next_id)
@@ -144,22 +146,22 @@ const constants = require('./constants.js')
         //get info from API and append to drop down menu for block charts
         function processBlockInfo(block){
             info_blocks = block
-            let block_symbol = document.querySelector("#block-symbol")
-            let block_datatype = document.querySelector("#block-datatype")
-            let block_interval = document.querySelector("#block-interval")
-            let block_submit = document.querySelector("#block-submit")
-            let block_reset = document.querySelector("#block-reset") 
+             block_symbol = document.querySelector("#block-symbol")
+             block_datatype = document.querySelector("#block-datatype")
+             block_interval = document.querySelector("#block-interval")
+             block_submit = document.querySelector("#block-submit")
+             block_reset = document.querySelector("#block-reset") 
             enableDropdown("block-symbol")
             disableDropdown("block-datatype")
             disableDropdown("block-interval")
             createBlockOptions(info_blocks,"block-symbol")
             disableButton("block-submit")
 
-            let states = []
+            var states = []
             states.push(info_blocks)
 
             function LoadBlockOptions(id,prev_id,next_id){
-                let tag = document.querySelector("#" + id)
+                 tag = document.querySelector("#" + id)
                 tag.onchange = function(event){
                     current = states[states.length-1]
                     if(id == "block-symbol"){
@@ -183,7 +185,7 @@ const constants = require('./constants.js')
                             console.log(current)
                             createBlockOptions(states[states.length-1],next_id)
                             disableDropdown(id)
-                            let cancel = document.querySelector("#" + next_id + "-x")                
+                             cancel = document.querySelector("#" + next_id + "-x")                
                             cancel.onclick = function(event){
                                 enableDropdown(id)
                                 disableDropdown(next_id)
@@ -288,7 +290,7 @@ const constants = require('./constants.js')
                     array.push(text)
                     option = document.createElement("option")
                     option.text = text
-                    let select = document.getElementById(id);
+                     select = document.getElementById(id);
                     select.appendChild(option); 
                 }
             } 
@@ -304,14 +306,14 @@ const constants = require('./constants.js')
                     array.push(text)
                     option = document.createElement("option")
                     option.text = text
-                    let select = document.getElementById(id);
+                     select = document.getElementById(id);
                     select.appendChild(option); 
                 }
             }
             /*if(id == "block-interval"){
                 option = document.createElement("option")
                 option.text = "None"
-                let select = document.getElementById(id);
+                 select = document.getElementById(id);
                 select.appendChild(option); 
             }*/
         }

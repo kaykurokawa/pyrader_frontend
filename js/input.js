@@ -8,19 +8,19 @@
      //reads dropdown and converts it into url and returns it to be passed to Ajax call
     function readPricesValues(){
         view.MODEL.type = "price"
-        var exchange = document.getElementById("exchange").value
+        exchange = document.getElementById("exchange").value
         exchange  = (exchange == "Aggregated" ? "" : exchange )
         view.MODEL.exchange = exchange
-        var symbol = document.getElementById("symbol").value
+        symbol = document.getElementById("symbol").value
         view.MODEL.symbol = symbol
-        var unit = document.getElementById("unit").value
+        unit = document.getElementById("unit").value
         view.MODEL.unit  = unit 
-        var interval =  document.getElementById("interval").value
+        interval =  document.getElementById("interval").value
         interval = (interval == "None" ? "" : interval)
         view.MODEL.interval = interval
         p_exchange = (exchange == "" ? "" : '&exchange=' + exchange) 
         p_interval = (interval == "" ? "" : '&interval=' + interval)
-        var parameter = constants.REST_URL + '/price?' +  'symbol=' + symbol + '&unit=' + unit + p_exchange + p_interval      
+        parameter = constants.REST_URL + '/price?' +  'symbol=' + symbol + '&unit=' + unit + p_exchange + p_interval      
         window.parameter = parameter
         URL.changeURL()
         validateParamtersConsole(parameter)
@@ -29,15 +29,15 @@
     //reads and converts dropdown and converts it into url and returns it to be passed to Ajax call
     function readBlockValues(){
         view.MODEL.type = "block"
-        var symbol = document.getElementById("block-symbol").value
+        symbol = document.getElementById("block-symbol").value
         view.MODEL.symbol =  symbol
-        var datatype = document.getElementById("block-datatype").value
+        datatype = document.getElementById("block-datatype").value
         view.MODEL.datatype = datatype
-        var interval = document.getElementById("block-interval").value 
+        interval = document.getElementById("block-interval").value 
         interval = (interval == "None" ? "" : interval)  
         view.MODEL.interval = interval
         p_interval = (exchange == "" ? "" : '&interval=' + view.MODEL.interval)
-        var parameter = constants.REST_URL + '/block?' + 'coin=' + view.MODEL.symbol +  '&datatype=' + view.MODEL.datatype + p_interval
+        parameter = constants.REST_URL + '/block?' + 'coin=' + view.MODEL.symbol +  '&datatype=' + view.MODEL.datatype + p_interval
         window.parameter = parameter
         URL.changeURL()
         validateParamtersConsole(parameter)
@@ -48,7 +48,7 @@
     function getParameterByName(name, url) {
         if (!url) url = window.location.href;
         name = name.replace(/[\[\]]/g, "\\$&");
-        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
             results = regex.exec(url);
         if (!results) return null;
         if (!results[2]) return '';
@@ -79,11 +79,11 @@
             parameter = constants.REST_URL + "/price?" + p_symbol + p_unit + p_interval + p_exchange
 
         }else{
-            var parameter = constants.REST_URL + '/price?coin=LTC&interval=5min'
-            var exchange = "Aggregated" 
-            var symbol = "LTC" 
-            var unit = "USD"
-            var interval = "5min"
+            parameter = constants.REST_URL + '/price?coin=LTC&interval=5min'
+            exchange = "Aggregated" 
+            symbol = "LTC" 
+            unit = "USD"
+            interval = "5min"
         }
         validateParamtersConsole(parameter)
         return [parameter,exchange,symbol,unit,interval]
@@ -106,7 +106,7 @@
              p_interval = "&interval=" + view.MODEL.interval
              p_datatype =  "&datatype=" + view.MODEL.datatype
              parameter = constants.REST_URL + '/block' + p_symbol + p_datatype + p_interval 
-             console.log(parameter)
+           
         }
         validateParamtersConsole(parameter)
         return [parameter,symbol, datatype, interval]
@@ -116,9 +116,11 @@
     function getPriceAPI(arr){ 
         parameter = arr[0]
         exchange = arr[1]
+        if(exchange == "") exchange = "Aggregated"
         symbol = arr[2]
         unit = arr[3]
         interval = arr[4]
+     
 
         fetch(parameter)
         .then(
@@ -131,16 +133,16 @@
                 response.json().then(function(data) {
                     High.showCharts()
                     interval_i = data.interval/1000
-                    var x = processDates(data,interval_i)
-                    var y_prices = processPrices(data,unit)
-                    var y_volume = processVolume(data,unit)
+                    x = processDates(data,interval_i)
+                    y_prices = processPrices(data,unit)
+                    y_volume = processVolume(data,unit)
                     window.apiCall = data
-                    var coin_data = data.symbol
-                    var unit_data = data.unit
-                    var last_price = y_prices[y_prices.length-1]
-                    var last_volume = y_volume[y_volume.length-1]
-                    var first_date = x[0]
-                    var last_date = x[x.length-1]
+                    coin_data = data.symbol
+                    unit_data = data.unit
+                    last_price = y_prices[y_prices.length-1]
+                    last_volume = y_volume[y_volume.length-1]
+                    first_date = x[0]
+                    last_date = x[x.length-1]
                      //Here you will pass data to whatever Graphing library asynchronosly
                      //add data to price volume
                         id1 = ++seriesID 
@@ -176,20 +178,20 @@
                     High.showCharts()
                     interval =data.interval
                     interval_i = data.interval/1000
-                    var plottype = data.plottype
+                     plottype = data.plottype
                     if(plottype == "scatter"){
                         x = data.x.map(function(x){return x = x/1000 })
 
                     }else{
-                        var x = processDates(data,interval_i)
+                         x = processDates(data,interval_i)
                     }
-                    var y = processData(data)
+                     y = processData(data)
                     window.apiCall = data
-                    var coin_data = data.coin
-                    var datatype_data = data.datatype
-                    var first_date = x[0]
-                    var last_date = x[x.length-1]
-                    var last_datatype = data.y[y.length-1]
+                    coin_data = data.coin
+                    datatype_data = data.datatype
+                    first_date = x[0]
+                    last_date = x[x.length-1]
+                    last_datatype = data.y[y.length-1]
                     
                     //Here you will pass data to whatever Graphing library asynchronosly
                     if(plottype == "scatter"){
@@ -246,8 +248,8 @@
     }
     //take in json with  microsecond times and append to json the array of millisecond time stamps
     function processDates(json,interval_i){ 
-        var milliArray = []
-        var time = json.x1/1000
+         milliArray = []
+         time = json.x1/1000
         for(i = 0 ; i < json.y.length ; i++){
             milliArray.push(time)
             time += interval_i
@@ -256,7 +258,7 @@
     }
 
     function round(value, precision) {
-        var multiplier = Math.pow(10, precision || 0);
+         multiplier = Math.pow(10, precision || 0);
         return Math.round(value * multiplier) / multiplier;
     }
 
