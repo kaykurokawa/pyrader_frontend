@@ -12,13 +12,12 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     title = coin + " Charts"
     y_axis1 = "Price of " + coin + " in " + unit
     y_axis2 = "Volume of " + coin + " in " + unit
-    console.log(id1)
-    console.log(id2)
 
     hchart.addAxis(
        
         {   
-            id: Number.toString(id1),
+            //price axis
+            id: id1.toString() + "-axis",
             className: 'highcharts-color-' + (styl = (id1 == 1 ? 0 : id1)),
             labels: {
                 align: 'right',
@@ -37,7 +36,7 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     )
 
     hchart.addSeries({
-        id: id1,
+        id: id1.toString(),
         type: 'line',
         name: y_axis1,
         data: prices,
@@ -49,8 +48,9 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     })
 
     hchart.addAxis(
-        {            
-            id: Number.toString(id2),
+        {   
+            //volume axis         
+            id: id2.toString() + "-axis",
             className: 'highcharts-color-' + id2,
             labels: {
                 align: 'right',
@@ -70,7 +70,7 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     )
 
     hchart.addSeries({
-        id: id2,
+        id: id2.toString(),
         type: 'column',
         name: y_axis2,
         data: volume,
@@ -98,7 +98,7 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     hchart.addAxis(
         
          {   
-             id: Number.toString(id),
+             id: id.toString() + "-axis",
              className: 'highcharts-color-' + (styl = (id == 1 ? 0 : id)),
              labels: {
                  align: 'right',
@@ -109,7 +109,7 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
              },
              height: '65%',
              lineWidth: 2,
-             offset: 40*id,
+             offset: 80*id,
              type: 'linear',
              minorTickInterval: 0.1,
              opposite: true,
@@ -117,11 +117,11 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
      )
 
     hchart.addSeries({
-        id: id,
+        id: id.toString(),
         type: 'line',
         name: y_axis,
         data: block_data,
-        yAxis: hchart.yAxis.length-1,
+        yAxis: hchart.series.length,
         dataGrouping: {
             enabled: false,
             units: groupingUnits
@@ -136,11 +136,11 @@ function addScatterPlot(id,coin,datatype,x,y){
     }
     title = coin + " " + datatype + " " + "chart"
     y_axis = datatype + " of " + coin
-
+    console.log(id)
     hchart.addAxis(
         
          {   
-             id: Number.toString(id),
+             id: id.toString() + "-axis",
              className: 'highcharts-color-' + (styl = (id == 1 ? 0 : id)),
              labels: {
                  align: 'right',
@@ -151,7 +151,7 @@ function addScatterPlot(id,coin,datatype,x,y){
              },
              height: '65%',
              lineWidth: 2,
-             offset: 40*id,
+             offset: 80*id,
              type: 'scatter',
              minorTickInterval: 0.1,
              opposite: true,
@@ -159,11 +159,11 @@ function addScatterPlot(id,coin,datatype,x,y){
      )
 
     hchart.addSeries({
-        id : id,
+        id : id.toString(),
         type: 'scatter',
         name: y_axis,
         data: block_data,
-        yAxis: hchart.yAxis.length-1,
+        yAxis: hchart.series.length,
         dataGrouping: {
             enabled: false,
             units: groupingUnits

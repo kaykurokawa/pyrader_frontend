@@ -190,12 +190,10 @@
                     //Here you will pass data to whatever Graphing library asynchronosly
                     if(plottype == "scatter"){
                         seriesID++
-                        console.log(interval)
                         High.addScatterPlot(seriesID,coin_data,datatype_data,x,y)
                         Table.addBlockTable(seriesID,coin_data,datatype_data,last_datatype,first_date, last_date, interval, exchange)
                     }else{
-                        ++seriesID
-                        
+                        seriesID++
                         High.addBlockGraph(seriesID,coin_data,datatype_data,x,y)
                         Table.addBlockTable(seriesID,coin_data,datatype_data,last_datatype,first_date, last_date, interval, exchange)
                     }

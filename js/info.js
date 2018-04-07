@@ -51,7 +51,6 @@ const constants = require('./constants.js')
              tag = document.querySelector("#" + id)
                 tag.onchange = function(event){
                 current = states[states.length-1]
-                console.log(current)
                 if(id == "symbol"){
                     current = current.filter(line => line.symbol.includes(document.getElementById(id).value))
                 }else if(id == "unit"){
@@ -73,7 +72,6 @@ const constants = require('./constants.js')
                     }else{
                         states.push(current)
                         enableDropdown(next_id)
-                        console.log(current)
                         createOptions(states[states.length-1],next_id)
                         disableDropdown(id)
                         cancel = document.querySelector("#" + next_id + "-x")                
@@ -182,7 +180,6 @@ const constants = require('./constants.js')
                         }else{
                             states.push(current)
                             enableDropdown(next_id)
-                            console.log(current)
                             createBlockOptions(states[states.length-1],next_id)
                             disableDropdown(id)
                              cancel = document.querySelector("#" + next_id + "-x")                
