@@ -6,6 +6,7 @@
         exchange : "",
         interval : "",
     }
+    
     function resetModel(){
         MODEL = {
             type: "",

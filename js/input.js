@@ -58,7 +58,6 @@
     //sets the intial paramteters for the price graph, if no url query is passed in just set a default one. 
     function initialPriceParameter(url){
         if(getParameterByName("price",url) != null){
-            
             symbol =  getParameterByName("symbol", url)
             symbol = (symbol == null ? "" : symbol) 
             view.MODEL.symbol = symbol 

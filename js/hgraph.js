@@ -52,7 +52,7 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
             className: 'highcharts-color-' + id2,
             labels: {
                 align: 'left',
-                x: -20
+                x: -40
             },
             title: {
                 text: '<div class="highcharts-color-' + (styl = (id2 == 1 ? 0 : id2)) + '">' + y_axis2 + '</div>'
@@ -175,6 +175,15 @@ hchart = Highcharts.stockChart('hchart', {
         },
     
         yAxis: [],
+        xAxis: {
+            labels: {
+                style: {
+                    width: '100px',
+                    'min-width': '100px'
+                },
+                useHTML : true
+            }
+        },
         legend: {
             enabled: true,
             itemStyle: {
