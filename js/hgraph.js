@@ -20,17 +20,15 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
             id: id1.toString() + "-axis",
             className: 'highcharts-color-' + (styl = (id1 == 1 ? 0 : id1)),
             labels: {
-                align: 'right',
-                x: 5,
+                align: 'left',
             },
             title: {
                 text:  '<div class="highcharts-color-' + (styl = (id1 == 1 ? 0 : id1)) + '">' + y_axis1 + '</div>'
             },
             height: '65%',
             lineWidth: 2,
-            offset: 30*id1,
             type: 'linear',
-            minorTickInterval: 0.1,
+            //minorTickInterval: 0.1,
             opposite: true,
          }
     )
@@ -53,16 +51,15 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
             id: id2.toString() + "-axis",
             className: 'highcharts-color-' + id2,
             labels: {
-                align: 'right',
-                x: -4,
+                align: 'left',
+                x: -20
             },
             title: {
                 text: '<div class="highcharts-color-' + (styl = (id2 == 1 ? 0 : id2)) + '">' + y_axis2 + '</div>'
             },
             top: '70%',
             height: '30%',
-            offset: 30*id1,
-            type: 'linear',
+            type: 'column',
             lineWidth: 2,
             opposite: true,
 
@@ -94,22 +91,19 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
 
     title = coin + " " + datatype + " " + "chart"
     y_axis = datatype + " of " + coin
-    console.log(id)
     hchart.addAxis(
         
          {   
              id: id.toString() + "-axis",
              className: 'highcharts-color-' + (styl = (id == 1 ? 0 : id)),
              labels: {
-                 align: 'right',
-                 x: 5,
+                 align: 'left',
              },
              title: {
                  text:  '<div class="highcharts-color-' + (styl = (id == 1 ? 0 : id)) + '">' + y_axis + '</div>'
              },
-             height: '65%',
+             height: '70%',
              lineWidth: 2,
-             offset: 80*id,
              type: 'linear',
              minorTickInterval: 0.1,
              opposite: true,
@@ -121,7 +115,7 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
         type: 'line',
         name: y_axis,
         data: block_data,
-        yAxis: hchart.series.length,
+        yAxis: hchart.yAxis.length-1,
         dataGrouping: {
             enabled: false,
             units: groupingUnits
@@ -136,22 +130,19 @@ function addScatterPlot(id,coin,datatype,x,y){
     }
     title = coin + " " + datatype + " " + "chart"
     y_axis = datatype + " of " + coin
-    console.log(id)
     hchart.addAxis(
         
          {   
              id: id.toString() + "-axis",
              className: 'highcharts-color-' + (styl = (id == 1 ? 0 : id)),
              labels: {
-                 align: 'right',
-                 x: 5,
+                 align: 'left',
              },
              title: {
                  text:  '<div class="highcharts-color-' + (styl = (id == 1 ? 0 : id)) + '">' + y_axis + '</div>'
              },
-             height: '65%',
+             height: '70%',
              lineWidth: 2,
-             offset: 80*id,
              type: 'scatter',
              minorTickInterval: 0.1,
              opposite: true,
@@ -163,7 +154,7 @@ function addScatterPlot(id,coin,datatype,x,y){
         type: 'scatter',
         name: y_axis,
         data: block_data,
-        yAxis: hchart.series.length,
+        yAxis: hchart.yAxis.length-1,
         dataGrouping: {
             enabled: false,
             units: groupingUnits
@@ -222,22 +213,22 @@ function clearCharts(){
     document.getElementById("error").innerHTML = "No data for this period" 
     document.getElementById("error").className = "well"
     $("#table-of-prices td").remove();
-    row1 = document.getElementById("prices-row1")
-    row2 = document.getElementById("prices-row2")
-    row3 = document.getElementById("prices-row3")
-    td1 = document.createElement("td")
+    let row1 = document.getElementById("prices-row1")
+    let row2 = document.getElementById("prices-row2")
+    let row3 = document.getElementById("prices-row3")
+    let td1 = document.createElement("td")
     td1.text = "Time Period:"
-    td2 = document.createElement("td")
+    let td2 = document.createElement("td")
     td2.id = "time-period"
-    td3 = document.createElement("td")
+    let td3 = document.createElement("td")
     td3.id = "price-label"
     td3.text = "Current Price Data:"
-    td4 =  document.createElement("td")
+    let td4 =  document.createElement("td")
     td4.id = "current-price"
-    td5 = document.createElement("td")
+    let td5 = document.createElement("td")
     td3.id = "volume-label"
     td5.text = "Current Volume Data:"
-    td6 = document.createElement("td")
+    let td6 = document.createElement("td")
     td6.id = "current-volume" 
     row1.appendChild(td1)
     row1.appendChild(td2)
@@ -258,16 +249,16 @@ function clearCharts(){
     document.getElementById("block-error").innerHTML = "No data for this this period" 
     document.getElementById("block-error").className = "well"
     $("#table-of-blocks td").remove(); 
-    var row1 = document.getElementById("block-row1")
-    var row2 = document.getElementById("block-row2")
-    td1 = document.createElement("td")
+    let row1 = document.getElementById("block-row1")
+    let row2 = document.getElementById("block-row2")
+    let td1 = document.createElement("td")
     td1.text = "Time Period:"
-    td2 = document.createElement("td")
+    let td2 = document.createElement("td")
     td2.id = "block-time-period"
-    td3 = document.createElement("td")
+    let td3 = document.createElement("td")
     td3.id = "current-block-label"
     td3.text = "Current Block Data:"
-    td4 =  document.createElement("td")
+    let td4 =  document.createElement("td")
     td4.id = "current-block"
     row1.appendChild(td1)
     row1.appendChild(td2)
