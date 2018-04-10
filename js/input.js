@@ -1,26 +1,24 @@
     const High = require('./hgraph.js')
     const constants = require('./constants.js')
-    var view = require('./urlModel.js')
+    var view = require('./url-models.js')
     const URL = require('./url.js')
     const Table = require('./table.js')
     var seriesID = 0
 
      //reads dropdown and converts it into url and returns it to be passed to Ajax call
     function readPricesValues(){
-        view.MODEL.type = "price"
         exchange = document.getElementById("exchange").value
         exchange  = (exchange == "Aggregated" ? "" : exchange )
-        view.MODEL.exchange = exchange
         symbol = document.getElementById("symbol").value
-        view.MODEL.symbol = symbol
         unit = document.getElementById("unit").value
-        view.MODEL.unit  = unit 
         interval =  document.getElementById("interval").value
         interval = (interval == "None" ? "" : interval)
-        view.MODEL.interval = interval
+        datatype = ""
         p_exchange = (exchange == "" ? "" : '&exchange=' + exchange) 
         p_interval = (interval == "" ? "" : '&interval=' + interval)
-        parameter = constants.REST_URL + '/price?' +  'symbol=' + symbol + '&unit=' + unit + p_exchange + p_interval      
+        parameter = constants.REST_URL + '/price?' +  'symbol=' + symbol + '&unit=' + unit + p_exchange + p_interval  
+        var url_model = new view.UrlParam(seriesID, "price", symbol, unit, datatype, exchange, interval)
+        view.MODELS.push(url_model)
         window.parameter = parameter
         URL.changeURL()
         validateParamtersConsole(parameter)
