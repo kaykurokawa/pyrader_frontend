@@ -1,4 +1,4 @@
-var MODELS = []
+    var MODELS = []
 
     function UrlParam(id,type, symbol, unit, datatype,exchange,interval){
         this.id  = id;
@@ -14,7 +14,7 @@ var MODELS = []
         MODEL = []
         return MODEL
     }
-module.exports ={
+module.exports = {
     MODELS : MODELS,
     UrlParam : UrlParam
 }

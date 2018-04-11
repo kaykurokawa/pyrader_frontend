@@ -23,7 +23,6 @@ const constants = require('./constants.js')
                      });
          }
 
-
         function processInfo(price){
             var info_prices = price
             var info_prices = eliminateNulls(info_prices)

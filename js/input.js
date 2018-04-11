@@ -1,46 +1,52 @@
     const High = require('./hgraph.js')
     const constants = require('./constants.js')
-    var view = require('./url-models.js')
+    const view = require('./url-models.js')
     const URL = require('./url.js')
     const Table = require('./table.js')
-    var seriesID = 0
+    var seriesID = 0 //global to keep track of which series is what. If ever  MODEL becomes blank maybe set it back to 0
 
      //reads dropdown and converts it into url and returns it to be passed to Ajax call
     function readPricesValues(){
-        exchange = document.getElementById("exchange").value
+        let exchange = document.getElementById("exchange").value
         exchange  = (exchange == "Aggregated" ? "" : exchange )
-        symbol = document.getElementById("symbol").value
+        let symbol = document.getElementById("symbol").value
         unit = document.getElementById("unit").value
-        interval =  document.getElementById("interval").value
+        let interval =  document.getElementById("interval").value
         interval = (interval == "None" ? "" : interval)
         datatype = ""
-        p_exchange = (exchange == "" ? "" : '&exchange=' + exchange) 
-        p_interval = (interval == "" ? "" : '&interval=' + interval)
-        parameter = constants.REST_URL + '/price?' +  'symbol=' + symbol + '&unit=' + unit + p_exchange + p_interval  
-        var url_model = new view.UrlParam(seriesID, "price", symbol, unit, datatype, exchange, interval)
+        let p_exchange = (exchange == "" ? "" : '&exchange=' + exchange) 
+        let p_interval = (interval == "" ? "" : '&interval=' + interval)
+        let p_unit = '&unit=' + unit
+        let p_symbol = 'symbol=' + symbol
+        let parameter = constants.REST_URL + '/price?' + p_exchange + p_interval  
+        let url_model = new view.UrlParam(seriesID, "price", symbol, unit, datatype, exchange, interval)
+        seriesID++
         view.MODELS.push(url_model)
-        window.parameter = parameter
-        URL.changeURL()
+        let url_name = URL.getURL() /*grab the url from browser*/
+        URL.changeURL(url_name)
         validateParamtersConsole(parameter)
-        return [parameter, exchange, symbol, unit, interval]
+        return [parameter, seriesID, exchange, symbol, unit, interval]
     }
+
     //reads and converts dropdown and converts it into url and returns it to be passed to Ajax call
     function readBlockValues(){
-        view.MODEL.type = "block"
-        symbol = document.getElementById("block-symbol").value
-        view.MODEL.symbol =  symbol
-        datatype = document.getElementById("block-datatype").value
-        view.MODEL.datatype = datatype
-        interval = document.getElementById("block-interval").value 
+        let symbol = document.getElementById("block-symbol").value
+        let datatype = document.getElementById("block-datatype").value
+        let interval = document.getElementById("block-interval").value 
         interval = (interval == "None" ? "" : interval)  
-        view.MODEL.interval = interval
-        p_interval = (exchange == "" ? "" : '&interval=' + view.MODEL.interval)
-        parameter = constants.REST_URL + '/block?' + 'coin=' + view.MODEL.symbol +  '&datatype=' + view.MODEL.datatype + p_interval
-        window.parameter = parameter
-        URL.changeURL()
+        let p_interval = (exchange == "" ? "" : '&interval=' + interval)
+        let p_symbol = '&coin=' + symbol 
+        let p_datatype = '&datatype=' + datatype 
+        let parameter = constants.REST_URL + '/block?' + p_symbol +  p_datatype + p_interval
+        let url_model = new view.UrlParam(seriesID, "block", symbol, "none", datatype, "Aggregated", interval)
+        seriesID++
+        view.MODELS.push(url_model)
+        let url_name = URL.getURL()
+        URL.changeURL(url_name)
         validateParamtersConsole(parameter)
-        return [parameter,symbol, datatype, interval]
+        return [parameter,seriesID, symbol, datatype, interval]
     }
+
 
     /*function that parses the url by interval, units, symbol... or whatever name, if that name doesn't exist
     then return null*/
@@ -53,55 +59,78 @@
         if (!results[2]) return '';
         return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
-    //sets the intial paramteters for the price graph, if no url query is passed in just set a default one. 
-    function initialPriceParameter(url){
-        if(getParameterByName("price",url) != null){
-            symbol =  getParameterByName("symbol", url)
-            symbol = (symbol == null ? "" : symbol) 
-            view.MODEL.symbol = symbol 
-            unit = getParameterByName("unit", url)
-            unit = unit == null ? "" : unit
-            view.MODEL.unit = unit
-            exchange = getParameterByName("exchange", url)
-            exchange  = (exchange == "Aggregated" ? "" : exchange)
-            exchange = (exchange == null ? "" : exchange)
-            view.MODEL.exchange = exchange
-            interval = getParameterByName("interval", url)
-            interval = (interval == "None" ? "" : interval)
-            interval = (interval == null ? "" : interval)
-            view.MODEL.interval = interval
-            p_symbol = view.MODEL.symbol == "" ? "" : "symbol=" + view.MODEL.symbol
-            p_unit = view.MODEL.unit == "" ? "" : "&unit=" + view.MODEL.unit
-            p_exchange = view.MODEL.exchange == "" ? "" : "&exchange=" + view.MODEL.exchange
-            p_interval = view.MODEL.interval == "" ? "" : "&interval=" + view.MODEL.interval
-            parameter = constants.REST_URL + "/price?" + p_symbol + p_unit + p_interval + p_exchange
-        } 
-        validateParamtersConsole(parameter)
-        return [parameter,exchange,symbol,unit,interval]
-    }
+    
+    //convert a url to a Model
+    function convertToModel(url){
+       
+        url = url.split("?")
 
-    //sets the intial paramteters for the block graph, if no url query is passed in just set a default one. 
-    function initialBlockParameter(url){
-        if(getParameterByName("block",url) != null){
-             symbol = getParameterByName("coin",url)
-             symbol = (symbol == null ? "" : symbol)
-             view.MODEL.symbol = symbol
-             interval =  getParameterByName("interval",url)
-             interval = (interval == "None" ? "" : interval)
-             interval = (interval == null ? "" : interval)
-             view.MODEL.interval = interval
-             datatype =  getParameterByName("datatype",url)
-             datatype = (datatype == null ? "" : datatype)
-             view.MODEL.datatype = datatype
-             p_symbol = "?coin=" + view.MODEL.symbol
-             p_interval = "&interval=" + view.MODEL.interval
-             p_datatype =  "&datatype=" + view.MODEL.datatype
-             parameter = constants.REST_URL + '/block' + p_symbol + p_datatype + p_interval 
-           
+        for(let i = 1 ; i < url.length ; i++){
+            current = url[i]
+            
+            if(current.includes("price")){
+                symbol =  getParameterByName("symbol", current)
+                symbol = (symbol == null ? "" : symbol) 
+                unit = getParameterByName("unit", current)
+                unit = unit == null ? "" : unit
+                exchange = getParameterByName("exchange", current)
+                exchange  = (exchange == "Aggregated" ? "" : exchange)
+                exchange = (exchange == null ? "" : exchange)
+                interval = getParameterByName("interval", current)
+                interval = (interval == "None" ? "" : interval)
+                interval = (interval == null ? "" : interval)
+                interval = interval.replace(/\//g,'');
+                urlparam = new view.UrlParam(seriesID,"price", symbol, unit, "none", exchange, interval)
+                seriesID ++ 
+                view.MODELS.push(urlparam)
+            }
+
+            if(current.includes("block")){
+                symbol = getParameterByName("coin",current)
+                symbol = (symbol == null ? "" : symbol)
+                interval =  getParameterByName("interval", current)
+                interval = (interval == "None" ? "" : interval)
+                interval = (interval == null ? "" : interval)
+                interval = interval.replace(/\//g,'');
+                datatype =  getParameterByName("datatype",current)
+                datatype = (datatype == null ? "" : datatype)
+                urlparam = new view.UrlParam(seriesID, "block", symbol, "none", datatype, "Aggregated", interval)
+                seriesID ++ 
+                view.MODELS.push(urlparam)
+            }
         }
-        validateParamtersConsole(parameter)
-        return [parameter,symbol, datatype, interval]
+        console.log(view.MODELS)
     }
+    /*given a model, convert it to usable parameters*/
+    function convertModelToParameter(model){
+        if(model.type == "price"){
+            symbol = model.symbol
+            unit = model.unit
+            exchange = model.exchange
+            interval = model.interval
+            symbol = model.symbol
+            p_symbol = "symbol=" + model.symbol
+            p_unit = model.unit == "" ? "" : "&unit=" + model.unit
+            p_exchange = model.exchange == "" ? "" : "&exchange=" + model.exchange
+            p_interval = model.interval == "" ? "" : "&interval=" + model.interval
+            parameter = constants.REST_URL + "/price?" + p_symbol + p_unit + p_interval + p_exchange
+            id = model.id
+            return [parameter,id,exchange,symbol,unit,interval]
+        }
+
+        if(model.type == "block"){
+            symbol = model.symbol
+            interval = model.interval
+            datatype = model.datatype
+            p_symbol = "?coin=" + model.symbol
+            p_interval = "&interval=" + model.interval
+            p_datatype =  "&datatype=" + model.datatype
+            parameter = constants.REST_URL + '/block' + p_symbol + p_datatype + p_interval 
+            id = model.id
+            return [parameter,id,symbol, datatype, interval]            
+        }
+
+    } 
 
     //call API and Generate the Price and Volume graphs
     function getPriceAPI(arr){ 
@@ -137,8 +166,6 @@
             
                      //Here you will pass data to whatever Graphing library asynchronosly
                      //add data to price volume
-                        id1 = ++seriesID 
-                        id2 = ++seriesID
                         Table.addPriceTable(id1,id2,coin_data,unit_data,last_price,last_volume,first_date, last_date, interval, exchange)
                         High.addPriceVolumeGraph(id1,id2,coin_data,unit_data,x,y_prices,y_volume)
                         return true
@@ -279,7 +306,6 @@
 
     //given a json with volumes,convert the volumes to those units.
     function processVolume(json,unit){
-        
              json.w = json.w.map(function(vol){return round(vol/constants.conversions[unit],2)})
             return json.w
         }
@@ -332,12 +358,12 @@
         getBlockAPI : getBlockAPI,
         readPricesValues : readPricesValues,
         readBlockValues : readBlockValues,
-        initialPriceParameter : initialPriceParameter,
-        initialBlockParameter : initialBlockParameter,
         round : round,
         processDates : processDates,
         processPrices : processPrices,
         processVolume : processVolume,
         processData : processData,
         getParameterByName : getParameterByName,
+        convertToModel : convertToModel,
+        convertModelToParameter : convertModelToParameter
     }
