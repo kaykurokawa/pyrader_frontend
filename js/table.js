@@ -22,7 +22,9 @@ function addPriceTable(id1,id2,coin,unit,last_price,last_volume,first_date, last
         $("#data-row-" + id1).remove();
         hchart.get(id1.toString()).remove();
         hchart.get(id1.toString() + "-axis").remove();
+        console.log(View.MODELS)
         URL.removeModel(id1);
+        console.log(View.MODELS)
         URL.changeURL();
     }
     document.querySelector("#remove" + id2).onclick= function(btn){ 

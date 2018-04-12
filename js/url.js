@@ -17,7 +17,11 @@ function createBrowserUrl(models){
             url += "/?" + models[i].type + p_coin + p_datatype +  p_interval
         }    
     }   
-        return url
+        if(url == ""){
+            return "/"
+        }else{
+            return url
+        }
 }
 
 function removeModel(id1){
@@ -64,7 +68,8 @@ function isPriceUrl(){
 }
 
 function changeURL(){
-    let url_name = createBrowserUrl(View.MODELS)  
+    let url_name = createBrowserUrl(View.MODELS)
+    console.log(url_name)  
     history.pushState(null,"",url_name)
 }
 

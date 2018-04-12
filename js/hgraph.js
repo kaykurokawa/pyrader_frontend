@@ -12,8 +12,6 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     title = coin + " Charts"
     y_axis1 = "Price of " + coin + " in " + unit
     y_axis2 = "Volume of " + coin + " in " + unit
-    console.log(id1)
-    console.log(id2)
     hchart.addAxis(
        
         {   

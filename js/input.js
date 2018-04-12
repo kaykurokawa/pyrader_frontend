@@ -138,7 +138,6 @@
 
     //call API and Generate the Price and Volume graphs
     function getPriceAPI(arr){
-        console.log(arr) 
         var parameter = arr[0]
         var id1 = arr[1]
         var id2 = arr[2]
@@ -147,7 +146,7 @@
         var unit = arr[4]
         var exchange = arr[5]
         var interval = arr[6]
-
+        console.log(View.MODELS)
         fetch(parameter)
         .then(
         function(response) {
