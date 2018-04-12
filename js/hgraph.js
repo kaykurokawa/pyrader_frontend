@@ -1,5 +1,7 @@
 
+
 //Create Highcharts for price/volume
+
 
 function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     volume = []

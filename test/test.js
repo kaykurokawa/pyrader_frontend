@@ -1,11 +1,13 @@
 var chai = require('chai');
 var assert = require('chai').assert;
 var expect = require('chai').expect;
-var Info = require('../js/info')
-var Input = require('../js/input')
-var mock_input = require('./mock_input.js')
-var constants = require('../js/constants')
+var Info = require('../js/info');
+var Input = require('../js/input');
+var mock_input = require('./mock_input.js');
+var constants = require('../js/constants');
 var chaiHttp = require('chai-http');
+
+
 chai.use(chaiHttp);
 
 describe('fetchAPI', function() {

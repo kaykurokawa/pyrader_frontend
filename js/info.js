@@ -122,7 +122,7 @@ const constants = require('./constants.js')
             states = []
             states.push(info_prices)
         })
-    }
+    
   
     
             info_prices = price
@@ -139,7 +139,7 @@ const constants = require('./constants.js')
             states = []
             states.push(info_prices)
         
-
+    }
         //get info from API and append to drop down menu for block charts
         function processBlockInfo(block){
             info_blocks = block
