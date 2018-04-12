@@ -1,16 +1,17 @@
     const High = require('./hgraph.js')
     const constants = require('./constants.js')
-    const view = require('./url-models.js')
+    const View = require('./url-models.js')
     const URL = require('./url.js')
     const Table = require('./table.js')
-    var seriesID = 0 //global to keep track of which series is what. If ever  MODEL becomes blank maybe set it back to 0
+    var seriesID = 1 //global to keep track of which series is what. If ever  MODEL becomes blank maybe set it back to 0
 
-     //reads dropdown and converts it into url and returns it to be passed to Ajax call
+     /*reads dropdown and converts it into url and returns it to be passed to Ajax call. 
+        Also save params into model and changes the url*/
     function readPricesValues(){
         let exchange = document.getElementById("exchange").value
-        exchange  = (exchange == "Aggregated" ? "" : exchange )
+        exchange = exchange == "Aggregated" ? "" : exchange
         let symbol = document.getElementById("symbol").value
-        unit = document.getElementById("unit").value
+        let unit = document.getElementById("unit").value
         let interval =  document.getElementById("interval").value
         interval = (interval == "None" ? "" : interval)
         datatype = ""
@@ -18,14 +19,14 @@
         let p_interval = (interval == "" ? "" : '&interval=' + interval)
         let p_unit = '&unit=' + unit
         let p_symbol = 'symbol=' + symbol
-        let parameter = constants.REST_URL + '/price?' + p_exchange + p_interval  
-        let url_model = new view.UrlParam(seriesID, "price", symbol, unit, datatype, exchange, interval)
-        seriesID++
-        view.MODELS.push(url_model)
-        let url_name = URL.getURL() /*grab the url from browser*/
-        URL.changeURL(url_name)
+        let parameter = constants.REST_URL + '/price?' + p_symbol + p_unit + p_exchange + p_interval  
+        let id1 = seriesID++
+        let id2 = seriesID++
+        let url_model = new View.UrlParam(id1, id2, "price", symbol, unit, datatype, exchange, interval)
+        View.MODELS.push(url_model)
+        URL.changeURL()
         validateParamtersConsole(parameter)
-        return [parameter, seriesID, exchange, symbol, unit, interval]
+        return [parameter, id1, id2, symbol, unit, exchange, interval]
     }
 
     //reads and converts dropdown and converts it into url and returns it to be passed to Ajax call
@@ -38,13 +39,13 @@
         let p_symbol = '&coin=' + symbol 
         let p_datatype = '&datatype=' + datatype 
         let parameter = constants.REST_URL + '/block?' + p_symbol +  p_datatype + p_interval
-        let url_model = new view.UrlParam(seriesID, "block", symbol, "none", datatype, "Aggregated", interval)
-        seriesID++
-        view.MODELS.push(url_model)
-        let url_name = URL.getURL()
-        URL.changeURL(url_name)
+        let id1 =  seriesID++
+        let id2 = ""
+        let url_model = new View.UrlParam(id1, id2, "block", symbol, "", datatype, "Aggregated", interval)
+        View.MODELS.push(url_model)
+        URL.changeURL()
         validateParamtersConsole(parameter)
-        return [parameter,seriesID, symbol, datatype, interval]
+        return [parameter,id1, symbol, datatype, interval]
     }
 
 
@@ -69,78 +70,83 @@
             current = url[i]
             
             if(current.includes("price")){
-                symbol =  getParameterByName("symbol", current)
+                let symbol =  getParameterByName("symbol", current)
                 symbol = (symbol == null ? "" : symbol) 
-                unit = getParameterByName("unit", current)
+                let unit = getParameterByName("unit", current)
                 unit = unit == null ? "" : unit
-                exchange = getParameterByName("exchange", current)
+                let exchange = getParameterByName("exchange", current)
                 exchange  = (exchange == "Aggregated" ? "" : exchange)
                 exchange = (exchange == null ? "" : exchange)
-                interval = getParameterByName("interval", current)
+                let interval = getParameterByName("interval", current)
                 interval = (interval == "None" ? "" : interval)
                 interval = (interval == null ? "" : interval)
                 interval = interval.replace(/\//g,'');
-                urlparam = new view.UrlParam(seriesID,"price", symbol, unit, "none", exchange, interval)
-                seriesID ++ 
-                view.MODELS.push(urlparam)
+                let id1 = seriesID++
+                let id2 = seriesID++
+                let urlparam = new View.UrlParam(id1, id2, "price", symbol, unit, "none", exchange, interval) 
+                View.MODELS.push(urlparam)
             }
 
             if(current.includes("block")){
-                symbol = getParameterByName("coin",current)
+                let symbol = getParameterByName("coin",current)
                 symbol = (symbol == null ? "" : symbol)
-                interval =  getParameterByName("interval", current)
+                let interval =  getParameterByName("interval", current)
                 interval = (interval == "None" ? "" : interval)
                 interval = (interval == null ? "" : interval)
                 interval = interval.replace(/\//g,'');
-                datatype =  getParameterByName("datatype",current)
+                let datatype =  getParameterByName("datatype",current)
                 datatype = (datatype == null ? "" : datatype)
-                urlparam = new view.UrlParam(seriesID, "block", symbol, "none", datatype, "Aggregated", interval)
-                seriesID ++ 
-                view.MODELS.push(urlparam)
+                let id1 = seriesID++
+                let id2 = "none"
+                urlparam = new View.UrlParam(id1,id2,"block", symbol, "none", datatype, "Aggregated", interval) 
+                View.MODELS.push(urlparam)
             }
         }
-        console.log(view.MODELS)
     }
+
     /*given a model, convert it to usable parameters*/
     function convertModelToParameter(model){
         if(model.type == "price"){
+            let symbol = model.symbol
+            let unit = model.unit
+            let exchange = model.exchange
+            let interval = model.interval
             symbol = model.symbol
-            unit = model.unit
-            exchange = model.exchange
-            interval = model.interval
-            symbol = model.symbol
-            p_symbol = "symbol=" + model.symbol
-            p_unit = model.unit == "" ? "" : "&unit=" + model.unit
-            p_exchange = model.exchange == "" ? "" : "&exchange=" + model.exchange
-            p_interval = model.interval == "" ? "" : "&interval=" + model.interval
-            parameter = constants.REST_URL + "/price?" + p_symbol + p_unit + p_interval + p_exchange
-            id = model.id
-            return [parameter,id,exchange,symbol,unit,interval]
+            let p_symbol = "symbol=" + model.symbol
+            let p_unit = model.unit == "" ? "" : "&unit=" + model.unit
+            let p_exchange = model.exchange == "" ? "" : "&exchange=" + model.exchange
+            let p_interval = model.interval == "" ? "" : "&interval=" + model.interval
+            let parameter = constants.REST_URL + "/price?" + p_symbol + p_unit + p_interval + p_exchange
+            let id1 = model.id1
+            let id2 = model.id2
+            return [parameter, id1, id2, symbol, unit, exchange, interval]
         }
 
         if(model.type == "block"){
-            symbol = model.symbol
-            interval = model.interval
-            datatype = model.datatype
-            p_symbol = "?coin=" + model.symbol
-            p_interval = "&interval=" + model.interval
-            p_datatype =  "&datatype=" + model.datatype
-            parameter = constants.REST_URL + '/block' + p_symbol + p_datatype + p_interval 
-            id = model.id
-            return [parameter,id,symbol, datatype, interval]            
+            let symbol = model.symbol
+            let interval = model.interval
+            let datatype = model.datatype
+            let p_symbol = "?coin=" + model.symbol
+            let p_interval = "&interval=" + model.interval
+            let p_datatype =  "&datatype=" + model.datatype
+            let parameter = constants.REST_URL + '/block' + p_symbol + p_datatype + p_interval 
+            let id = model.id1
+            return [parameter, id, symbol, datatype, interval]       
         }
 
     } 
 
     //call API and Generate the Price and Volume graphs
-    function getPriceAPI(arr){ 
+    function getPriceAPI(arr){
+        console.log(arr) 
         var parameter = arr[0]
-        var exchange = arr[1]
+        var id1 = arr[1]
+        var id2 = arr[2]
+        var symbol = arr[3]
         if(exchange == "") exchange = "Aggregated"
-        var symbol = arr[2]
-        var unit = arr[3]
-        var interval = arr[4]
-     
+        var unit = arr[4]
+        var exchange = arr[5]
+        var interval = arr[6]
 
         fetch(parameter)
         .then(
@@ -152,20 +158,21 @@
                 }
                 response.json().then(function(data) {
                     High.showCharts()
-                    interval_i = data.interval/1000
-                    x = processDates(data,interval_i)
-                    y_prices = processPrices(data,unit)
-                    y_volume = processVolume(data,unit)
+                    let interval_i = data.interval/1000
+                    let x = processDates(data,interval_i)
+                    let y_prices = processPrices(data,unit)
+                    let y_volume = processVolume(data,unit)
                     window.apiCall = data
-                    coin_data = data.symbol
-                    unit_data = data.unit
-                    last_price = y_prices[y_prices.length-1]
-                    last_volume = y_volume[y_volume.length-1]
-                    first_date = x[0]
-                    last_date = x[x.length-1]
+                    let coin_data = data.symbol
+                    let unit_data = data.unit
+                    let last_price = y_prices[y_prices.length-1]
+                    let last_volume = y_volume[y_volume.length-1]
+                    let first_date = x[0]
+                    let last_date = x[x.length-1]
             
                      //Here you will pass data to whatever Graphing library asynchronosly
                      //add data to price volume
+                     
                         Table.addPriceTable(id1,id2,coin_data,unit_data,last_price,last_volume,first_date, last_date, interval, exchange)
                         High.addPriceVolumeGraph(id1,id2,coin_data,unit_data,x,y_prices,y_volume)
                         return true
@@ -178,11 +185,12 @@
                 });
     }
     //Call the API and generate graph for Block data
-    function getBlockAPI(arr){ 
+    function getBlockAPI(arr){    
         var parameter = arr[0]
-        var symbol = arr[1]
-        var datatype = arr[2]
-        var interval = arr[3]  
+        var id = arr[1]
+        var symbol = arr[3]
+        var datatype = arr[4]
+        var interval = arr[5]  
 
         fetch(parameter)
         .then(
@@ -195,31 +203,29 @@
                 }
                 response.json().then(function(data) {
                     High.showCharts()
-                    interval_i = data.interval/1000
-                     plottype = data.plottype
+                    let interval_i = data.interval/1000
+                    let plottype = data.plottype
                     if(plottype == "scatter"){
-                        x = data.x.map(function(x){return x = x/1000 })
+                        var x = data.x.map(function(x){return x = x/1000 })
 
                     }else{
-                         x = processDates(data,interval_i)
+                         var x = processDates(data,interval_i)
                     }
-                     y = processData(data)
+                    let y = processData(data)
                     window.apiCall = data
-                    coin_data = data.coin
-                    datatype_data = data.datatype
-                    first_date = x[0]
-                    last_date = x[x.length-1]
-                    last_datatype = data.y[y.length-1]
+                    let coin_data = data.coin
+                    let datatype_data = data.datatype
+                    let first_date = x[0]
+                    let last_date = x[x.length-1]
+                    let last_datatype = data.y[y.length-1]
                     
                     //Here you will pass data to whatever Graphing library asynchronosly
                     if(plottype == "scatter"){
-                        seriesID++
-                        High.addScatterPlot(seriesID,coin_data,datatype_data,x,y)
-                        Table.addBlockTable(seriesID,coin_data,datatype_data,last_datatype,first_date, last_date, interval, exchange)
+                        High.addScatterPlot(id,coin_data,datatype_data,x,y)
+                        Table.addBlockTable(id,coin_data,datatype_data,last_datatype,first_date, last_date, interval, exchange)
                     }else{
-                        seriesID++
-                        High.addBlockGraph(seriesID,coin_data,datatype_data,x,y)
-                        Table.addBlockTable(seriesID,coin_data,datatype_data,last_datatype,first_date, last_date, interval, exchange)
+                        High.addBlockGraph(id,coin_data,datatype_data,x,y)
+                        Table.addBlockTable(id,coin_data,datatype_data,last_datatype,first_date, last_date, interval, exchange)
                     }
                 });
                 }
@@ -336,7 +342,7 @@
 
     //print out the API call URL and the exact time stamps you called for debugging.
     function validateParamtersConsole(parameter){
-        console.log(parameter) // you can validate paramter in console. 
+        // you can validate paramter in console. 
         /*if(Number(start_stamp) || Number(end_stamp) == 0){
             console.log("No start or end time stamps requested")
         }else{        
@@ -352,8 +358,10 @@
     function getParameter(){
         return window.parameter
     }
+
     
     module.exports = {
+        
         getPriceAPI : getPriceAPI,
         getBlockAPI : getBlockAPI,
         readPricesValues : readPricesValues,
@@ -365,5 +373,7 @@
         processData : processData,
         getParameterByName : getParameterByName,
         convertToModel : convertToModel,
-        convertModelToParameter : convertModelToParameter
+        convertModelToParameter : convertModelToParameter,
+        
+       
     }

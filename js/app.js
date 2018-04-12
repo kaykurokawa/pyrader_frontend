@@ -1,9 +1,10 @@
 const Info = require('/js/info.js')
 const Input = require('/js/input.js')
 const Url = require('/js/url.js')
-const view = require('./url-models.js')
+const view = require('/js/url-models.js')
 //test url: http://127.0.0.1:8080/?price&symbol=BTC&unit=USD&exchange=bitstamp&interval=hour/?price&symbol=BTC&unit=EUR&interval=day
 //test url: http://localhost:8080/?block&coin=LTC&datatype=difficulty&interval=hour/?block&coin=LTC&datatype=difficulty&interval=0
+//test url: http://127.0.0.1:8080/?price&symbol=BTC&unit=USD&interval=hour/?price&symbol=ETH&unit=USD&interval=hour
 $(document).ready(function () {
     Info.getInfo() /*initialize buttons*/
     url = Url.getURL() /*grab the url from browser*/

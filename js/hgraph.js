@@ -12,7 +12,8 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     title = coin + " Charts"
     y_axis1 = "Price of " + coin + " in " + unit
     y_axis2 = "Volume of " + coin + " in " + unit
-
+    console.log(id1)
+    console.log(id2)
     hchart.addAxis(
        
         {   
@@ -37,6 +38,7 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
         id: id1.toString(),
         type: 'line',
         name: y_axis1,
+        unit: unit,
         data: prices,
         yAxis: hchart.yAxis.length-1,
         dataGrouping: {
@@ -70,6 +72,7 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
         id: id2.toString(),
         type: 'column',
         name: y_axis2,
+        unit: unit,
         data: volume,
         yAxis: hchart.yAxis.length-1,
         dataGrouping: {
@@ -196,15 +199,18 @@ hchart = Highcharts.stockChart('hchart', {
         },
         tooltip: {
              formatter: function () {
+                 //format the tool tip if it is price & volume
                  if(this.hasOwnProperty('points') && this.points.length == 2){
                     styl1 = (this.points[0].colorIndex == 1 ? 0 : this.points[0].colorIndex)
                     styl2 = (this.points[1].colorIndex == 1 ? 0 : this.points[1].colorIndex)
-                    return '<span class="highcharts-color-' + styl1 + '">▣ </span>' + this.points[0].series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.points[0].x) + ':<b>' + Highcharts.numberFormat(this.points[0].y, 2) + " " + unit +'</b>'
-                    +  '<br/>' +'<span class="highcharts-color-' + styl2 + '">▣ </span>'  +this.points[1].series.name +  ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.points[1].x) + ': <b>' + Highcharts.numberFormat(this.points[1].y, 2) + " " + unit +'</b>'
-                 }else if(this.hasOwnProperty('points') && this.points.length == 1){
+                    return '<span class="highcharts-color-' + styl1 + '">▣ </span>' + this.points[0].series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.points[0].x) + ': <b>' + Highcharts.numberFormat(this.points[0].y, 2) + " " +'</b>'
+                    +  '<br/>' +'<span class="highcharts-color-' + styl2 + '">▣ </span>'  +this.points[1].series.name +  ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.points[1].x) + ': <b>' + Highcharts.numberFormat(this.points[1].y, 2) + " " +'</b>'
+                //format the tool tip if it is just one of price or volume 
+                }else if(this.hasOwnProperty('points') && this.points.length == 1){
                     styl = (this.points[0].colorIndex == 1 ? 0 : this.points[0].colorIndex)
                     return '<span class="highcharts-color-' + styl + '">▣ </span>' + this.points[0].series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.x) + ': <b>' + Highcharts.numberFormat(this.y, 2) + '</b>'
                  }else{
+                //format the tooltip if it is scatter     
                     styl = (this.colorIndex == 1 ? 0 : this.colorIndex)
                     return '<span class="highcharts-color-' + styl + '">▣ </span>' + this.series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.x) + ': <b>' +  Highcharts.numberFormat(this.y, 2) + '</b>'
                  }

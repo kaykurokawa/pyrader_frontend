@@ -1,7 +1,8 @@
     var MODELS = []
 
-    function UrlParam(id,type, symbol, unit, datatype,exchange,interval){
-        this.id  = id;
+    function UrlParam(id1,id2,type, symbol, unit, datatype,exchange,interval){
+        this.id1  = id1;
+        this.id2 = id2;
         this.type = type;
         this.symbol = symbol;
         this.unit = unit;

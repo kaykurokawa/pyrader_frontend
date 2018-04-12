@@ -1,4 +1,5 @@
-const view = require('./url-models.js')
+const View = require('./url-models.js')
+
 
 function createBrowserUrl(models){
     url = ""
@@ -19,9 +20,19 @@ function createBrowserUrl(models){
         return url
 }
 
+function removeModel(id1){
+    for(let i = 0 ; i < View.MODELS.length ; i++){
+        if(View.MODELS[i].id1 == id1){
+            View.MODELS.splice(i,1) 
+        }
+    }
+    let url_name = getURL()
+    changeURL(url_name)
+}
+
 /*function that parses the url by interval, units, symbol... or whatever name, if that name doesn't exist
 then return null*/
-    function getParameterByName(name, url) {
+function getParameterByName(name, url) {
         if (!url) url = window.location.href;
         name = name.replace(/[\[\]]/g, "\\$&");
         regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
@@ -52,13 +63,12 @@ function isPriceUrl(){
 
 }
 
-function changeURL(url){
-    console.log(view.MODELS)
-    let url_name = createBrowserUrl(view.MODELS)  
+function changeURL(){
+    let url_name = createBrowserUrl(View.MODELS)  
     history.pushState(null,"",url_name)
 }
 
-function  getURL(){
+function getURL(){
     uri = window.location.href
     return uri
 }
@@ -66,4 +76,6 @@ function  getURL(){
 module.exports = {changeURL : changeURL,
                 getURL : getURL,
                 isBlockUrl : isBlockUrl,
-                isPriceUrl : isPriceUrl}
+                isPriceUrl : isPriceUrl,
+                removeModel : removeModel,
+            }
