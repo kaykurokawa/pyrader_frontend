@@ -10,6 +10,7 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
         prices.push([x[i], y_prices[i]])
         volume.push([x[i], y_volume[i]])
     }
+    console.log(prices)
     minimum = Math.min.apply(null, y_prices)
     title = coin + " Charts"
     y_axis1 = "Price of " + coin + " in " + unit
@@ -199,24 +200,28 @@ hchart = Highcharts.stockChart('hchart', {
         },
         tooltip: {
              formatter: function () {
-                 //format the tool tip if it is price & volume
+                 //format the tool tip if it is less than 1 then it is 7 digits and if not then it is 2.
+                 var dec1;
+                 var dec2;
+                 this.points[0].y < 1 ? dec1 = 8 : dec1 = 2
+                 this.points[1].y < 1 ? dec2 = 8 : dec2 = 2
                  if(this.hasOwnProperty('points') && this.points.length == 2){
                     styl1 = (this.points[0].colorIndex == 1 ? 0 : this.points[0].colorIndex)
                     styl2 = (this.points[1].colorIndex == 1 ? 0 : this.points[1].colorIndex)
-                    return '<span class="highcharts-color-' + styl1 + '">▣ </span>' + this.points[0].series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.points[0].x) + ': <b>' + Highcharts.numberFormat(this.points[0].y, 2) + " " +'</b>'
-                    +  '<br/>' +'<span class="highcharts-color-' + styl2 + '">▣ </span>'  +this.points[1].series.name +  ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.points[1].x) + ': <b>' + Highcharts.numberFormat(this.points[1].y, 2) + " " +'</b>'
+                    return '<span class="highcharts-color-' + styl1 + '">▣ </span>' + this.points[0].series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.points[0].x) + ': <b>' + Highcharts.numberFormat(this.points[0].y, dec1) + " " +'</b>'
+                    +  '<br/>' +'<span class="highcharts-color-' + styl2 + '">▣ </span>'  +this.points[1].series.name +  ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.points[1].x) + ': <b>' + Highcharts.numberFormat(this.points[1].y, dec2) + " " +'</b>'
                 //format the tool tip if it is just one of price or volume 
                 }else if(this.hasOwnProperty('points') && this.points.length == 1){
                     styl = (this.points[0].colorIndex == 1 ? 0 : this.points[0].colorIndex)
-                    return '<span class="highcharts-color-' + styl + '">▣ </span>' + this.points[0].series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.x) + ': <b>' + Highcharts.numberFormat(this.y, 2) + '</b>'
+                    return '<span class="highcharts-color-' + styl + '">▣ </span>' + this.points[0].series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.x) + ': <b>' + Highcharts.numberFormat(this.y, dec1) + '</b>'
                  }else{
                 //format the tooltip if it is scatter     
                     styl = (this.colorIndex == 1 ? 0 : this.colorIndex)
-                    return '<span class="highcharts-color-' + styl + '">▣ </span>' + this.series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.x) + ': <b>' +  Highcharts.numberFormat(this.y, 2) + '</b>'
+                    return '<span class="highcharts-color-' + styl + '">▣ </span>' + this.series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.x) + ': <b>' +  Highcharts.numberFormat(this.y, dec1) + '</b>'
                  }
              },
              shared: true,
-            valueDecimals: 2
+             split: true,
         },
     
         series: []

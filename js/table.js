@@ -6,6 +6,7 @@ function addPriceTable(id1,id2,coin,unit,last_price,last_volume,first_date, last
     var newRow2 = document.querySelector("#table-of-prices").insertRow();
     var from_date = new Date(first_date).toDateString() + " " + new Date(first_date).toLocaleTimeString('en-US');
     var to_date = new Date(last_date).toDateString() + " " + new Date(last_date).toLocaleTimeString('en-US');
+    exchange = exchange == "" ? "Aggregated" : exchange;
     newRow1.setAttribute("id","data-row-" + id1);
     newRow2.setAttribute("id","data-row-" + id2);
     newRow1.innerHTML = "<td>Price/Volume</td>" + "<td>Price</td>" + "<td>" + coin + "</td>" + "<td>" + exchange + "</td>" 

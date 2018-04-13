@@ -8,25 +8,25 @@
      /*reads dropdown and converts it into url and returns it to be passed to Ajax call. 
         Also save params into model and changes the url*/
     function readPricesValues(){
-        let exchange = document.getElementById("exchange").value
-        exchange = exchange == "Aggregated" ? "" : exchange
-        let symbol = document.getElementById("symbol").value
-        let unit = document.getElementById("unit").value
-        let interval =  document.getElementById("interval").value
-        interval = (interval == "None" ? "" : interval)
-        datatype = ""
-        let p_exchange = (exchange == "" ? "" : '&exchange=' + exchange) 
-        let p_interval = (interval == "" ? "" : '&interval=' + interval)
-        let p_unit = '&unit=' + unit
-        let p_symbol = 'symbol=' + symbol
-        let parameter = constants.REST_URL + '/price?' + p_symbol + p_unit + p_exchange + p_interval  
-        let id1 = seriesID++
-        let id2 = seriesID++
-        let url_model = new View.UrlParam(id1, id2, "price", symbol, unit, datatype, exchange, interval)
-        View.MODELS.push(url_model)
-        URL.changeURL()
-        validateParamtersConsole(parameter)
-        return [parameter, id1, id2, symbol, unit, exchange, interval]
+        let exchange = document.getElementById("exchange").value;
+        exchange = exchange == "Aggregated" ? "" : exchange;
+        let symbol = document.getElementById("symbol").value;
+        let unit = document.getElementById("unit").value;
+        let interval =  document.getElementById("interval").value;
+        interval = (interval == "None" ? "" : interval);
+        datatype = "";
+        let p_exchange = (exchange == "" ? "" : '&exchange=' + exchange);
+        let p_interval = (interval == "" ? "" : '&interval=' + interval);
+        let p_unit = '&unit=' + unit;
+        let p_symbol = 'symbol=' + symbol;
+        let parameter = constants.REST_URL + '/price?' + p_symbol + p_unit + p_exchange + p_interval;  
+        let id1 = seriesID++;
+        let id2 = seriesID++;
+        let url_model = new View.UrlParam(id1, id2, "price", symbol, unit, datatype, exchange, interval);
+        View.MODELS.push(url_model);
+        URL.changeURL();
+        validateParamtersConsole(parameter);
+        return [parameter, id1, id2, symbol, unit, exchange, interval];
     }
 
     //reads and converts dropdown and converts it into url and returns it to be passed to Ajax call
@@ -187,9 +187,10 @@
     function getBlockAPI(arr){    
         var parameter = arr[0]
         var id = arr[1]
-        var symbol = arr[3]
-        var datatype = arr[4]
-        var interval = arr[5]  
+        var symbol = arr[2]
+        var datatype = arr[3]
+        var interval = arr[4]  
+        console.log(interval)
 
         fetch(parameter)
         .then(
@@ -237,10 +238,10 @@
 
     //given a reporting period in string, return the start and end time stamps in an array in microseconds
     function getTimeStamp(reporting_period){
-        now = new Date()
-        timestamps = []
-        start_stamp = ""
-        end_stamp = ""
+        now = new Date();
+        var timestamps = [];
+        var start_stamp = "";
+        var end_stamp = "";
         if (reporting_period == "Day"){
             start_stamp = new Date(now.getFullYear(),now.getMonth(),now.getDate())
             start_stamp = (start_stamp * 1000).toString()
@@ -304,7 +305,6 @@
             json.y = json.y.map(function(units){return round(units/constants.conversions[unit],8)})
         }else{
             json.y = json.y.map(function(units){return round(units/constants.conversions[unit],2)})
-
         }
         return json.y
         }
