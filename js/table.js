@@ -1,5 +1,5 @@
-const View = require('./url-models.js')
-const URL = require('./url.js')
+const View = require('./url-models.js');
+const URL = require('./url.js');
 
 function addPriceTable(id1,id2,coin,unit,last_price,last_volume,first_date, last_date,interval,exchange){
     var newRow1 = document.querySelector("#table-of-prices").insertRow();
@@ -23,16 +23,14 @@ function addPriceTable(id1,id2,coin,unit,last_price,last_volume,first_date, last
         $("#data-row-" + id1).remove();
         hchart.get(id1.toString()).remove();
         hchart.get(id1.toString() + "-axis").remove();
-        console.log(View.MODELS)
         URL.removeModel(id1);
-        console.log(View.MODELS)
         URL.changeURL();
     }
     document.querySelector("#remove" + id2).onclick= function(btn){ 
         $("#data-row-" + id2).remove();
         hchart.get(id2.toString()).remove();
         hchart.get(id2.toString() + "-axis").remove();
-        URL.removeModel(id2)
+        URL.removeModel(id2);
         URL.changeURL();
     }
 }
@@ -56,69 +54,21 @@ function addBlockTable(id,coin,datatype,last_block,first_date, last_date,interva
     }
  }
 
- function clearTable(){
-    /*document.getElementById("error").innerHTML = "No data for this period" 
-    document.getElementById("error").className = "well"
-    $("#table-of-prices td").remove();
-    var row1 = document.getElementById("prices-row1")
-    var row2 = document.getElementById("prices-row2")
-    var row3 = document.getElementById("prices-row3")
-    td1 = document.createElement("td")
-    td1.text = "Time Period:"
-    td2 = document.createElement("td")
-    td2.id = "time-period"
-    td3 = document.createElement("td")
-    td3.id = "price-label"
-    td3.text = "Current Price Data:"
-    td4 =  document.createElement("td")
-    td4.id = "current-price"
-    td5 = document.createElement("td")
-    td3.id = "volume-label"
-    td5.text = "Current Volume Data:"
-    td6 = document.createElement("td")
-    td6.id = "current-volume" 
-    row1.appendChild(td1)
-    row1.appendChild(td2)
-    row2.appendChild(td3)
-    row2.appendChild(td4) 
-    row3.appendChild(td5)
-    row3.appendChild(td6)
-    $('#hchart').highcharts().destroy();*/
+ //if AJAX cannot grab data, display error
+ function displayError(){
+    document.getElementById("error").innerHTML = "No data for this period";
+    document.getElementById("error").className = "well";
  }
 
-
- function showTable(){
-    /*document.getElementById("error").innerHTML = "" 
-    document.getElementById("error").classList.remove("well");*/
+/*clear error table*/
+ function hideError(){
+    document.getElementById("error").innerHTML = ""; 
+    document.getElementById("error").classList.remove("well");
  }
 
- function clearBlockTable(){
-    /*document.getElementById("block-error").innerHTML = "No data for this this period" 
-    document.getElementById("block-error").className = "well"
-    $("#table-of-blocks td").remove(); 
-    var row1 = document.getElementById("block-row1")
-    var row2 = document.getElementById("block-row2")
-    td1 = document.createElement("td")
-    td1.text = "Time Period:"
-    td2 = document.createElement("td")
-    td2.id = "block-time-period"
-    td3 = document.createElement("td")
-    td3.id = "current-block-label"
-    td3.text = "Current Block Data:"
-    td4 =  document.createElement("td")
-    td4.id = "current-block"
-    row1.appendChild(td1)
-    row1.appendChild(td2)
-    row2.appendChild(td3)
-    row2.appendChild(td4)
-    $('#block-hchart').highcharts().destroy();*/
- }
-
-//generate the Highcharts
- function showBlockTable(){
-    /*document.getElementById("block-error").innerHTML = "" 
-    document.getElementById("block-error").classList.remove("well");*/
- }
 
  module.exports = {addPriceTable : addPriceTable,
-                   addBlockTable : addBlockTable,}
+                   addBlockTable : addBlockTable,
+                    displayError : displayError,
+                    hideError: hideError,
+                   }

@@ -1,4 +1,4 @@
-const View = require('./url-models.js')
+const View = require('./url-models.js');
 
 
 function createBrowserUrl(models){
