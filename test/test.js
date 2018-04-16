@@ -126,7 +126,10 @@ describe('Input', function() {
 
   describe('processData', function() {
     it('given json, make sure the block data has no zeros', function() {
-      expect(Input.processData({"y":[100000000,0.0,0.0,null,NaN]})).to.not.include(0 || null || NaN)
+      expect(Input.processData({"y":[100000000,0.0,0.0,null,NaN]})).to.not.include(0 || null || NaN) 
+    });
+    it('given json, of all zeros make sure it is still all zeros', function() {
+      expect(Input.processData({"y":[0.0,0.0,0.0,0.0,0.0]})).to.equal([0.0,0.0,0.0,0.0,0.0]) 
     });
   })
 

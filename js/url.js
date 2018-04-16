@@ -69,7 +69,6 @@ function isPriceUrl(){
 
 function changeURL(){
     let url_name = createBrowserUrl(View.MODELS)
-    console.log(url_name)  
     history.pushState(null,"",url_name)
 }
 

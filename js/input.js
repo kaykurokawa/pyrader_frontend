@@ -194,7 +194,6 @@
         var symbol = arr[2];
         var datatype = arr[3];
         var interval = arr[4];  
-
         fetch(parameter)
         .then(
         function(response) {
@@ -210,18 +209,18 @@
                     let plottype = data.plottype;
                     if(plottype == "scatter"){
                         var x = data.x.map(function(x){return x = x/1000 });
+                        var y = data.y
 
                     }else{
                          var x = processDates(data,interval_i);
+                         var y = processData(data);
                     }
-                    let y = processData(data);
-                    window.apiCall = data;
                     let coin_data = data.coin;
                     let datatype_data = data.datatype;
                     let first_date = x[0];
                     let last_date = x[x.length-1];
                     let last_datatype = data.y[y.length-1];
-                    
+
                     //Here you will pass data to whatever Graphing library asynchronosly
                     if(plottype == "scatter"){
                         High.addScatterPlot(id,coin_data,datatype_data,x,y);
@@ -317,21 +316,38 @@
         json.w = json.w.map(function(vol){return round(vol/constants.conversions[unit],2)});
         return json.w;
         }
-     //given a json block data, eliminate zeros/falsy/NaN  by reaching out and grabbing the previous values
+     /*given a json block data for a line graph, 
+     if the graph is majority 0's then graph as is. 
+     if the graph has zeros/falsy/NaN  holes then
+     eliminate zeros/falsy/NaN  by reaching out and grabbing the previous values*/
+    
     function processData(json){
-
-        for(i = 0 ; i < json.y.length ; i++){
-            if(!json.y[i] && i == 0){
-                j = 0;
-                while(!json.y[j]){j++; }
-                    json.y[0] = json.y[j];
-            }else if(!json.y[i]){
-                json.y[i] = json.y[i-1];
-            }else{
-                continue;
+        var count = 0;
+        var holes = true;
+        for(let i = 0 ; i < json.y.length ; i++){
+            if(json.y[i] == 0 ){
+                count++;
             }
         }
-                return json.y;
+        if((count/(json.y.length)) > 0.6){
+            holes = false;
+            return json.y
+        }
+        
+        if(holes){
+            for(let i = 0 ; i < json.y.length ; i++){
+                if(!json.y[i] && i == 0){
+                    j = 0;
+                    while(!json.y[j]){j++; }
+                        json.y[0] = json.y[j];
+                }else if(!json.y[i]){
+                    json.y[i] = json.y[i-1];
+                }else{
+                    continue;
+                }
+            }
+                    return json.y;
+        }
     }
         
     //given a unix timestamp in milliseconds, convert that to a date object

@@ -1,5 +1,4 @@
 
-
 //Create Highcharts for price/volume
 function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     volume = [];
@@ -32,6 +31,7 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     );
     //price series
     hchart.addSeries({
+        //boostThreshold: 1,
         id: id1.toString(),
         type: 'line',
         name: y_axis1,
@@ -45,7 +45,8 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     });
 
     //volume axis  
-    hchart.addAxis({   
+    hchart.addAxis({
+            //boostThreshold: 1,   
             id: id2.toString() + "-axis",
             className: 'highcharts-color-' + id2,
             labels: {
@@ -166,7 +167,15 @@ hchart = Highcharts.stockChart('hchart', {
         rangeSelector: {
             selected: 4
         },
-    
+
+        boost: {
+            enabled: false
+        },
+        plotOptions: {
+            series: {
+                turboThreshold: 2000
+            }
+        },
         yAxis: [],
         xAxis: {
             labels: {
