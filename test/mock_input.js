@@ -13,9 +13,6 @@ function getMockInput1() {
 
     }
 
- 
-
-
 module.exports = { getMockInput: getMockInput,
                     getMockInput1 : getMockInput1,
                   }
