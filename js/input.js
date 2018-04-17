@@ -143,6 +143,7 @@
     //call API and Generate the Price and Volume graphs
     function getPriceAPI(arr){
         var parameter = arr[0];
+        console.log(parameter)
         var id1 = arr[1];
         var id2 = arr[2];
         var symbol = arr[3];
@@ -190,6 +191,7 @@
     //Call the API and generate graph for Block data
     function getBlockAPI(arr){    
         var parameter = arr[0];
+        console.log(parameter)
         var id = arr[1];
         var symbol = arr[2];
         var datatype = arr[3];

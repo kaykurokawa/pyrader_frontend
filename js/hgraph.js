@@ -15,24 +15,25 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     //price axis
     hchart.addAxis({   
             id: id1.toString() + "-axis",
-            className: 'highcharts-color-' + (styl = (id1 == 1 ? 0 : id1)),
+            colorIndex: id1,
+            className: 'highcharts-color-' + id1,
             labels: {
                 align: 'left',
             },
             title: {
-                text:  '<div class="highcharts-color-' + (styl = (id1 == 1 ? 0 : id1)) + '">' + y_axis1 + '</div>'
+                text:  '<div class="highcharts-color-' + id1 + '">' + y_axis1 + '</div>'
             },
             height: '65%',
             lineWidth: 2,
             type: 'linear',
-            //minorTickInterval: 0.1,
             opposite: true,
          }
     );
     //price series
     hchart.addSeries({
-        //boostThreshold: 1,
+        //boostThreshold: 1, 0 for off 1 for force
         id: id1.toString(),
+        colorIndex: id1,
         type: 'line',
         name: y_axis1,
         unit: unit,
@@ -46,15 +47,15 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
 
     //volume axis  
     hchart.addAxis({
-            //boostThreshold: 1,   
             id: id2.toString() + "-axis",
+            colorIndex: id2,
             className: 'highcharts-color-' + id2,
             labels: {
                 align: 'left',
                 x: -40
             },
             title: {
-                text: '<div class="highcharts-color-' + (styl = (id2 == 1 ? 0 : id2)) + '">' + y_axis2 + '</div>'
+                text: '<div class="highcharts-color-' + id2 + '">' + y_axis2 + '</div>'
             },
             top: '70%',
             height: '30%',
@@ -66,6 +67,8 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     //volume series
     hchart.addSeries({
         id: id2.toString(),
+        colorIndex: id2,
+        //boostThreshold: 1, 0 for off 1 for force
         type: 'column',
         name: y_axis2,
         unit: unit,
@@ -90,12 +93,13 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     //add block axis
     hchart.addAxis({   
              id: id.toString() + "-axis",
-             className: 'highcharts-color-' + (styl = (id == 1 ? 0 : id)),
+             className: 'highcharts-color-' + id,
+             colorIndex: id,
              labels: {
                  align: 'left',
              },
              title: {
-                 text:  '<div class="highcharts-color-' + (styl = (id == 1 ? 0 : id)) + '">' + y_axis + '</div>'
+                 text:  '<div class="highcharts-color-' + id + '">' + y_axis + '</div>'
              },
              height: '70%',
              lineWidth: 2,
@@ -103,9 +107,12 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
              minorTickInterval: 0.1,
              opposite: true,
           })
+
     //add block series
     hchart.addSeries({
         id: id.toString(),
+        colorIndex: id,
+        //boostThreshold: 1, 0 for off 1 for force
         type: 'line',
         name: y_axis,
         data: block_data,
@@ -128,12 +135,13 @@ function addScatterPlot(id,coin,datatype,x,y){
         
          {   
              id: id.toString() + "-axis",
-             className: 'highcharts-color-' + (styl = (id == 1 ? 0 : id)),
+             className: 'highcharts-color-' + id,
+             colorIndex: id,
              labels: {
                  align: 'left',
              },
              title: {
-                 text:  '<div class="highcharts-color-' + (styl = (id == 1 ? 0 : id)) + '">' + y_axis + '</div>'
+                 text:  '<div class="highcharts-color-' + id + '">' + y_axis + '</div>'
              },
              height: '70%',
              lineWidth: 2,
@@ -145,6 +153,8 @@ function addScatterPlot(id,coin,datatype,x,y){
 
     hchart.addSeries({
         id : id.toString(),
+        colorIndex: id,
+        //boostThreshold: 1, 0 for off 1 for force
         type: 'scatter',
         name: y_axis,
         data: block_data,
@@ -169,7 +179,8 @@ hchart = Highcharts.stockChart('hchart', {
         },
 
         boost: {
-            enabled: false
+            enabled: true,
+            useGPUTranslations:true
         },
         plotOptions: {
             series: {
@@ -205,19 +216,19 @@ hchart = Highcharts.stockChart('hchart', {
                  if(this.hasOwnProperty('points') && this.points.length == 2){
                     this.points[0].y < 1 ? dec1 = 8 : dec1 = 2;
                     this.points[1].y < 1 ? dec2 = 8 : dec2 = 2;
-                    styl1 = (this.points[0].colorIndex == 1 ? 0 : this.points[0].colorIndex);
-                    styl2 = (this.points[1].colorIndex == 1 ? 0 : this.points[1].colorIndex);
+                    styl1 = this.points[0].colorIndex;
+                    styl2 = this.points[1].colorIndex;
                     return '<span class="highcharts-color-' + styl1 + '">▣ </span>' + this.points[0].series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.points[0].x) + ': <b>' + Highcharts.numberFormat(this.points[0].y, dec1) + " " +'</b>'
                     +  '<br/>' +'<span class="highcharts-color-' + styl2 + '">▣ </span>'  +this.points[1].series.name +  ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.points[1].x) + ': <b>' + Highcharts.numberFormat(this.points[1].y, dec2) + " " +'</b>';
                 //format the tool tip if it is just one of price or volume 
                 }else if(this.hasOwnProperty('points') && this.points.length == 1){
                     this.points[0].y < 1 ? dec1 = 8 : dec1 = 2;
-                    styl = (this.points[0].colorIndex == 1 ? 0 : this.points[0].colorIndex);
+                    styl = this.points[0].colorIndex;
                     return '<span class="highcharts-color-' + styl + '">▣ </span>' + this.points[0].series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.x) + ': <b>' + Highcharts.numberFormat(this.y, dec1) + '</b>';
                 //format the tooltip if it is scatter 
                 }else{
                     this.y < 1 ? dec1 = 8 : dec1 = 2;    
-                    styl = (this.colorIndex == 1 ? 0 : this.colorIndex);
+                    styl = this.colorIndex;
                     return '<span class="highcharts-color-' + styl + '">▣ </span>' + this.series.name + ' ' + Highcharts.dateFormat('%B %e, %H:%M', this.x) + ': <b>' +  Highcharts.numberFormat(this.y, dec1) + '</b>';
                 }
              },
