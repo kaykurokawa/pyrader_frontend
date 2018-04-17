@@ -174,9 +174,29 @@ groupingUnits = [['week',[1]], ['month',[1, 2, 3, 4, 6]]]
 
 hchart = Highcharts.stockChart('hchart', {
     
-        rangeSelector: {
-            selected: 4
+    rangeSelector: {
+        allButtonsEnabled: true,
+        buttons: [{
+            type: 'day',
+            count: 1,
+            text: 'Day',
+        }, {
+            type: 'week',
+            count: 1,
+            text: 'Week',
+        }, {
+            type: 'month',
+            count: 1,
+            text: 'Month',
+        },{
+            type: 'all',
+            text: 'All',
+        }],
+        buttonTheme: {
+            width: 60
         },
+        selected: 1
+    },
 
         boost: {
             enabled: true,
