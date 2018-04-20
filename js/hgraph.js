@@ -39,10 +39,10 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
         unit: unit,
         data: prices,
         yAxis: hchart.yAxis.length-1,
-        dataGrouping: {
+        /*dataGrouping: {
             enabled: false,
             units: groupingUnits
-        }
+        }*/
     });
 
     //volume axis  
@@ -74,10 +74,10 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
         unit: unit,
         data: volume,
         yAxis: hchart.yAxis.length-1,
-        dataGrouping: {
+        /*dataGrouping: {
             enabled: false,
             units: groupingUnits
-        }
+        }*/
     });
 }
 
@@ -117,10 +117,10 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
         name: y_axis,
         data: block_data,
         yAxis: hchart.yAxis.length-1,
-        dataGrouping: {
+        /*dataGrouping: {
             enabled: false,
             units: groupingUnits
-        }
+        }*/
     })
 }
 
@@ -144,7 +144,7 @@ function addScatterPlot(id,coin,datatype,x,y){
                  text:  '<div class="highcharts-color-' + id + '">' + y_axis + '</div>'
              },
              height: '70%',
-             lineWidth: 2,
+             //lineWidth: 2,
              type: 'scatter',
              minorTickInterval: 0.1,
              opposite: true,
@@ -159,10 +159,10 @@ function addScatterPlot(id,coin,datatype,x,y){
         name: y_axis,
         data: block_data,
         yAxis: hchart.yAxis.length-1,
-        dataGrouping: {
+        /*dataGrouping: {
             enabled: false,
             units: groupingUnits
-        },
+         },*/
         marker: {
             enabled: true,
             radius: 5
@@ -204,7 +204,7 @@ hchart = Highcharts.stockChart('hchart', {
         },
         plotOptions: {
             series: {
-                turboThreshold: 2000
+                turboThreshold: 100
             }
         },
         yAxis: [],
