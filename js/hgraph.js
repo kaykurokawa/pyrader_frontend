@@ -31,18 +31,14 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     );
     //price series
     hchart.addSeries({
-        //boostThreshold: 1, 0 for off 1 for force
         id: id1.toString(),
         colorIndex: id1,
         type: 'line',
         name: y_axis1,
         unit: unit,
         data: prices,
-        yAxis: hchart.yAxis.length-1,
-        /*dataGrouping: {
-            enabled: false,
-            units: groupingUnits
-        }*/
+        yAxis: id1.toString() + "-axis",
+        //boostThreshold: 1, 0 for off 1 for force
     });
 
     //volume axis  
@@ -68,16 +64,12 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     hchart.addSeries({
         id: id2.toString(),
         colorIndex: id2,
-        //boostThreshold: 1, 0 for off 1 for force
         type: 'column',
         name: y_axis2,
         unit: unit,
         data: volume,
-        yAxis: hchart.yAxis.length-1,
-        /*dataGrouping: {
-            enabled: false,
-            units: groupingUnits
-        }*/
+        yAxis: id2.toString() + "-axis",
+        //boostThreshold: 1, 0 for off 1 for force
     });
 }
 
@@ -112,15 +104,11 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     hchart.addSeries({
         id: id.toString(),
         colorIndex: id,
-        //boostThreshold: 1, 0 for off 1 for force
+        boostThreshold: 0,
         type: 'line',
         name: y_axis,
         data: block_data,
-        yAxis: hchart.yAxis.length-1,
-        /*dataGrouping: {
-            enabled: false,
-            units: groupingUnits
-        }*/
+        yAxis: id.toString() + "-axis",
     })
 }
 
@@ -144,7 +132,7 @@ function addScatterPlot(id,coin,datatype,x,y){
                  text:  '<div class="highcharts-color-' + id + '">' + y_axis + '</div>'
              },
              height: '70%',
-             //lineWidth: 2,
+             lineWidth: 2,
              type: 'scatter',
              minorTickInterval: 0.1,
              opposite: true,
@@ -154,15 +142,11 @@ function addScatterPlot(id,coin,datatype,x,y){
     hchart.addSeries({
         id : id.toString(),
         colorIndex: id,
-        //boostThreshold: 1, 0 for off 1 for force
+        boostThreshold: 0,
         type: 'scatter',
         name: y_axis,
         data: block_data,
-        yAxis: hchart.yAxis.length-1,
-        /*dataGrouping: {
-            enabled: false,
-            units: groupingUnits
-         },*/
+        yAxis: id.toString()+ "-axis",
         marker: {
             enabled: true,
             radius: 5
@@ -170,8 +154,7 @@ function addScatterPlot(id,coin,datatype,x,y){
     })
 }
 
-groupingUnits = [['week',[1]], ['month',[1, 2, 3, 4, 6]]]
-
+//generate the Highcharts
 hchart = Highcharts.stockChart('hchart', {
     
     rangeSelector: {
@@ -197,8 +180,8 @@ hchart = Highcharts.stockChart('hchart', {
         },
         selected: 1
     },
-
         boost: {
+            boostThreshold: 1,
             enabled: true,
             useGPUTranslations:true
         },
@@ -258,7 +241,7 @@ hchart = Highcharts.stockChart('hchart', {
         series: []
         });
 
-//generate the Highcharts
+
 
 module.exports = {
     addBlockGraph : addBlockGraph,

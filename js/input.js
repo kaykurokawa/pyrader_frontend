@@ -210,8 +210,8 @@
                     let interval_i = data.interval/1000;
                     let plottype = data.plottype;
                     if(plottype == "scatter"){
-                        var x = data.x.map(function(x){return x = x/1000 });
-                        var y = data.y
+                        var x = data.x.map(function(x){return x = x/1000 }).sort();
+                        var y = data.y;
 
                     }else{
                          var x = processDates(data,interval_i);
@@ -282,7 +282,7 @@
             milliArray.push(time);
             time += interval_i;
         }
-        return milliArray;
+        return milliArray.sort();
     }
 
     function round(value, precision) {
