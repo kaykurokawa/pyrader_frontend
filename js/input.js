@@ -35,8 +35,9 @@
         let symbol = document.getElementById("block-symbol").value;
         let datatype = document.getElementById("block-datatype").value;
         let interval = document.getElementById("block-interval").value; 
-        interval = (interval == "None" ? "" : interval);  
-        let p_interval = (exchange == "" ? "" : '&interval=' + interval);
+        interval = (interval == "None" ? "" : interval); 
+        interval = (interval == "No Averaging" ? "0" : interval);  
+        let p_interval = '&interval=' + interval;
         let p_symbol = '&coin=' + symbol; 
         let p_datatype = '&datatype=' + datatype; 
         let parameter = constants.REST_URL + '/block?' + p_symbol +  p_datatype + p_interval;
@@ -44,7 +45,7 @@
         if(View.MODELS.length == 0) seriesID = 1;
         let id1 =  seriesID++;
         let id2 = "";
-        let url_model = new View.UrlParam(id1, id2, "block", symbol, "", datatype, "Aggregated", interval);
+        let url_model = new View.UrlParam(id1, id2, "block", symbol, "", datatype, "", interval);
         View.MODELS.push(url_model);
         URL.changeURL();
         validateParamtersConsole(parameter);

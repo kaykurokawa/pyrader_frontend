@@ -10,7 +10,7 @@ const View = require('/js/url-models.js');
 $(document).ready(function () {
     Info.getInfo();
 
-    /*populate the graph via browser url*/
+    /*populate the graph via browser url if it has string query*/
     var url = Url.getURL();
     if(Url.isBlockUrl(url) || Url.isPriceUrl(url)){
         /*Model is a global representation of the url parameters input*/
@@ -33,13 +33,11 @@ $(document).ready(function () {
             } 
     }
     
-    /* Or populate the graph by dropdowns/submitting*/
+    /* Or populate the graph by dropdowns/submit button*/
     document.getElementById("submit").onclick = function(event){
-        event.preventDefault();
         Input.getPriceAPI(Input.readPricesValues());
     }
         document.getElementById("block-submit").onclick = function(event){
-            event.preventDefault();
             Input.getBlockAPI(Input.readBlockValues());
         }
     });

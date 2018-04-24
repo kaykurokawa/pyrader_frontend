@@ -275,42 +275,59 @@ const constants = require('./constants.js')
 
         //given info array of objects and string id populate the dropdowns with the info of type id. 
         function createOptions(info, id){
-            array = []
+            var info_array = [];
             for(i = 0 ; i < info.length ; i++){
-                if(id == "symbol"){text = info[i].symbol}
-                if(id == "unit"){text = info[i].unit}
-                if(id == "exchange"){text = info[i].exchange}
-                if(id == "interval"){text = convertIntervalNumberToText(info[i].interval)}
-                if(!array.includes(text)){
-                    array.push(text)
-                    option = document.createElement("option")
-                    option.text = text
-                     select = document.getElementById(id);
-                    select.appendChild(option); 
+                if(id == "symbol"){text = info[i].symbol;}
+                if(id == "unit"){text = info[i].unit;}
+                if(id == "exchange"){text = info[i].exchange;}
+                if(id == "interval"){text = info[i].interval;}
+                if(!info_array.includes(text)){
+                    info_array.push(text);
                 }
-            } 
+            }
+            info_array.sort();
+            for(let i = 0 ; i < info_array.length ; i++){
+                if(id == "exchange" && info_array[i] == "Aggregated"){
+                    continue;
+                }
+                var option = document.createElement("option");
+                if(id == "interval"){
+                    option.text = convertIntervalNumberToText(info_array[i]);
+                }else{
+                    option.text = info_array[i];
+                }
+                var select = document.getElementById(id);
+                select.appendChild(option); 
+            }
+            if(id == "exchange" && info_array.includes("Aggregated")){
+                var option = document.createElement("option");
+                option.text = "Aggregated";
+                var select = document.getElementById(id);
+                select.appendChild(option); 
+            }
         }
 
         function createBlockOptions(info, id){
-            array = []
+            var info_array = []
             for(i = 0 ; i < info.length ; i++){
                 if(id == "block-symbol"){text = info[i].coin}
                 if(id == "block-datatype"){text = info[i].datatype}
-                if(id == "block-interval"){text = convertIntervalNumberToText(info[i].interval)}
-                if(!array.includes(text)){
-                    array.push(text)
-                    option = document.createElement("option")
-                    option.text = text
-                     select = document.getElementById(id);
-                    select.appendChild(option); 
+                if(id == "block-interval"){text = info[i].interval}
+                if(!info_array.includes(text)){
+                    info_array.push(text)
                 }
             }
-            /*if(id == "block-interval"){
-                option = document.createElement("option")
-                option.text = "None"
-                 select = document.getElementById(id);
+            info_array.sort()
+            for(i = 0 ; i < info_array.length ; i++){
+                var option = document.createElement("option")
+                if(id == "block-interval"){
+                    option.text = convertIntervalNumberToText(info_array[i]);
+                }else{
+                    option.text = info_array[i];
+                }
+                var select = document.getElementById(id);
                 select.appendChild(option); 
-            }*/
+            }
         }
         
         //given a number in miroseconds return if it is a day, hour, 5 min
@@ -322,7 +339,7 @@ const constants = require('./constants.js')
             if(interval/constants.MICRO == 300)
                 return "5min"
              if(interval == 0)
-                return "0"   
+                return "No Averaging"   
         }
         //given a info of prices change the exchanges from null to aggregated.
         function eliminateNulls(info){
