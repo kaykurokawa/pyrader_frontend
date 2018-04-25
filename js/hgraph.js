@@ -7,6 +7,8 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
         prices.push([x[i], y_prices[i]]);
         volume.push([x[i], y_volume[i]]);
     }
+    price.sort();
+    volume.sort();
     minimum = Math.min.apply(null, y_prices);
     title = coin + " Charts";
     y_axis1 = "Price of " + coin + " in " + unit;
@@ -80,7 +82,7 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     for(i = 0 ; i < x.length ; i++){
         block_data.push([x[i], y[i]]);
     }
-
+    block_data.sort();
     title = coin + " " + datatype + " " + "chart";
     y_axis = datatype + " of " + coin;
     //add block axis
@@ -117,6 +119,7 @@ function addScatterPlot(id,coin,datatype,x,y){
     for(i = 0 ; i < x.length ; i++){
         block_data.push([x[i], y[i]])
     }
+    block_data.sort();
     title = coin + " " + datatype + " " + "chart"
     y_axis = datatype + " of " + coin
     hchart.addAxis(
