@@ -1,0 +1,26 @@
+.padding {padding-left: 10%; padding-right: 10%;}
+#error {background-color: red; color: maroon}
+#block-error {background-color: red; color: maroon}
+.floated {
+    float:left;
+    margin-right:5px;
+ }
+
+#unit-label{color: grey;}
+
+.glyphicon.glyphicon-arrow-right{
+    font-size: 25px;
+    color: black;
+}
+
+.glyphicon.glyphicon-remove{
+    font-size: 18px;
+    color: grey;
+}
+
+.glyphicon.glyphicon-remove:hover{
+    font-size:22px;
+    color: red;
+    }
+#symbol-x{visibility: hidden;}
+#block-symbol-x{visibility: hidden;}
