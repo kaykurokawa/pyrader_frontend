@@ -13,13 +13,24 @@ const constants = require('./constants.js')
                      return;
                      }
                      response.json().then(function(data) {
-                         var select = selectPriceOrBlock()
-                         console.log(select)
-                         if(select == true){
-                            processInfo(data.price)
-                         }else{
-                            processBlockInfo(data.block)
-                         }
+                        enableDropdown("first");
+                        disableDropdown("symbol");
+                        disableDropdown("unit");
+                        disableDropdown("exchange");
+                        disableDropdown("interval");
+                        var first = document.querySelector("#first")
+                        first.onchange = function(event){
+                            disableDropdown("first");
+                            var choice = document.getElementById("first").value
+                            if(choice == "Block"){
+                                renderBlockDropDowns();
+                                processBlockInfo(data.block)
+                            }
+                            if(choice == "Price/Volume"){
+                                renderPriceDropDowns();
+                                processInfo(data.price);
+                            }
+                        }
                      });
                      }
                  )
@@ -28,46 +39,32 @@ const constants = require('./constants.js')
                      });
          }
 
-         /*read what the user picks in the first dropdown, price or block*/
-        function selectPriceOrBlock(){
-            enableDropdown("first")
-            var first = document.querySelector("#first")
-            var text;
-            var choice
-            first.onchange = function(event){
-                text = document.getElementById("first").value
-                if(text == "Block"){
-                    renderBlockDropDowns()
-                    choice = false
-                }else{
-                    renderPriceDropDowns()
-                    choice = true
-                }
-            }
-            return choice
-        }
-
         /*clear block dropdowns and display price/volume dropdowns*/
         function renderPriceDropDowns(){
             //clear any current block dropdowns of the block kind
-            hideOption("block-symbol");
-            hideOption("block-datatype");
-            hideOption("block-interval");
-            showOption("symbol");
-            showOption("unit");
-            showOption("exchange");
-            showOption("interval");
+            hideOption("block-symbol-div");
+            hideOption("block-datatype-div");
+            hideOption("block-interval-div");
+            hideOption("block-submit-div");
+            showOption("symbol-div");
+            showOption("unit-div");
+            showOption("exchange-div");
+            showOption("interval-div");
+            showOption("submit-div");
+
             //render the dropdowns you want
         }
         /*clear price/volume dropdown and display block dropdowns*/
         function renderBlockDropDowns(){
-            hideOption("symbol");
-            hideOption("unit");
-            hideOption("exchange");
-            hideOption("interval");
-            showOption("block-symbol");
-            showOption("block-datatype");
-            showOption("block-interval");
+            hideOption("symbol-div");
+            hideOption("unit-div");
+            hideOption("exchange-div");
+            hideOption("interval-div");
+            hideOption("submit-div");
+            showOption("block-symbol-div");
+            showOption("block-datatype-div");
+            showOption("block-interval-div");
+            showOption("block-submit-div");
         }
 
         function hideOption(id){
@@ -81,104 +78,110 @@ const constants = require('./constants.js')
         }
 
         function processInfo(price){
-            var info_prices = price
-            var info_prices = eliminateNulls(info_prices)
-            var first = document.querySelector("#first")
-            var symbol = document.querySelector("#symbol")
-            var unit = document.querySelector("#unit")
-            var exchange = document.querySelector("#exchange")
-            var interval = document.querySelector("#interval")
-            var submit = document.querySelector("#submit")
-            var reset = document.getElementById("reset")
-            var submit_x = document.querySelector("#submit-x")
-            
-            enableDropdown("symbol")
-            disableDropdown("unit")
-            disableDropdown("exchange")
-            disableDropdown("interval")
-            createOptions(info_prices,"symbol")
-            disableButton("submit")
+            var info_prices = price;
+            var info_prices = eliminateNulls(info_prices);
+            var first = document.querySelector("#first");
+            var symbol = document.querySelector("#symbol");
+            var unit = document.querySelector("#unit");
+            var exchange = document.querySelector("#exchange");
+            var interval = document.querySelector("#interval");
+            var submit = document.querySelector("#submit");
+            var reset = document.getElementById("reset");
+            var submit_x = document.querySelector("#submit-x");
+            var symbol_x = document.querySelector("#symbol-x");
+            enableDropdown("symbol");
+            symbol_x.onclick = function(event){
+                document.getElementById("symbol-arrow").classList.remove("glyphicon", "glyphicon-arrow-right");
+                enableDropdown("first");
+                disableButton("symbol");
+                resetDropdown("first");
+                createOptions([{first :"Price/Volume"},{first : "Block"}],"first");
+            }
+            disableDropdown("unit");
+            disableDropdown("exchange");
+            disableDropdown("interval");
+            createOptions(info_prices,"symbol");
+            disableButton("submit");
 
         // given the id of the dropdown and the id of the next dropdwon in sequence, take care of all of the logic: enable, disable, load options...etc
-        var states = []
-    
-        states.push(info_prices)
+        var states = [];
+        states.push(info_prices);
        
         function LoadOptions(id,prev_id,next_id){
-             tag = document.querySelector("#" + id)
+             tag = document.querySelector("#" + id);
                 tag.onchange = function(event){
-                current = states[states.length-1]
+                current = states[states.length-1];
                 if(id == "symbol"){
-                    current = current.filter(line => line.symbol.includes(document.getElementById(id).value))
+                    current = current.filter(line => line.symbol.includes(document.getElementById(id).value));
                 }else if(id == "unit"){
-                    current = current.filter(line => line.unit.includes(document.getElementById(id).value))
+                    current = current.filter(line => line.unit.includes(document.getElementById(id).value));
                 }else if(id == "exchange"){
-                    current = current.filter(line => line.exchange.includes(document.getElementById(id).value))
+                    current = current.filter(line => line.exchange.includes(document.getElementById(id).value));
                 }else{
                 }
                     if(id == "interval"){
-                        enableButton("submit")
-                        disableDropdown("interval")
+                        enableButton("submit");
+                        disableDropdown("interval");
                         
-                        submit_x.classList.add("glyphicon", "glyphicon-remove")
+                        submit_x.classList.add("glyphicon", "glyphicon-remove");
                         submit_x.onclick = function(event){
                             document.getElementById("submit-arrow").classList.remove("glyphicon", "glyphicon-arrow-right");
-                            enableDropdown("interval")
-                            disableButton("submit")
+                            enableDropdown("interval");
+                            disableButton("submit");
                         }
                     }else{
-                        states.push(current)
-                        enableDropdown(next_id)
-                        createOptions(states[states.length-1],next_id)
-                        disableDropdown(id)
-                        cancel = document.querySelector("#" + next_id + "-x")                
+                        states.push(current);
+                        enableDropdown(next_id);
+                        createOptions(states[states.length-1],next_id);
+                        disableDropdown(id);
+                        cancel = document.querySelector("#" + next_id + "-x");                
                         cancel.onclick = function(event){
-                            enableDropdown(id)
-                            disableDropdown(next_id)
-                            resetDropdown(next_id)
-                            states.pop()
-                            deleteOptions(id)//delete all options of id
-                            createOptions(states[states.length-1],id)//create them again
+                            enableDropdown(id);
+                            disableDropdown(next_id);
+                            resetDropdown(next_id);
+                            states.pop();
+                            resetDropdown(id);//delete all options of id
+                            createOptions(states[states.length-1],id);//create them again
                         }
                     }
                 }
         }
         
-        LoadOptions("symbol","none","unit")
-        LoadOptions("unit","symbol","exchange")
-        LoadOptions("exchange","unit","interval")
-        LoadOptions("interval","unit","none")
+        LoadOptions("symbol","none","unit");
+        LoadOptions("unit","symbol","exchange");
+        LoadOptions("exchange","unit","interval");
+        LoadOptions("interval","unit","none");
 
         reset.onclick  = function(event){
-            info_prices = price
-            symbol.options.length = 1
-            createOptions(info_prices,"symbol")
-            enableDropdown("symbol")
-            disableDropdown("unit")
-            unit.options.length = 1
-            disableDropdown("exchange")
-            exchange.options.length = 1
-            disableDropdown("interval")
-            interval.options.length = 1
-            disableButton("submit")
-            states = []
-            states.push(info_prices)
+            info_prices = price;
+            symbol.options.length = 1;
+            createOptions(info_prices,"symbol");
+            enableDropdown("symbol");
+            disableDropdown("unit");
+            unit.options.length = 1;
+            disableDropdown("exchange");
+            exchange.options.length = 1;
+            disableDropdown("interval");
+            interval.options.length = 1;
+            disableButton("submit");
+            states = [];
+            states.push(info_prices);
         }
 
         submit.addEventListener("click", function(){
-            info_prices = price
-            symbol.options.length = 1
-            createOptions(info_prices,"symbol")
-            enableDropdown("symbol")
-            disableDropdown("unit")
-            unit.options.length = 1
-            disableDropdown("exchange")
-            exchange.options.length = 1
-            disableDropdown("interval")
-            interval.options.length = 1
-            disableButton("submit")
-            states = []
-            states.push(info_prices)
+            info_prices = price;
+            symbol.options.length = 1;
+            createOptions(info_prices,"symbol");
+            enableDropdown("symbol");
+            disableDropdown("unit");
+            unit.options.length = 1;
+            disableDropdown("exchange");
+            exchange.options.length = 1;
+            disableDropdown("interval");
+            interval.options.length = 1;
+            disableButton("submit");
+            states = [];
+            states.push(info_prices);
         })
     
   
@@ -201,12 +204,20 @@ const constants = require('./constants.js')
         //get info from API and append to drop down menu for block charts
         function processBlockInfo(block){
             info_blocks = block
-             block_symbol = document.querySelector("#block-symbol")
-             block_datatype = document.querySelector("#block-datatype")
-             block_interval = document.querySelector("#block-interval")
-             block_submit = document.querySelector("#block-submit")
-             block_reset = document.querySelector("#block-reset") 
-            enableDropdown("block-symbol")
+            block_symbol = document.querySelector("#block-symbol");
+            block_datatype = document.querySelector("#block-datatype");
+            block_interval = document.querySelector("#block-interval");
+            block_submit = document.querySelector("#block-submit");
+            block_reset = document.querySelector("#block-reset");
+            block_symbol_x = document.querySelector("#block-symbol-x"); 
+            enableDropdown("block-symbol");
+            block_symbol_x.onclick = function(event){
+                document.getElementById("block-symbol-arrow").classList.remove("glyphicon", "glyphicon-arrow-right");
+                enableDropdown("first");
+                disableButton("block-symbol");
+                resetDropdown("first");
+                createOptions([{first :"Price/Volume"},{first : "Block"}],"first");
+            }
             disableDropdown("block-datatype")
             disableDropdown("block-interval")
             createBlockOptions(info_blocks,"block-symbol")
@@ -245,7 +256,7 @@ const constants = require('./constants.js')
                                 disableDropdown(next_id)
                                 resetDropdown(next_id)
                                 states.pop()
-                                deleteOptions(id)//delete all options of id
+                                resetDropdown(id)//delete all options of id
                                 createBlockOptions(states[states.length-1],id)//create them again
                             }
                         }
@@ -335,6 +346,7 @@ const constants = require('./constants.js')
         function createOptions(info, id){
             var info_array = [];
             for(i = 0 ; i < info.length ; i++){
+                if(id == "first"){text = info[i].first}
                 if(id == "symbol"){text = info[i].symbol;}
                 if(id == "unit"){text = info[i].unit;}
                 if(id == "exchange"){text = info[i].exchange;}

@@ -29,24 +29,24 @@
       <img src="../graphics/blkdat_logo_small.png" alt="logo">
                   <div class="row">
                       <h3>Data Input:</h3>
-                      <div class="col-xs-2">
+                      <div class="col-xs-2" id="first-div">
                               <div class="row">
                               <div class="col-xs-2 text-center">
                                   &nbsp&nbsp
-                              <span id="first-arrow"></span>
-                              <span id="first-x"></span>
+                              <span id="first-arrow" ></span>
+                              <span id="first-x" style="visibility: hidden;"></span>
                               </div>
                               <div class="col-xs-8"> 
                                   <label id="first-label">Price or Block:</label>       
                                       <select disabled class="form-control" id="first">
                                           <option></option>
-                                          <option>Price/Volume</option>
                                           <option>Block</option>
+                                          <option>Price/Volume</option>
                                       </select>
                               </div>
                               </div>
                           </div>
-                          <div class="col-xs-2">
+                          <div class="col-xs-2" id="symbol-div">
                               <div class="row" >
                               <div class="col-xs-2 text-center">
                                   &nbsp&nbsp
@@ -61,7 +61,7 @@
                               </div>
                               </div>      
                           </div>
-                          <div class="col-xs-2" style="display: none;">
+                          <div class="col-xs-2" id="block-symbol-div" style="display: none;">
                             <div class="row">
                                 <div class="col-xs-2 text-center">
                                     &nbsp&nbsp
@@ -76,7 +76,7 @@
                                 </div>
                             </div>
                         </div>
-                          <div class="col-xs-2">
+                          <div class="col-xs-2" id="unit-div">
                                   <div class="row">
                                       <div class="col-xs-2 text-center">
                                           &nbsp&nbsp
@@ -91,7 +91,7 @@
                                       </div>
                                   </div>
                               </div>
-                              <div class="col-xs-2" style="display: none;">
+                              <div class="col-xs-2" id="block-datatype-div" style="display: none;">
                                 <div class="row">
                                     <div class="col-xs-2 text-center">
                                         &nbsp&nbsp
@@ -106,7 +106,7 @@
                                     </div>
                                  </div>
                             </div>
-                              <div class="col-xs-2">
+                              <div class="col-xs-2" id="exchange-div">
                                       <div class="row">
                                           <div class="col-xs-2 text-center">
                                               &nbsp&nbsp
@@ -121,7 +121,7 @@
                                       </div>
                                       </div>
                                   </div>
-                                  <div class="col-xs-2">
+                                  <div class="col-xs-2" id="interval-div">
                                       <div class="row">
                                           <div class="col-xs-2 text-center" id="arrow4">
                                               &nbsp&nbsp
@@ -136,7 +136,7 @@
                                           </div>
                                       </div>
                                   </div>
-                                  <div class="col-xs-3" style="display: none;">
+                                  <div class="col-xs-3" id="block-interval-div" style="display: none;">
                                     <div class="row">
                                         <div class="col-xs-2 text-center">
                                             &nbsp&nbsp
@@ -152,7 +152,7 @@
                                     </div>
                             </div>
                            </div>
-                       <div class="row">
+                       <div class="row" id="submit-div">
                           <div>&nbsp</div>
                           <div class="col-xs-4">
                               <div class="row">
@@ -170,7 +170,7 @@
                           </div>
                       </div>      
 
-              <div class="row" style="display: none;">
+              <div class="row" id="block-submit-div" style="display: none;">
                       <div>&nbsp</div>
                       <div class="col-xs-4">
                           <div class="row">
