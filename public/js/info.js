@@ -325,19 +325,24 @@ const constants = require('./constants.js')
         }
 
         function enableButton(select){
-            arrow_label = select + "-arrow"
-            x_label = select + "-x"
+            let arrow_label = select + "-arrow"
+            let x_label = select + "-x"
+            let parent_div = select + "-parent"
             document.getElementById(select).disabled = false
             document.getElementById(arrow_label).classList.add("glyphicon", "glyphicon-arrow-right")
             document.getElementById(x_label).classList.add("glyphicon", "glyphicon-remove")
+            document.getElementById(parent_div).style.display = "block"
 
         }
 
         function disableButton(select){
-            arrow_label = select + "-arrow"
+            let arrow_label = select + "-arrow"
+            let x_label = select + "-x"
+            let parent_div = select + "-parent"  
             document.getElementById(arrow_label).classList.remove("glyphicon", "glyphicon-arrow-right");
             document.getElementById(select).disabled = true
-            document.getElementById(select+ "-x").classList.remove("glyphicon", "glyphicon-remove") 
+            document.getElementById(x_label).classList.remove("glyphicon", "glyphicon-remove");
+            document.getElementById(parent_div).style.display = "none"  
         }
 
 
