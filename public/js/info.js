@@ -13,6 +13,8 @@ const constants = require('./constants.js')
                      return;
                      }
                      response.json().then(function(data) {
+                        resetDropdown("first");
+                        setInitialFirst("first");
                         enableDropdown("first");
                         disableDropdown("symbol");
                         disableDropdown("unit");
@@ -39,9 +41,19 @@ const constants = require('./constants.js')
                      });
          }
 
+         /*sets default for the first dropdown*/
+         function setInitialFirst(id){
+            let price_volume = document.createElement("option");
+            price_volume.text = "Price/Volume";
+            let block = document.createElement("option");
+            block.text = "Block";
+            let first = document.querySelector("#" + id);
+            first.appendChild(block)
+            first.appendChild(price_volume)
+         }
+
         /*clear block dropdowns and display price/volume dropdowns*/
         function renderPriceDropDowns(){
-            //clear any current block dropdowns of the block kind
             hideOption("block-symbol-div");
             hideOption("block-datatype-div");
             hideOption("block-interval-div");
@@ -51,8 +63,6 @@ const constants = require('./constants.js')
             showOption("exchange-div");
             showOption("interval-div");
             showOption("submit-div");
-
-            //render the dropdowns you want
         }
         /*clear price/volume dropdown and display block dropdowns*/
         function renderBlockDropDowns(){
@@ -93,9 +103,12 @@ const constants = require('./constants.js')
             symbol_x.onclick = function(event){
                 document.getElementById("symbol-arrow").classList.remove("glyphicon", "glyphicon-arrow-right");
                 enableDropdown("first");
-                disableButton("symbol");
+                disableDropdown("symbol");
+                resetDropdown("symbol");
+                disableButton("submit");
                 resetDropdown("first");
                 createOptions([{first :"Price/Volume"},{first : "Block"}],"first");
+                states = [];
             }
             disableDropdown("unit");
             disableDropdown("exchange");
@@ -214,9 +227,12 @@ const constants = require('./constants.js')
             block_symbol_x.onclick = function(event){
                 document.getElementById("block-symbol-arrow").classList.remove("glyphicon", "glyphicon-arrow-right");
                 enableDropdown("first");
-                disableButton("block-symbol");
+                disableDropdown("block-symbol");
+                resetDropdown("block-symbol");
+                disableButton("block-submit");
                 resetDropdown("first");
                 createOptions([{first :"Price/Volume"},{first : "Block"}],"first");
+                states = [];
             }
             disableDropdown("block-datatype")
             disableDropdown("block-interval")
@@ -306,10 +322,6 @@ const constants = require('./constants.js')
             document.getElementById(x_label).classList.remove("glyphicon", "glyphicon-remove");
         }
 
-        function deleteOptions(select){
-            document.getElementById(select).options.length = 1
-        }
-
         function resetDropdown(select){
             document.getElementById(select).options.length = 1
         }
@@ -372,6 +384,7 @@ const constants = require('./constants.js')
                     option.text = info_array[i];
                 }
                 var select = document.getElementById(id);
+                select.appendChild(option); 
                 select.appendChild(option); 
             }
             if(id == "exchange" && info_array.includes("Aggregated")){
