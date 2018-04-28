@@ -1,10 +1,11 @@
 var chai = require('chai');
 var assert = require('chai').assert;
 var expect = require('chai').expect;
-var Info = require('../js/info');
-var Input = require('../js/input');
+var Highcharts = require('../public/js/highstock.js');
+var Info = require('../public/js/info');
+var Input = require('../public/js/input');
 var mock_input = require('./mock_input.js');
-var constants = require('../js/constants');
+var constants = require('..public/js/constants');
 var chaiHttp = require('chai-http');
 
 
