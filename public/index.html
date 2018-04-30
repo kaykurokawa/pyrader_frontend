@@ -161,6 +161,7 @@
                                       <div>    
                                           <button type="button" class="btn btn-primary floated" id="submit">Submit</button>
                                           <button type="button" class="btn btn-success floated" id="reset">Reset</button>
+                                          <span class="glyphicon glyphicon-question-sign" data-toggle="modal" data-target="#myLegend"></span>
                                       </div>     
                                   </div>
                               </div>
@@ -190,7 +191,6 @@
                       <div id="error"></div>
                   </div>
               </div>
-                  
                   <table class="table" id="table-of-prices">
                       <thead>
                           <th>Price/Data Information:</th>
@@ -207,15 +207,67 @@
                     </tbody>
                   </table>
                   <div id="hchart" style="height: 800px; min-width: 500x"></div>
-
+                <div id="root"></div>
               <footer>
                   <p class="float-right"><a href="#">Back to top</a></p>
                   <p>&copy; 2018 &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
                   <p>&nbsp</p>
               </footer>
       </div>
+      
+      <!--Help Modal-->
+      <div class="modal fade" id="myLegend" role="dialog" tabindex="-1">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">How to Use</h4>
+                </div>
+                <div class="modal-body">
+                    <div class = "container">   
+                        <div class="row"> 
+                            <h4>1. In the first dropdown, pick "Block" or "Price/Volume".</h4>
+                            <h4>2. In the next dropdown, select what coin you want to look up (BTC, LTC, ETH, etc..)</h4>
+                            <h4>3. Follow the arrows <span class ="glyphicon glyphicon-arrow-right"></span> to select the inputs for the request.</h4>
+                            <div id="indent-1">
+                            <h4>The following is a brief explanation of the drop down menus:</h4>
+                            <h4><b>Units:</b> What units you want to see the data in terms of (USD, BTC, EUR).</h4>
+                            <h4><b>Exchange:</b> Request which exchange you want to get the data from,<br> pick "Aggregated" for an average of all exchanges.</h4> 
+                            <h4><b>Datatype:</b> The type of block data:<h4>
+                            <ul>
+                                <li><b>Block size</b> (block_size_bytes)</li>
+                                <li><b>Block Time</b> (block_time)</li>
+                                <li><b>Difficulty (difficulty)</b></li>
+                                <li><b>Height (height)</b></li>
+                                <li><b>Number of Tickets</b> (num_tx)</li>
+                                <li><b>Total Transfer Volume</b> (total_transfer_volume)</li>
+                                <li><b>Total Transfer Voluime in USD</b> (total_transfer_volume_usd)</li>
+                            </ul>
+                            <h4><b>Averaging:</b> The frequency of the intreval of data point.<h4>
+                                <ul>
+                                    <li><b>5 minutes:</b><br> Data collected every 5 minutes.</li>
+                                    <li><b>1 hour:</b><br> Data collected every hour.</li>
+                                    <li><b>daily:</b><br> Data collected every day.</li>
+                                    <li><b>No Averaging:</b><br> Data is collected at random intervals and displayed in scatter plot.</li>
+                                </ul>
+                            </div>    
+                            <h4>4. If at anypoint you want to go back click the  <span class ="glyphicon glyphicon-remove"></span>.</h4>
+                            <h4>5. Hit the Submit button to get the data. Hit Reset to reset the drop downs.</h4>
+                            <h4>6. You can add multiple data types to the graph.</h4>
+                            <h4>7. Use the range slider or date input on the graph to navigate your chart:</h4>
+                            <img src="../graphics/rangeslider2.png" style="width:50%;height:100px;" alt="slider">
+                            <h4>8. On the table click <span class ="glyphicon glyphicon-remove"></span> to remove from graph.</h4>
+                        </div>
+                    </div>
+                </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-default" data-dismiss="modal" type="button">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+      <!--end of modal-->
 
-    <div id="root"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="./js/highstock.js"></script>

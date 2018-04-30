@@ -18,9 +18,5 @@
     color: grey;
 }
 
-.glyphicon.glyphicon-remove:hover{
-    font-size:22px;
-    color: red;
-    }
 #symbol-x{visibility: hidden;}
 #block-symbol-x{visibility: hidden;}

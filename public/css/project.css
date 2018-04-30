@@ -21,6 +21,19 @@
 .glyphicon.glyphicon-remove:hover{
     font-size:22px;
     color: red;
-    }
+}
 
-. button{margin-right:6px}
+.glyphicon.glyphicon-question-sign{
+    font-size: 18px;
+    color: black;
+}
+    
+.glyphicon.glyphicon-question-sign:hover{
+    font-size:22px;
+    color: purple;
+}
+
+
+.button{margin-right:6px}
+
+#indent-1{margin-left: 3%;}
