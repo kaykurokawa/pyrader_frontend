@@ -1,3 +1,4 @@
+const URL = require('./url.js');
 
 //Create Highcharts for price/volume
 function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
@@ -157,6 +158,20 @@ function addScatterPlot(id,coin,datatype,x,y){
 }
 
 //generate the Highcharts
+let url = URL.getURL()
+var range = URL.getParameterByName("range", url) 
+let selector = 1;
+if(range != null){
+    if(range == "day"){
+        selector = 0
+    }else if(range == "week"){
+        selector = 1
+    }else if(range == "month"){
+        selector = 2
+    }else if(range == "all"){
+        selector = 3
+    }
+}
 hchart = Highcharts.stockChart('hchart', {
     
     rangeSelector: {
@@ -180,7 +195,7 @@ hchart = Highcharts.stockChart('hchart', {
         buttonTheme: {
             width: 60
         },
-        selected: 1
+        selected: selector
     },
 
         /*boost: {

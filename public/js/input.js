@@ -23,7 +23,7 @@
         if(View.MODELS.length == 0) seriesID = 1  
         let id1 = seriesID++;
         let id2 = seriesID++;
-        let url_model = new View.UrlParam(id1, id2, "price", symbol, unit, datatype, exchange, interval);
+        let url_model = new View.UrlParam(id1, id2, "price", symbol, unit, datatype, exchange, interval, "", "");
         View.MODELS.push(url_model);
         URL.changeURL();
         validateParamtersConsole(parameter);
@@ -45,7 +45,7 @@
         if(View.MODELS.length == 0) seriesID = 1;
         let id1 =  seriesID++;
         let id2 = "";
-        let url_model = new View.UrlParam(id1, id2, "block", symbol, "", datatype, "", interval);
+        let url_model = new View.UrlParam(id1, id2, "block", symbol, "", datatype, "", interval, "", "");
         View.MODELS.push(url_model);
         URL.changeURL();
         validateParamtersConsole(parameter);
@@ -84,10 +84,14 @@
                 interval = (interval == "None" ? "" : interval);
                 interval = (interval == null ? "" : interval);
                 interval = interval.replace(/\//g,'');
-                if(View.MODELS.length == 0) seriesID = 1  
+                let start = getParameterByName("start", current);
+                start = start == null ? "" : start;
+                let end = getParameterByName("end", current);
+                end = (end == null ? "" : end);
+                if(View.MODELS.length == 0) seriesID = 1;  
                 let id1 = seriesID++;
                 let id2 = seriesID++;
-                let urlparam = new View.UrlParam(id1, id2, "price", symbol, unit, "none", exchange, interval); 
+                let urlparam = new View.UrlParam(id1, id2, "price", symbol, unit, "none", exchange, interval, start, end); 
                 View.MODELS.push(urlparam);
             }
 
@@ -100,13 +104,18 @@
                 interval = interval.replace(/\//g,'');
                 let datatype =  getParameterByName("datatype",current);
                 datatype = (datatype == null ? "" : datatype);
+                let start = getParameterByName("start", current);
+                start = start == null ? "" : start;
+                let end = getParameterByName("end", current);
+                end = (end == null ? "" : end);
                 if(View.MODELS.length == 0) seriesID = 1;
                 let id1 = seriesID++;
                 let id2 = "none";
-                urlparam = new View.UrlParam(id1,id2,"block", symbol, "none", datatype, "Aggregated", interval); 
+                urlparam = new View.UrlParam(id1,id2,"block", symbol, "none", datatype, "Aggregated", interval, start, end); 
                 View.MODELS.push(urlparam);
             }
         }
+        console.log(View.MODELS)
     }
 
     /*given a model, convert it to usable parameters*/
@@ -116,27 +125,35 @@
             let unit = model.unit;
             let exchange = model.exchange;
             let interval = model.interval;
-            symbol = model.symbol;
-            let p_symbol = "symbol=" + model.symbol;
-            let p_unit = model.unit == "" ? "" : "&unit=" + model.unit;
-            let p_exchange = model.exchange == "" ? "" : "&exchange=" + model.exchange;
-            let p_interval = model.interval == "" ? "" : "&interval=" + model.interval;
-            let parameter = constants.REST_URL + "/price?" + p_symbol + p_unit + p_interval + p_exchange;
+            let start = model.start;
+            let end = model.end;
+            let p_symbol = "symbol=" + symbol;
+            let p_unit = unit == "" ? "" : "&unit=" + unit;
+            let p_exchange = exchange == "" ? "" : "&exchange=" + exchange;
+            let p_interval = interval == "" ? "" : "&interval=" + interval;
+            let p_start = start == "" ? "" : "&start=" + start;
+            let p_end = end == "" ? "" : "&end=" + end;
+
+            let parameter = constants.REST_URL + "/price?" + p_symbol + p_unit + p_interval + p_exchange + p_start + p_end;
             let id1 = model.id1;
             let id2 = model.id2;
-            return [parameter, id1, id2, symbol, unit, exchange, interval];
+            return [parameter, id1, id2, symbol, unit, exchange, interval, start, end];
         }
 
         if(model.type == "block"){
             let symbol = model.symbol;
             let interval = model.interval;
             let datatype = model.datatype;
-            let p_symbol = "?coin=" + model.symbol;
-            let p_interval = "&interval=" + model.interval;
-            let p_datatype =  "&datatype=" + model.datatype;
-            let parameter = constants.REST_URL + '/block' + p_symbol + p_datatype + p_interval; 
+            let start = model.start;
+            let end = model.end;
+            let p_symbol = "?coin=" + symbol;
+            let p_interval = "&interval=" + interval;
+            let p_datatype =  "&datatype=" + datatype;
+            let p_start = "&start=" +  start;
+            let p_end = "&end=" + end;
+            let parameter = constants.REST_URL + '/block' + p_symbol + p_datatype + p_interval + p_start + p_end;
             let id = model.id1;
-            return [parameter, id, symbol, datatype, interval];       
+            return [parameter, id, symbol, datatype, interval, start, end];       
         }
 
     } 

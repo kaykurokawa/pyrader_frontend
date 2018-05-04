@@ -1,7 +1,8 @@
 const View = require('./url-models.js');
 
-
+/*given all of your models create a url browser string to go with it.*/ 
 function createBrowserUrl(models){
+    console.log(models)
     url = ""
     for(let i = 0 ; i < models.length ; i++){
         if(models[i].type == "price"){
@@ -9,12 +10,16 @@ function createBrowserUrl(models){
             p_unit = (models[i].unit == "" ? "" : "&unit=" + models[i].unit)
             p_exchange = (models[i].exchange == "" ? "" : "&exchange=" + models[i].exchange) 
             p_interval = (models[i].interval == "" ? "" : "&interval=" + models[i].interval)
-            url += "/?" + models[i].type + p_symbol + p_unit + p_exchange + p_interval
+            p_start = (models[i].start == "" ? "" : "&start=" + models[i].start)
+            p_end = (models[i].end == "" ? "" : "&end=" + models[i].end)
+            url += "/?" + models[i].type + p_symbol + p_unit + p_exchange + p_interval + p_start + p_end
         }else{
             p_coin = (models[i].symbol == "" ? "" : "&coin=" + models[i].symbol)
             p_datatype = (models[i].datatype == "" ? "" : "&datatype=" + models[i].datatype)
             p_interval = (models[i].interval == "" ? "" : "&interval=" + models[i].interval)
-            url += "/?" + models[i].type + p_coin + p_datatype +  p_interval
+            p_start = (models[i].start == "" ? "" : "&start=" + models[i].start)
+            p_end = (models[i].end == "" ? "" : "&end=" + models[i].end)
+            url += "/?" + models[i].type + p_coin + p_datatype +  p_interval + p_start + p_end
         }    
     }   
         if(url == ""){
@@ -30,8 +35,8 @@ function removeModel(id1){
             View.MODELS.splice(i,1) 
         }
     }
-    let url_name = getURL()
-    changeURL(url_name)
+    //let url_name = getURL()
+    //changeURL(url_name)
 }
 
 /*function that parses the url by interval, units, symbol... or whatever name, if that name doesn't exist
@@ -46,6 +51,7 @@ function getParameterByName(name, url) {
         return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
 
+ /*given a url from browser determine if it is a block or not*/
 function isBlockUrl(){
     if(window.location.href.includes("?block"))
     {
@@ -56,7 +62,7 @@ function isBlockUrl(){
 
 }
 
-
+ /*given a url from browser determine if it is a price or not*/
 function isPriceUrl(){
     if(window.location.href.includes("?price"))
     {
@@ -67,6 +73,7 @@ function isPriceUrl(){
 
 }
 
+ /*given a url from the browser determinte if it is a price or not*/
 function changeURL(){
     let url_name = createBrowserUrl(View.MODELS)
     history.pushState(null,"",url_name)
@@ -82,4 +89,5 @@ module.exports = {changeURL : changeURL,
                 isBlockUrl : isBlockUrl,
                 isPriceUrl : isPriceUrl,
                 removeModel : removeModel,
+                getParameterByName : getParameterByName
             }
