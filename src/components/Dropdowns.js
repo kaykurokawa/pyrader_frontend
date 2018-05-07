@@ -24,13 +24,13 @@ class Dropdowns extends React.Component{
     }
 
     handlePriceChange(prices, options, key, value){
-        if(key == "symbol"){
+        if(key === "symbol"){
             this.setState({prices : prices, options : options, symbol : value });    
-        }else if(key == "unit"){
+        }else if(key === "unit"){
             this.setState({prices : prices, options : options, unit : value });  
-        }else if(key == "exchange"){
+        }else if(key === "exchange"){
             this.setState({prices : prices, options : options, exchange : value });
-        }else if(key == "interval"){
+        }else if(key === "interval"){
             this.setState({prices : prices, options : options, interval : value });
         }
     }
@@ -39,7 +39,7 @@ class Dropdowns extends React.Component{
             let url= REST_URL + "/info"
             var prices;
             var blocks;
-            var options;
+
             let currentComponent = this;
              fetch(url)
              .then(
@@ -72,11 +72,11 @@ class Dropdowns extends React.Component{
                 var info_array = [];
                 let text;
                 for(let i = 0 ; i < info.length ; i++){
-                    if(id == "first"){text = info[i].first}
-                    if(id == "symbol"){text = info[i].symbol;}
-                    if(id == "unit"){text = info[i].unit;}
-                    if(id == "exchange"){text = info[i].exchange;}
-                    if(id == "interval"){text = info[i].interval;}
+                    if(id === "first"){text = info[i].first}
+                    if(id === "symbol"){text = info[i].symbol;}
+                    if(id === "unit"){text = info[i].unit;}
+                    if(id === "exchange"){text = info[i].exchange;}
+                    if(id === "interval"){text = info[i].interval;}
                     if(!info_array.includes(text)){
                         info_array.push(text);
                     }

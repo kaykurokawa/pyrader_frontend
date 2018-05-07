@@ -1,5 +1,5 @@
 import React from 'react';
-import { REST_URL, MICRO } from './constants';
+import { MICRO } from './constants';
 var key_gen = 0;
 
 class Select extends React.Component{
@@ -21,7 +21,7 @@ class Select extends React.Component{
         let currentComponent = this;
         var current = currentComponent.props.prices
         //1. enable drop
-        if(this.state.enabled == true){
+        if(this.state.enabled === true){
             enableDropdown(id);
         }else{
             disableDropdown(id);
@@ -36,11 +36,11 @@ class Select extends React.Component{
         //3. pass the state of x up to the dropdown component
         let choice = document.getElementById(id + "-react").value;
 
-            if(id == "symbol"){
+            if(id === "symbol"){
                 current = current.filter(line => line.symbol.includes(choice));
-            }else if(id == "unit"){
+            }else if(id === "unit"){
                 current = current.filter(line => line.unit.includes(choice));
-            }else if(id == "exchange"){
+            }else if(id === "exchange"){
                 current = current.filter(line => line.exchange.includes(choice));
             }else{
 
@@ -49,11 +49,11 @@ class Select extends React.Component{
 
         //3. change the options
         let nextid;
-        if(id == "symbol" ){
+        if(id === "symbol" ){
             nextid = "unit"
-        }else if(id == "unit"){
+        }else if(id === "unit"){
             nextid = "exchange"
-        }else if(id == "exchange"){
+        }else if(id === "exchange"){
             nextid = "interval"
         }else{
 
@@ -96,11 +96,11 @@ class Select extends React.Component{
             var info_array = [];
             let text;
             for(var i = 0 ; i < info.length ; i++){
-                if(id == "first"){text = info[i].first}
-                if(id == "symbol"){text = info[i].symbol;}
-                if(id == "unit"){text = info[i].unit;}
-                if(id == "exchange"){text = info[i].exchange;}
-                if(id == "interval"){text = convertIntervalNumberToText(info[i].interval);}
+                if(id === "first"){text = info[i].first}
+                if(id === "symbol"){text = info[i].symbol;}
+                if(id === "unit"){text = info[i].unit;}
+                if(id === "exchange"){text = info[i].exchange;}
+                if(id === "interval"){text = convertIntervalNumberToText(info[i].interval);}
                 if(!info_array.includes(text)){
                     info_array.push(text);
                 }
@@ -110,13 +110,13 @@ class Select extends React.Component{
         };
 
         function convertIntervalNumberToText(interval){
-            if(interval/MICRO == 86400)
+            if(interval/MICRO === 86400)
                 return "day"
-            if(interval/MICRO == 3600)
+            if(interval/MICRO === 3600)
                 return "hour"
-            if(interval/MICRO == 300)
+            if(interval/MICRO === 300)
                 return "5min"
-             if(interval == 0)
+             if(interval === 0)
                 return "No Averaging"   
         }
     }
@@ -128,14 +128,14 @@ class Select extends React.Component{
         let id = this.props.id
         let firstOption = <option key={key_gen++}></option>;
         //if the select is disabled, then the options should be just the state.whatever property
-        if(this.state.enabled == false){
-            if(id == "symbol"){
+        if(this.state.enabled === false){
+            if(id === "symbol"){
                 optionItems = <option key={key_gen++}>{this.props.symbol}</option>;
-            }else if(id == "unit"){
+            }else if(id === "unit"){
                 optionItems = <option key={key_gen++}>{this.props.unit}</option>;
-            }else if(id == "exchange"){
+            }else if(id === "exchange"){
                 optionItems = <option key={key_gen++}>{this.props.exchange}</option>;
-            }else if(id == "interval"){
+            }else if(id === "interval"){
                 optionItems = <option key={key_gen++}>{this.props.interval}</option>;
             }else{
                 optionItems = <option key={key_gen++}></option>;

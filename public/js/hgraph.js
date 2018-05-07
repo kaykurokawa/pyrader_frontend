@@ -31,6 +31,10 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
             opposite: true,
          }
     );
+
+    //if the min and max of this price you are going to add is similar to the previous one then 
+    //add property LinkTo to the your axis. 
+
     //price series
     hchart.addSeries({
         id: id1.toString(),
@@ -157,9 +161,21 @@ function addScatterPlot(id,coin,datatype,x,y){
     })
 }
 
-//generate the Highcharts
+
+
+//Allows you to set axis property to LinkTo 0
+function NormalizeAxis(){
+    console.log(hchart.yAxis.length)
+    for(let i = 0 ; i < 3 ; i++){
+            console.log(hchart.yAxis[i])
+        
+    }
+    
+}
+
+//Allows you to pick the default range given a query parameter
 let url = URL.getURL()
-var range = URL.getParameterByName("range", url) 
+let range = URL.getParameterByName("range", url) 
 let selector = 1;
 if(range != null){
     if(range == "day"){
@@ -172,6 +188,9 @@ if(range != null){
         selector = 3
     }
 }
+
+
+//generate the Highcharts
 hchart = Highcharts.stockChart('hchart', {
     
     rangeSelector: {
@@ -266,7 +285,6 @@ hchart = Highcharts.stockChart('hchart', {
                  //format the tool tip if it is less than 1 then it is 7 digits and if not then it is 2.
                  var dec1;
                  var dec2;
-                 console.log(this)
                  //format the tool tip for price and volume 
                  if(this.hasOwnProperty('points') && this.points.length >= 2){
                     let string_return = "";
@@ -293,7 +311,7 @@ hchart = Highcharts.stockChart('hchart', {
         series: []
         });
 
-
+        NormalizeAxis()
 
 module.exports = {
     addBlockGraph : addBlockGraph,

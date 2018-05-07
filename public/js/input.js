@@ -131,9 +131,8 @@
             let p_unit = unit == "" ? "" : "&unit=" + unit;
             let p_exchange = exchange == "" ? "" : "&exchange=" + exchange;
             let p_interval = interval == "" ? "" : "&interval=" + interval;
-            let p_start = start == "" ? "" : "&start=" + start;
-            let p_end = end == "" ? "" : "&end=" + end;
-
+            let p_start = !start ? "" : "&start=" + start;
+            let p_end = !end ?  "" : "&end=" + end;
             let parameter = constants.REST_URL + "/price?" + p_symbol + p_unit + p_interval + p_exchange + p_start + p_end;
             let id1 = model.id1;
             let id2 = model.id2;
@@ -149,8 +148,8 @@
             let p_symbol = "?coin=" + symbol;
             let p_interval = "&interval=" + interval;
             let p_datatype =  "&datatype=" + datatype;
-            let p_start = "&start=" +  start;
-            let p_end = "&end=" + end;
+            let p_start = !start ? "" : "&start=" +  start;
+            let p_end = !end ? "" : "&end=" + end;
             let parameter = constants.REST_URL + '/block' + p_symbol + p_datatype + p_interval + p_start + p_end;
             let id = model.id1;
             return [parameter, id, symbol, datatype, interval, start, end];       
