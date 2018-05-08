@@ -133,7 +133,7 @@
             let p_interval = interval == "" ? "" : "&interval=" + interval;
             let p_start = !start ? "" : "&start=" + start;
             let p_end = !end ?  "" : "&end=" + end;
-            let parameter = constants.REST_URL + "/price?" + p_symbol + p_unit + p_interval + p_exchange + p_start + p_end;
+            let parameter = constants.REST_URL + "/price?" + p_symbol + p_unit + p_interval + p_exchange //+ p_start + p_end;
             let id1 = model.id1;
             let id2 = model.id2;
             return [parameter, id1, id2, symbol, unit, exchange, interval, start, end];
@@ -150,7 +150,7 @@
             let p_datatype =  "&datatype=" + datatype;
             let p_start = !start ? "" : "&start=" +  start;
             let p_end = !end ? "" : "&end=" + end;
-            let parameter = constants.REST_URL + '/block' + p_symbol + p_datatype + p_interval + p_start + p_end;
+            let parameter = constants.REST_URL + '/block' + p_symbol + p_datatype + p_interval //+ p_start + p_end;
             let id = model.id1;
             return [parameter, id, symbol, datatype, interval, start, end];       
         }
@@ -168,6 +168,9 @@
         var unit = arr[4];
         var exchange = arr[5];
         var interval = arr[6];
+        var start = arr[7]/1000;
+        var end = arr[8]/1000;
+
         fetch(parameter)
         .then(
         function(response) {
@@ -187,15 +190,14 @@
                     let unit_data = data.unit;
                     let last_price = y_prices[y_prices.length-1];
                     let last_volume = y_volume[y_volume.length-1];
-                    let first_date = x[0];
-                    let last_date = x[x.length-1];
-            
+                    //let first_date = x[0];
+                    //let last_date = x[x.length-1];
+                    let first_date = !start ? x[0] : start
+                    let last_date = !end ? x[x.length-1] : end
                      //Here you will pass data to whatever Graphing library asynchronosly
-                     //add data to price volume
-                     
-                        Table.addPriceTable(id1,id2,coin_data,unit_data,last_price,last_volume,first_date, last_date, interval, exchange);
-                        High.addPriceVolumeGraph(id1,id2,coin_data,unit_data,x,y_prices,y_volume);
-                        return true;
+                    Table.addPriceTable(id1,id2,coin_data,unit_data,last_price,last_volume,first_date, last_date, interval, exchange);
+                    High.addPriceVolumeGraph(id1,id2,coin_data,unit_data,x,y_prices,y_volume, first_date, last_date);
+                    return true;
                 });
                 }
             )
@@ -212,7 +214,10 @@
         var id = arr[1];
         var symbol = arr[2];
         var datatype = arr[3];
-        var interval = arr[4];  
+        var interval = arr[4];
+        var start = arr[5]/1000;
+        var end = arr[6]/1000;  
+
         fetch(parameter)
         .then(
         function(response) {
@@ -236,16 +241,16 @@
                     }
                     let coin_data = data.coin;
                     let datatype_data = data.datatype;
-                    let first_date = x[0];
-                    let last_date = x[x.length-1];
+                    let first_date = !start ? x[0] : start ;
+                    let last_date = !end ? x[x.length-1] : end;
                     let last_datatype = data.y[y.length-1];
 
                     //Here you will pass data to whatever Graphing library asynchronosly
                     if(plottype == "scatter"){
-                        High.addScatterPlot(id,coin_data,datatype_data,x,y);
+                        High.addScatterPlot(id,coin_data,datatype_data,x,y, first_date, last_date);
                         Table.addBlockTable(id,coin_data,datatype_data,last_datatype,first_date, last_date, interval, exchange);
                     }else{
-                        High.addBlockGraph(id,coin_data,datatype_data,x,y);
+                        High.addBlockGraph(id,coin_data,datatype_data,x,y, first_date, last_date);
                         Table.addBlockTable(id,coin_data,datatype_data,last_datatype,first_date, last_date, interval, exchange);
                     }
                 });

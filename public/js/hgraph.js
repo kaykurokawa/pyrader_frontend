@@ -1,19 +1,24 @@
 const URL = require('./url.js');
 
 //Create Highcharts for price/volume
-function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
+function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume,start,end){
     volume = [];
     prices = [];
+    console.log(end)
     for(i = 0 ; i < x.length ; i++){
-        prices.push([x[i], y_prices[i]]);
-        volume.push([x[i], y_volume[i]]);
+        if(x[i] >= start && x[i] <= end){
+            prices.push([x[i], y_prices[i]]);
+            volume.push([x[i], y_volume[i]]);
+        }
     }
+
     prices.sort();
     volume.sort();
     minimum = Math.min.apply(null, y_prices);
     title = coin + " Charts";
     y_axis1 = "Price of " + coin + " in " + unit;
     y_axis2 = "Volume of " + coin + " in " + unit;
+    
 
     //price axis
     hchart.addAxis({   
@@ -31,9 +36,6 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
             opposite: true,
          }
     );
-
-    //if the min and max of this price you are going to add is similar to the previous one then 
-    //add property LinkTo to the your axis. 
 
     //price series
     hchart.addSeries({
@@ -79,13 +81,40 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
         //yAxis: id2.toString() + "-axis",
         //boostThreshold: 1
     });
+
+    //if the min and max of this price you are going to add is similar to the previous one the
+    console.log(hchart.yAxis[id1])
+    current_max = hchart.yAxis[id1].dataMax 
+    current_min = hchart.yAxis[id1].dataMin
+    if(id1 > 1 && hchart.yAxis[id1].userOptions.title.text.includes("Price")){ 
+        for(let i = 0 ; i < hchart.yAxis.length ; i++){
+            if(i == id1){
+                continue;
+            }
+            if(nearTwentyPercent(hchart.yAxis[i].dataMax, current_max) && nearTwentyPercent(hchart.yAxis[i].dataMin, current_min)){
+            //add property LinkTo to the your axis. 
+            hchart.yAxis[id1].update({linkedTo : i})
+            } 
+        }    
+    }
+
+}
+
+function nearTwentyPercent(compare_minmax, current_minmax){
+    if(Math.abs(compare_minmax - current_minmax)/current_minmax < 0.2){
+        return true;
+    }else{
+        return false;
+    }  
 }
 
 //Create Highcharts for block
- function addBlockGraph(id,coin,datatype,x,y){
+ function addBlockGraph(id,coin,datatype,x,y,start,end){
     block_data = [];
     for(i = 0 ; i < x.length ; i++){
-        block_data.push([x[i], y[i]]);
+        if(x[i] >= start && x[i] <= end){
+            block_data.push([x[i], y[i]]);
+        }
     }
     block_data.sort();
     title = coin + " " + datatype + " " + "chart";
@@ -105,6 +134,7 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
              lineWidth: 2,
              minorTickInterval: 0.1,
              opposite: true,
+            
           })
 
     //add block series
@@ -119,10 +149,13 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume){
     })
 }
 
-function addScatterPlot(id,coin,datatype,x,y){
+function addScatterPlot(id,coin,datatype,x,y,start,end){
     block_data = []
     for(i = 0 ; i < x.length ; i++){
-        block_data.push([x[i], y[i]])
+        if(x[i] >= start && x[i] <= end){
+            block_data.push([x[i], y[i]])
+        }
+
     }
     block_data.sort();
     title = coin + " " + datatype + " " + "chart"
@@ -161,16 +194,13 @@ function addScatterPlot(id,coin,datatype,x,y){
     })
 }
 
-
-
 //Allows you to set axis property to LinkTo 0
 function NormalizeAxis(){
-    console.log(hchart.yAxis.length)
+    console.log(hchart)
     for(let i = 0 ; i < 3 ; i++){
             console.log(hchart.yAxis[i])
-        
     }
-    
+
 }
 
 //Allows you to pick the default range given a query parameter
@@ -190,8 +220,9 @@ if(range != null){
 }
 
 
+
 //generate the Highcharts
-hchart = Highcharts.stockChart('hchart', {
+var hchart = Highcharts.stockChart('hchart', {
     
     rangeSelector: {
         allButtonsEnabled: true,
@@ -310,8 +341,7 @@ hchart = Highcharts.stockChart('hchart', {
     
         series: []
         });
-
-        NormalizeAxis()
+  
 
 module.exports = {
     addBlockGraph : addBlockGraph,
