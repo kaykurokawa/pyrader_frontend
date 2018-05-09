@@ -2,7 +2,6 @@ const View = require('./url-models.js');
 
 /*given all of your models create a url browser string to go with it.*/ 
 function createBrowserUrl(models){
-    console.log(models)
     url = ""
     for(let i = 0 ; i < models.length ; i++){
         if(models[i].type == "price"){

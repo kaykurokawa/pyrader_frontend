@@ -97,7 +97,6 @@ class Dropdowns extends React.Component{
     
 
     render() {
-        console.log(this.state.options)
         return (
             <div>
                 <Select enabled = {true} symbol = {this.state.symbol} prices = {this.state.prices} blocks = {this.state.blocks} options = {this.state.options} id = "symbol" label = "Symbols" onPriceChange = {this.handlePriceChange} />

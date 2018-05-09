@@ -15,7 +15,6 @@ const View = require('/js/url-models.js');
 
 
 $(document).ready(function () {
-    console.log("running!")
     Info.getInfo();
   
     /*populate the graph via browser url if it has string query*/

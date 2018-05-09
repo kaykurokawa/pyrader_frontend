@@ -19,7 +19,7 @@ function addPriceTable(id1,id2,coin,unit,last_price,last_volume,first_date, last
     document.querySelector("#remove-row2").setAttribute("id", "remove" + id2);
     
     document.querySelector("#remove" + id1).onclick= function(btn){ 
-        var hchart = $('#hchart').highcharts();
+        let hchart = $('#hchart').highcharts();
         $("#data-row-" + id1).remove();
         hchart.get(id1.toString()).remove();
         hchart.get(id1.toString() + "-axis").remove();
@@ -28,6 +28,7 @@ function addPriceTable(id1,id2,coin,unit,last_price,last_volume,first_date, last
     }
     
     document.querySelector("#remove" + id2).onclick= function(btn){ 
+        let hchart = $('#hchart').highcharts();
         $("#data-row-" + id2).remove();
         hchart.get(id2.toString()).remove();
         hchart.get(id2.toString() + "-axis").remove();
@@ -47,7 +48,8 @@ function addBlockTable(id,coin,datatype,last_block,first_date, last_date,interva
     + "<td>"+ current_block + "</td>" + "<td>units</td>" +  "<td>" + interval +"</td>" + "<td class = 'text-center'><span id='remove-row1' class = 'glyphicon glyphicon-remove'></span></td>"; 
     document.querySelector("#remove-row1").setAttribute("id", "remove" + id);
     document.querySelector("#remove" + id).onclick= function(btn){
-        $("#" + id).remove();    
+        $("#" + id).remove();
+        let hchart = $('#hchart').highcharts();    
         hchart.get(id.toString()).remove();
         hchart.get(id.toString() + "-axis").remove();
         URL.removeModel(id);

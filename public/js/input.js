@@ -23,14 +23,15 @@
         if(View.MODELS.length == 0) seriesID = 1  
         let id1 = seriesID++;
         let id2 = seriesID++;
-        let url_model = new View.UrlParam(id1, id2, "price", symbol, unit, datatype, exchange, interval, "", "");
+        let url_model = new View.UrlParam(id1, id2, "price", symbol, unit, datatype, exchange, interval, 0, 0);
         View.MODELS.push(url_model);
         URL.changeURL();
+        View.CheckPropTypes();
         validateParamtersConsole(parameter);
         return [parameter, id1, id2, symbol, unit, exchange, interval];
     }
 
-    //reads and converts dropdown and converts it into url and returns it to be passed to Ajax call
+    /*reads and converts dropdown and converts it into url and returns it to be passed to Ajax call*/
     function readBlockValues(){
         let symbol = document.getElementById("block-symbol").value;
         let datatype = document.getElementById("block-datatype").value;
@@ -44,10 +45,11 @@
         /*reset id's to 1 if MODEL is empty*/
         if(View.MODELS.length == 0) seriesID = 1;
         let id1 =  seriesID++;
-        let id2 = "";
-        let url_model = new View.UrlParam(id1, id2, "block", symbol, "", datatype, "", interval, "", "");
+        let id2 = 0;
+        let url_model = new View.UrlParam(id1, id2, "block", symbol, "", datatype, "", interval, 0, 0);
         View.MODELS.push(url_model);
         URL.changeURL();
+        View.CheckPropTypes();
         validateParamtersConsole(parameter);
         return [parameter,id1, symbol, datatype, interval];
     }
@@ -61,7 +63,7 @@
             results = regex.exec(url);
         if (!results) return null;
         if (!results[2]) return '';
-        return decodeURIComponent(results[2].replace(/\+/g, " "));
+        return decodeURIComponent(results[2].replace(/\+/g, " ").replace("/",""));
     }
     
     //convert a url to a Model
@@ -85,14 +87,15 @@
                 interval = (interval == null ? "" : interval);
                 interval = interval.replace(/\//g,'');
                 let start = getParameterByName("start", current);
-                start = start == null ? "" : start;
+                start = (start == null ? 0 : Number(start));
                 let end = getParameterByName("end", current);
-                end = (end == null ? "" : end);
+                end = (end == null ? 0 : Number(end));
                 if(View.MODELS.length == 0) seriesID = 1;  
                 let id1 = seriesID++;
                 let id2 = seriesID++;
                 let urlparam = new View.UrlParam(id1, id2, "price", symbol, unit, "none", exchange, interval, start, end); 
                 View.MODELS.push(urlparam);
+                
             }
 
             if(current.includes("block")){
@@ -105,17 +108,18 @@
                 let datatype =  getParameterByName("datatype",current);
                 datatype = (datatype == null ? "" : datatype);
                 let start = getParameterByName("start", current);
-                start = start == null ? "" : start;
+                start = (start == null ? 0 : Number(start));
                 let end = getParameterByName("end", current);
-                end = (end == null ? "" : end);
+                end = (end == null ? 0 : Number(end));
                 if(View.MODELS.length == 0) seriesID = 1;
                 let id1 = seriesID++;
                 let id2 = "none";
                 urlparam = new View.UrlParam(id1,id2,"block", symbol, "none", datatype, "Aggregated", interval, start, end); 
                 View.MODELS.push(urlparam);
+               
             }
         }
-        console.log(View.MODELS)
+        View.CheckPropTypes();
     }
 
     /*given a model, convert it to usable parameters*/
@@ -128,11 +132,11 @@
             let start = model.start;
             let end = model.end;
             let p_symbol = "symbol=" + symbol;
-            let p_unit = unit == "" ? "" : "&unit=" + unit;
-            let p_exchange = exchange == "" ? "" : "&exchange=" + exchange;
-            let p_interval = interval == "" ? "" : "&interval=" + interval;
-            let p_start = !start ? "" : "&start=" + start;
-            let p_end = !end ?  "" : "&end=" + end;
+            let p_unit = (unit == "" ? "" : "&unit=" + unit);
+            let p_exchange = (exchange == "" ? "" : "&exchange=" + exchange);
+            let p_interval = (interval == "" ? "" : "&interval=" + interval);
+            let p_start = (!start ? "" : "&start=" + start);
+            let p_end = (!end ?  "" : "&end=" + end);
             let parameter = constants.REST_URL + "/price?" + p_symbol + p_unit + p_interval + p_exchange //+ p_start + p_end;
             let id1 = model.id1;
             let id2 = model.id2;
@@ -148,8 +152,8 @@
             let p_symbol = "?coin=" + symbol;
             let p_interval = "&interval=" + interval;
             let p_datatype =  "&datatype=" + datatype;
-            let p_start = !start ? "" : "&start=" +  start;
-            let p_end = !end ? "" : "&end=" + end;
+            let p_start = (!start ? "" : "&start=" +  start);
+            let p_end = (!end ? "" : "&end=" + end);
             let parameter = constants.REST_URL + '/block' + p_symbol + p_datatype + p_interval //+ p_start + p_end;
             let id = model.id1;
             return [parameter, id, symbol, datatype, interval, start, end];       
@@ -159,14 +163,15 @@
 
     //call API and Generate the Price and Volume graphs
     function getPriceAPI(arr){
+        console.log(arr)
         var parameter = arr[0];
         console.log(parameter)
         var id1 = arr[1];
         var id2 = arr[2];
         var symbol = arr[3];
-        if(exchange == "") exchange = "Aggregated";
         var unit = arr[4];
         var exchange = arr[5];
+        if(exchange == "") exchange = "Aggregated";
         var interval = arr[6];
         var start = arr[7]/1000;
         var end = arr[8]/1000;
@@ -207,6 +212,7 @@
                     return false;   
                 });
     }
+
     //Call the API and generate graph for Block data
     function getBlockAPI(arr){    
         var parameter = arr[0];
@@ -216,7 +222,7 @@
         var datatype = arr[3];
         var interval = arr[4];
         var start = arr[5]/1000;
-        var end = arr[6]/1000;  
+        var end = arr[6]/1000;
 
         fetch(parameter)
         .then(
@@ -241,7 +247,7 @@
                     }
                     let coin_data = data.coin;
                     let datatype_data = data.datatype;
-                    let first_date = !start ? x[0] : start ;
+                    let first_date = !start ? x[0] : start;
                     let last_date = !end ? x[x.length-1] : end;
                     let last_datatype = data.y[y.length-1];
 

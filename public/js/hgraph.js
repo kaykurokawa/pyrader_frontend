@@ -4,7 +4,7 @@ const URL = require('./url.js');
 function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume,start,end){
     volume = [];
     prices = [];
-    console.log(end)
+  
     for(i = 0 ; i < x.length ; i++){
         if(x[i] >= start && x[i] <= end){
             prices.push([x[i], y_prices[i]]);
@@ -19,7 +19,6 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume,start,end){
     y_axis1 = "Price of " + coin + " in " + unit;
     y_axis2 = "Volume of " + coin + " in " + unit;
     
-
     //price axis
     hchart.addAxis({   
             id: id1.toString() + "-axis",
@@ -83,21 +82,30 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume,start,end){
     });
 
     //if the min and max of this price you are going to add is similar to the previous one the
-    console.log(hchart.yAxis[id1])
-    current_max = hchart.yAxis[id1].dataMax 
-    current_min = hchart.yAxis[id1].dataMin
-    if(id1 > 1 && hchart.yAxis[id1].userOptions.title.text.includes("Price")){ 
-        for(let i = 0 ; i < hchart.yAxis.length ; i++){
-            if(i == id1){
+    //on the first refresh it does i right
+    NormalizeAxis(id1, "Price")
+    NormalizeAxis(id2, "Volume")
+
+}
+
+function NormalizeAxis(id, matcher){
+    let hchart = $('#hchart').highcharts();
+    console.log(id)
+    console.log(hchart.yAxis)
+    console.log(hchart.yAxis[id].dataMax)
+    current_max = hchart.yAxis[id].dataMax 
+    current_min = hchart.yAxis[id].dataMin
+    if(id > 1){ 
+        for(let i = 1 ; i < hchart.yAxis.length ; i++){
+            if(i == id){
                 continue;
             }
-            if(nearTwentyPercent(hchart.yAxis[i].dataMax, current_max) && nearTwentyPercent(hchart.yAxis[i].dataMin, current_min)){
+            if(nearTwentyPercent(hchart.yAxis[i].dataMax, current_max) && nearTwentyPercent(hchart.yAxis[i].dataMin, current_min) && hchart.yAxis[i].userOptions.title.text.includes(matcher)){
             //add property LinkTo to the your axis. 
-            hchart.yAxis[id1].update({linkedTo : i})
-            } 
+            hchart.yAxis[id].update({linkedTo : i})
+            }
         }    
     }
-
 }
 
 function nearTwentyPercent(compare_minmax, current_minmax){
@@ -107,6 +115,7 @@ function nearTwentyPercent(compare_minmax, current_minmax){
         return false;
     }  
 }
+
 
 //Create Highcharts for block
  function addBlockGraph(id,coin,datatype,x,y,start,end){
@@ -118,7 +127,7 @@ function nearTwentyPercent(compare_minmax, current_minmax){
     }
     block_data.sort();
     title = coin + " " + datatype + " " + "chart";
-    y_axis = datatype + " of " + coin;
+    y_axis = datatype + " of " + coin + " Block";
     //add block axis
     hchart.addAxis({   
              id: id.toString() + "-axis",
@@ -147,6 +156,8 @@ function nearTwentyPercent(compare_minmax, current_minmax){
         data: block_data,
         yAxis: id.toString() + "-axis",
     })
+
+    NormalizeAxis(id, "Block")
 }
 
 function addScatterPlot(id,coin,datatype,x,y,start,end){
@@ -159,7 +170,7 @@ function addScatterPlot(id,coin,datatype,x,y,start,end){
     }
     block_data.sort();
     title = coin + " " + datatype + " " + "chart"
-    y_axis = datatype + " of " + coin
+    y_axis = datatype + " of " + coin + " Block"
     hchart.addAxis(
         
          {   
@@ -192,16 +203,10 @@ function addScatterPlot(id,coin,datatype,x,y,start,end){
             radius: 5
         },
     })
+
+    NormalizeAxis(id, "Block")
 }
 
-//Allows you to set axis property to LinkTo 0
-function NormalizeAxis(){
-    console.log(hchart)
-    for(let i = 0 ; i < 3 ; i++){
-            console.log(hchart.yAxis[i])
-    }
-
-}
 
 //Allows you to pick the default range given a query parameter
 let url = URL.getURL()
