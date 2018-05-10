@@ -31,6 +31,7 @@ $(document).ready(function () {
                 if(View.MODELS[i].type == "price"){
                     parameters = Input.convertModelToParameter(View.MODELS[i]);
                     Input.getPriceAPI(parameters);
+                    
                 }
 
                 if(View.MODELS[i].type == "block"){

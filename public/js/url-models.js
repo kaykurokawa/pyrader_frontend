@@ -14,48 +14,43 @@
         this.end = end; 
     }
 
-    function CheckPropTypes(){
-        for(let i = 0 ; MODELS.length ; i++){}
-    }
     /*Check the property types of the models just as a sanity check that you are making models with right inputs*/
-    /*function CheckPropTypes(){
-        for(let i = 0 ; MODELS.length ; i++){
-            try{
+    function CheckPropTypes(){
+        console.log(MODELS)
+        for(let i = 0 ; i < MODELS.length ; i++){
+            
             if(typeof MODELS[i].id1 != "number"){
-                throw "id1 in the Url-Model is not a number"
+                console.warn("id1 in the Url-Model is not a number")
             }
             if(typeof MODELS[i].id2 != "number"){
-                throw "id2 in the Url-Model is not a number"
+                console.warn( "id2 in the Url-Model is not a number")
             }
             if(typeof MODELS[i].type != "string"){
-                throw "type in the Url-Model is not a string"
+                console.warn( "type in the Url-Model is not a string")
             }
             if(typeof MODELS[i].symbol != "string"){
-                throw "symbol in the Url-Model is not a string"
+                console.warn( "symbol in the Url-Model is not a string")
             }
             if(typeof MODELS[i].unit != "string"){
-                throw "unit in the Url-Model is not a string"
+                console.warn( "unit in the Url-Model is not a string")
             }
             if(typeof MODELS[i].datatype != "string"){
-                throw "datatype in the Url-Model is not a string"
+                console.warn( "datatype in the Url-Model is not a string")
 
             }if(typeof MODELS[i].exchange != "string"){
-                throw "exchange in the Url-Model is not a string"
+                console.warn( "exchange in the Url-Model is not a string")
 
-            }if(typeof MODELS[i].interval != "interval"){
-                throw "interval in the Url-Model is not a string"
+            }if(typeof MODELS[i].interval != "string"){
+                console.warn( "interval in the Url-Model is not a string")
 
             }if(typeof MODELS[i].start != "number"){
-                throw "start in the Url-Model is not a number"
+                console.warn( "start in the Url-Model is not a number")
 
             }if(typeof MODELS[i].end != "number"){
-                throw "end in the datatype is not a number"
+                console.warn( "end in the datatype is not a number")
             }
-        }catch(err){
-            console.log("Check your prop types in your Url-Model")
         }
-        }
-    }*/
+    }
 
     function resetModel(){
         MODELS = []

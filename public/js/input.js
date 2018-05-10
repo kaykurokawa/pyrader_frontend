@@ -180,7 +180,7 @@
         .then(
         function(response) {
             if (response.status !== 200) {
-                console.log('Looks like there was a problem. Status Code: ' + response.status);
+                console.error('Looks like there was a problem. Status Code: ' + response.status);
                 Table.displayError();
                 return false;
                 }
@@ -207,7 +207,7 @@
                 }
             )
                 .catch(function(err) {
-                    console.log('Fetch Error :-S', err);
+                    console.error('Fetch Error :-S', err);
                     Table.displayError();
                     return false;   
                 });
