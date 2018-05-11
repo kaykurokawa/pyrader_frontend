@@ -91,14 +91,14 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume,start,end){
 function NormalizeAxis(id, matcher){
     let hchart = $('#hchart').highcharts();
     var current= hchart.get(id.toString() + "-axis")
-
+    console.log(hchart.yAxis)
     if(id > 1){ 
         for(let i = 1 ; i < hchart.yAxis.length ; i++){
             iterating_axis = hchart.get(i.toString() + "-axis")
             if(iterating_axis == current){
                 continue;
             }
-            console.log(current)
+    
             if(nearTwentyPercent(iterating_axis.dataMax, current.dataMax) && nearTwentyPercent(iterating_axis.dataMin, current.dataMin) && iterating_axis.userOptions.title.text.includes(matcher)){
             console.log("merging!")        
             //add property LinkTo to the your axis. 
@@ -109,7 +109,6 @@ function NormalizeAxis(id, matcher){
 }
 
 function nearTwentyPercent(compare_minmax, current_minmax){
-    console.log(Math.abs(compare_minmax - current_minmax)/current_minmax)
     if(Math.abs(compare_minmax - current_minmax)/current_minmax < 0.2){
         return true;
     }else{
@@ -282,6 +281,7 @@ var hchart = Highcharts.stockChart('hchart', {
             reflow: false,
             events: {
                 redraw: function() {
+                    
                     console.log("highcharts redraw, rendering-done");
                     $('body').addClass('rendering-done');
                 }

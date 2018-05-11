@@ -23,10 +23,10 @@ $(document).ready(function () {
         /*Model is a global representation of the url parameters input*/
         Input.convertToModel(url);
     }
-    /*populate initial graph from Models*/
+    /*populate initial graph from Models
     if(View.MODELS.length > 0){
-        for(let i = 0 ; i < View.MODELS.length ; i++){
-            /*take a model and convert it to a usable parameter by getAPI*/
+        for(let i = 0 ; i < View.MODELS.length ; i++){*/
+            /*take a model and convert it to a usable parameter by getAPI*
 
                 if(View.MODELS[i].type == "price"){
                     parameters = Input.convertModelToParameter(View.MODELS[i]);
@@ -39,8 +39,25 @@ $(document).ready(function () {
                     Input.getBlockAPI(parameters);
                 }
             } 
+    }*/
+
+    if(View.MODELS.length > 0){
+        let price_parameters = [];
+        let block_parameters = [];
+        for(let i = 0 ; i < View.MODELS.length ; i++){
+                if(View.MODELS[i].type == "price"){
+                    price_parameters.push(Input.convertModelToParameter(View.MODELS[i])); 
+                }
+
+                if(View.MODELS[i].type == "block"){
+                    block_parameters.push(Input.convertModelToParameter(View.MODELS[i]));
+                }
+            }
+        
+        Input.getAllPriceAPI(price_parameters);
+        Input.getAllBlockAPI(block_parameters);     
     }
-    
+ 
     /* Or populate the graph by dropdowns/submit button*/
     document.getElementById("submit").onclick = function(event){
         Input.getPriceAPI(Input.readPricesValues());

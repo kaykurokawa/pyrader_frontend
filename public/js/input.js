@@ -264,10 +264,112 @@
             )
                 .catch(function(err) {
                     Table.displayError();
-                    console.log('Fetch Error :-S', err);
+                    console.error('Fetch Error :-S', err);
 
                 });
     }
+
+    function getPromise(url){
+        return fetch(url).then(response => {
+            return response.json()
+        })
+        .catch(error => {
+            Table.displayError();
+            console.error('Fetch Error :-S', error)
+        });
+    }
+
+    /*given an array of parameter arrays. loop through the array and get the APi for it, the purpose of this is to get all async calls in a parallel*/
+    function getAllPriceAPI(params){
+        let url_arr = []
+        for(let i = 0 ; i < params.length ; i++){
+            url_arr.push(params[i][0])
+        }
+        
+        const all_promises = url_arr.map(getPromise);
+        Promise.all(all_promises).then(all => {
+                Table.hideError();
+                for(let i = 0 ; i < all_promises.length ; i++){
+                    let id1 = params[i][1];
+                    let id2 = params[i][2];
+                    let symbol = params[i][3];
+                    let unit = params[i][4];
+                    let exchange = params[i][5];
+                    if(exchange == "") exchange = "Aggregated";
+                    let interval = params[i][6];
+                    let start = params[i][7]/1000;
+                    let end = params[i][8]/1000;
+                    let interval_i = all[i].interval/1000;
+                    let x = processDates(all[i],interval_i);
+                    let y_prices = processPrices(all[i],unit);
+                    let y_volume = processVolume(all[i],unit);
+
+                    let coin_data = all[i].symbol;
+                    let unit_data = all[i].unit;
+                    let last_price = y_prices[y_prices.length-1];
+                    let last_volume = y_volume[y_volume.length-1];
+                    //let first_date = x[0];
+                    //let last_date = x[x.length-1];
+                    let first_date = !start ? x[0] : start
+                    let last_date = !end ? x[x.length-1] : end
+                    //Here you will pass data to whatever Graphing library asynchronosly
+                    Table.addPriceTable(id1,id2,coin_data,unit_data,last_price,last_volume,first_date, last_date, interval, exchange);
+                    High.addPriceVolumeGraph(id1,id2,coin_data,unit_data,x,y_prices,y_volume, first_date, last_date);
+                }    
+            }
+        ).catch(error => {
+            Table.displayError();
+            console.error('Fetch Error :-S', error);
+        })
+    }
+
+    function getAllBlockAPI(params){
+        let url_arr = []
+        for(let i = 0 ; i < params.length ; i++){
+            url_arr.push(params[i][0])
+        }
+        let all_promises = url_arr.map(getPromise);
+        Promise.all(all_promises).then(all => {
+            Table.hideError();
+            for(let i = 0 ; i < all_promises.length ; i++){
+                let id = params[i][1];
+                let symbol = params[i][2];
+                let datatype = params[i][3];
+                let interval = params[i][4];
+                let start = params[i][5]/1000;
+                let end = params[i][6]/1000;
+                let interval_i = all[i].interval/1000;
+                let plottype = all[i].plottype;
+                if(plottype == "scatter"){
+                    var x = all[i].x.map(function(x){return x = x/1000 }).sort();
+                    var y = all[i].y;
+
+                }else{
+                     var x = processDates(all[i],interval_i);
+                     var y = processData(all[i],interval_i);
+                }
+                let coin_data = all[i].coin;
+                let datatype_data = all[i].datatype;
+                let first_date = !start ? x[0] : start;
+                let last_date = !end ? x[x.length-1] : end;
+                let last_datatype = all[i].y[y.length-1];
+
+                //Here you will pass data to whatever Graphing library asynchronosly
+                if(plottype == "scatter"){
+                    High.addScatterPlot(id,coin_data,datatype_data,x,y, first_date, last_date);
+                    Table.addBlockTable(id,coin_data,datatype_data,last_datatype,first_date, last_date, interval, exchange);
+                }else{
+                    High.addBlockGraph(id,coin_data,datatype_data,x,y, first_date, last_date);
+                    Table.addBlockTable(id,coin_data,datatype_data,last_datatype,first_date, last_date, interval, exchange);
+                }
+            }    
+        }
+        ).catch(error => {
+            Table.displayError();
+            console.error('Fetch Error :-S', error);
+        })
+    }
+    
 
     //given a reporting period in string, return the start and end time stamps in an array in microseconds
     function getTimeStamp(reporting_period){
@@ -411,4 +513,6 @@
         getParameterByName : getParameterByName,
         convertToModel : convertToModel,
         convertModelToParameter : convertModelToParameter,
+        getAllPriceAPI : getAllPriceAPI,
+        getAllBlockAPI : getAllBlockAPI
     }
