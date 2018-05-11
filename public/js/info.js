@@ -197,8 +197,6 @@ const constants = require('./constants.js')
             states.push(info_prices);
         })
     
-  
-    
             info_prices = price
             symbol.options.length = 1
             createOptions(info_prices,"symbol")

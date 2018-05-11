@@ -23,12 +23,12 @@
         if(View.MODELS.length == 0) seriesID = 1  
         let id1 = seriesID++;
         let id2 = seriesID++;
-        let url_model = new View.UrlParam(id1, id2, "price", symbol, unit, datatype, exchange, interval, 0, 0);
+        let type = "price"
+        let url_model = new View.UrlParam(id1, id2, type, symbol, unit, datatype, exchange, interval, 0, 0);
         View.MODELS.push(url_model);
         URL.changeURL();
         View.CheckPropTypes();
-        validateParamtersConsole(parameter);
-        return [parameter, id1, id2, symbol, unit, exchange, interval];
+        return [parameter, id1, id2, symbol, unit, exchange, type];
     }
 
     /*reads and converts dropdown and converts it into url and returns it to be passed to Ajax call*/
@@ -46,12 +46,12 @@
         if(View.MODELS.length == 0) seriesID = 1;
         let id1 =  seriesID++;
         let id2 = 0;
+        let type = "block"
         let url_model = new View.UrlParam(id1, id2, "block", symbol, "", datatype, "", interval, 0, 0);
         View.MODELS.push(url_model);
         URL.changeURL();
         View.CheckPropTypes();
-        validateParamtersConsole(parameter);
-        return [parameter,id1, symbol, datatype, interval];
+        return [parameter,id1, symbol, datatype, interval, type];
     }
 
     /*function that parses the url by interval, units, symbol... or whatever name, if that name doesn't exist
@@ -66,7 +66,7 @@
         return decodeURIComponent(results[2].replace(/\+/g, " ").replace("/",""));
     }
     
-    //convert a url to a Model
+    /*convert a url to a Model*/
     function convertToModel(url){
        
         url = url.split("?");
@@ -140,7 +140,8 @@
             let parameter = constants.REST_URL + "/price?" + p_symbol + p_unit + p_interval + p_exchange //+ p_start + p_end;
             let id1 = model.id1;
             let id2 = model.id2;
-            return [parameter, id1, id2, symbol, unit, exchange, interval, start, end];
+            let type = model.type
+            return [parameter, id1, id2, symbol, unit, exchange, interval, start, end, type];
         }
 
         if(model.type == "block"){
@@ -156,16 +157,15 @@
             let p_end = (!end ? "" : "&end=" + end);
             let parameter = constants.REST_URL + '/block' + p_symbol + p_datatype + p_interval //+ p_start + p_end;
             let id = model.id1;
-            return [parameter, id, symbol, datatype, interval, start, end];       
+            let type = model.type
+            return [parameter, id, symbol, datatype, interval, start, end, type];       
         }
 
     } 
 
-    //call API and Generate the Price and Volume graphs
+    /*call API and Generate the Price and Volume graphs for a single url*/
     function getPriceAPI(arr){
-        console.log(arr)
         var parameter = arr[0];
-        console.log(parameter)
         var id1 = arr[1];
         var id2 = arr[2];
         var symbol = arr[3];
@@ -175,6 +175,7 @@
         var interval = arr[6];
         var start = arr[7]/1000;
         var end = arr[8]/1000;
+        validateParameters(parameter)
 
         fetch(parameter)
         .then(
@@ -213,16 +214,16 @@
                 });
     }
 
-    //Call the API and generate graph for Block data
+    /*Call the API and generate graph for Block data for a single url*/
     function getBlockAPI(arr){    
         var parameter = arr[0];
-        console.log(parameter)
         var id = arr[1];
         var symbol = arr[2];
         var datatype = arr[3];
         var interval = arr[4];
         var start = arr[5]/1000;
         var end = arr[6]/1000;
+        validateParameters(parameter)
 
         fetch(parameter)
         .then(
@@ -269,6 +270,7 @@
                 });
     }
 
+    /*fetch data for a url*/
     function getPromise(url){
         return fetch(url).then(response => {
             return response.json()
@@ -279,17 +281,18 @@
         });
     }
 
-    /*given an array of parameter arrays. loop through the array and get the APi for it, the purpose of this is to get all async calls in a parallel*/
-    function getAllPriceAPI(params){
+    /* collect all urls, and fetch data for all them and then render tables and graphs*/
+    function getAllAPI(params){
         let url_arr = []
         for(let i = 0 ; i < params.length ; i++){
             url_arr.push(params[i][0])
         }
-        
-        const all_promises = url_arr.map(getPromise);
+        validateParameters(url_arr);
+        let all_promises = url_arr.map(getPromise);
         Promise.all(all_promises).then(all => {
-                Table.hideError();
-                for(let i = 0 ; i < all_promises.length ; i++){
+            Table.hideError();
+            for(let i = 0 ; i < all_promises.length ; i++){
+                if(params[i][params[i].length-1] === "price"){
                     let id1 = params[i][1];
                     let id2 = params[i][2];
                     let symbol = params[i][3];
@@ -312,55 +315,43 @@
                     //let last_date = x[x.length-1];
                     let first_date = !start ? x[0] : start
                     let last_date = !end ? x[x.length-1] : end
+                    validateTimeStamps(symbol, first_date, last_date)
                     //Here you will pass data to whatever Graphing library asynchronosly
                     Table.addPriceTable(id1,id2,coin_data,unit_data,last_price,last_volume,first_date, last_date, interval, exchange);
                     High.addPriceVolumeGraph(id1,id2,coin_data,unit_data,x,y_prices,y_volume, first_date, last_date);
-                }    
-            }
-        ).catch(error => {
-            Table.displayError();
-            console.error('Fetch Error :-S', error);
-        })
-    }
-
-    function getAllBlockAPI(params){
-        let url_arr = []
-        for(let i = 0 ; i < params.length ; i++){
-            url_arr.push(params[i][0])
-        }
-        let all_promises = url_arr.map(getPromise);
-        Promise.all(all_promises).then(all => {
-            Table.hideError();
-            for(let i = 0 ; i < all_promises.length ; i++){
-                let id = params[i][1];
-                let symbol = params[i][2];
-                let datatype = params[i][3];
-                let interval = params[i][4];
-                let start = params[i][5]/1000;
-                let end = params[i][6]/1000;
-                let interval_i = all[i].interval/1000;
-                let plottype = all[i].plottype;
-                if(plottype == "scatter"){
-                    var x = all[i].x.map(function(x){return x = x/1000 }).sort();
-                    var y = all[i].y;
-
-                }else{
-                     var x = processDates(all[i],interval_i);
-                     var y = processData(all[i],interval_i);
                 }
-                let coin_data = all[i].coin;
-                let datatype_data = all[i].datatype;
-                let first_date = !start ? x[0] : start;
-                let last_date = !end ? x[x.length-1] : end;
-                let last_datatype = all[i].y[y.length-1];
-
-                //Here you will pass data to whatever Graphing library asynchronosly
-                if(plottype == "scatter"){
-                    High.addScatterPlot(id,coin_data,datatype_data,x,y, first_date, last_date);
-                    Table.addBlockTable(id,coin_data,datatype_data,last_datatype,first_date, last_date, interval, exchange);
-                }else{
-                    High.addBlockGraph(id,coin_data,datatype_data,x,y, first_date, last_date);
-                    Table.addBlockTable(id,coin_data,datatype_data,last_datatype,first_date, last_date, interval, exchange);
+                if(params[i][params[i].length-1] === "block"){
+                    let id = params[i][1];
+                    let symbol = params[i][2];
+                    let datatype = params[i][3];
+                    let interval = params[i][4];
+                    let start = params[i][5]/1000;
+                    let end = params[i][6]/1000;
+                    let interval_i = all[i].interval/1000;
+                    let plottype = all[i].plottype;
+    
+                    if(plottype == "scatter"){
+                        var x = all[i].x.map(function(x){return x = x/1000 }).sort();
+                        var y = all[i].y;
+                    }else{
+                         var x = processDates(all[i],interval_i);
+                         var y = processData(all[i],interval_i);
+                    }
+    
+                    let coin_data = all[i].coin;
+                    let datatype_data = all[i].datatype;
+                    let first_date = !start ? x[0] : start;
+                    let last_date = !end ? x[x.length-1] : end;
+                    let last_datatype = all[i].y[y.length-1];
+                    validateTimeStamps(symbol, first_date, last_date)
+                    //Here you will pass data to whatever Graphing library asynchronosly
+                    if(plottype == "scatter"){
+                        High.addScatterPlot(id,coin_data,datatype_data,x,y, first_date, last_date);
+                        Table.addBlockTable(id,coin_data,datatype_data,last_datatype,first_date, last_date, interval, exchange);
+                    }else{
+                        High.addBlockGraph(id,coin_data,datatype_data,x,y, first_date, last_date);
+                        Table.addBlockTable(id,coin_data,datatype_data,last_datatype,first_date, last_date, interval, exchange);
+                    }
                 }
             }    
         }
@@ -371,7 +362,7 @@
     }
     
 
-    //given a reporting period in string, return the start and end time stamps in an array in microseconds
+    /*given a reporting period in string, return the start and end time stamps in an array in microseconds*/
     function getTimeStamp(reporting_period){
         var now = new Date();
         var timestamps = [];
@@ -397,14 +388,14 @@
         return timestamps;
     }
 
-    //given the interval in string format, return the milliseconds in integer in order to be converted into dates. 
+    /*given the interval in string format, return the milliseconds in integer in order to be converted into dates.*/ 
     function convertIntervalToNumber(interval){
         interval_numbers = {"5min" : 300 * constants.MILLI, 
             "hour" : 3600 * constants.MILLI, "day" : 86400 * constants.MILLI };
         interval_i = interval_numbers[interval];
         return interval_i;
     }
-    //take in json with  microsecond times and append to json the array of millisecond time stamps
+    /*take in json with  microsecond times and append to json the array of millisecond time stamps*/
     function processDates(json,interval_i){ 
          milliArray = [];
          time = json.x1/1000;
@@ -420,7 +411,7 @@
         return Math.round(value * multiplier) / multiplier;
     }
 
-    //given a json with prices, and units in string, eliminate zeros, convert the prices to those units and return an array of prices
+    /*given a json with prices, and units in string, eliminate zeros, convert the prices to those units and return an array of prices*/
     function processPrices(json,unit){
         for(i = 0 ; i < json.y.length ; i++){
             if(json.y[i] == 0){
@@ -434,7 +425,7 @@
             }
         }
         pricesArray = [];
-        //if you divide your data by the conversion and it is less than 1 (ie. Comparing DOGE to units of BTC) give me 8 decimals
+        /*if you divide your data by the conversion and it is less than 1 (ie. Comparing DOGE to units of BTC) give me 8 decimals*/
         if(json.y[0]/constants.conversions[unit] < 1){
             json.y = json.y.map(function(units){return round(units/constants.conversions[unit],8)});
         }else{
@@ -443,7 +434,7 @@
         return json.y;
         }
 
-    //given a json with volumes,convert the volumes to those units.
+    /*given a json with volumes,convert the volumes to those units.*/
     function processVolume(json,unit){
         json.w = json.w.map(function(vol){return round(vol/constants.conversions[unit],2)});
         return json.w;
@@ -482,7 +473,7 @@
         }
     }
         
-    //given a unix timestamp in milliseconds, convert that to a date object
+    /*given a unix timestamp in milliseconds, convert that to a date object*/
     function convertUnix(data){
           function unixToReg(time){
             return new Date(time);
@@ -490,14 +481,20 @@
           return data.map(function(time){return unixToReg(time)});
     }
 
-    //print out the API call URL and the exact time stamps you called for debugging.
-    function validateParamtersConsole(parameter){
-        /*if(Number(start_stamp) || Number(end_stamp) == 0){
-            console.log("No start or end time stamps requested")
+    /*print out the API call URL and the exact time stamps you called for debugging*/
+    function validateParameters(parameter){
+        console.log(parameter)
+
+    }
+
+    /*display timestamps in console so the user may inspect them*/
+    function validateTimeStamps(name,start,end){
+        if(Number(start) || Number(end) == 0){
+            console.log(name + " has no start or end time stamps requested")
         }else{        
-            console.log(new Date(Number(start_stamp.slice(7,start_stamp.length))/1000)) //to validate timestamps in console
-            console.log(new Date(Number(end_stamp.slice(5,start_stamp.length))/1000)) // you can validate timestamps in consloe}
-        }*/
+            console.log(name + " " +  new Date(Number(start.slice(7,start.length))/1000)) //to validate timestamps in console
+            console.log(name + " " + new Date(Number(end.slice(5,end.length))/1000)) // you can validate timestamps in consloe}
+        }
     }
 
     module.exports = {
@@ -513,6 +510,5 @@
         getParameterByName : getParameterByName,
         convertToModel : convertToModel,
         convertModelToParameter : convertModelToParameter,
-        getAllPriceAPI : getAllPriceAPI,
-        getAllBlockAPI : getAllBlockAPI
+        getAllAPI : getAllAPI
     }

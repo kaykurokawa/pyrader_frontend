@@ -15,47 +15,29 @@ const View = require('/js/url-models.js');
 
 
 $(document).ready(function () {
+
+    /*populate the dropdowns*/
     Info.getInfo();
-  
+
+    /*set the "share link" button initial state"*/
+    Url.setShareLink(Url.getURL())
+
     /*populate the graph via browser url if it has string query*/
     var url = Url.getURL();
     if(Url.isBlockUrl(url) || Url.isPriceUrl(url)){
-        /*Model is a global representation of the url parameters input*/
+
+    /*Model is a global representation of the url parameters input*/
         Input.convertToModel(url);
     }
-    /*populate initial graph from Models
-    if(View.MODELS.length > 0){
-        for(let i = 0 ; i < View.MODELS.length ; i++){*/
-            /*take a model and convert it to a usable parameter by getAPI*
-
-                if(View.MODELS[i].type == "price"){
-                    parameters = Input.convertModelToParameter(View.MODELS[i]);
-                    Input.getPriceAPI(parameters);
-                    
-                }
-
-                if(View.MODELS[i].type == "block"){
-                    parameters = Input.convertModelToParameter(View.MODELS[i]);
-                    Input.getBlockAPI(parameters);
-                }
-            } 
-    }*/
 
     if(View.MODELS.length > 0){
-        let price_parameters = [];
-        let block_parameters = [];
+
+        /*collect all queryies from url string into one model and get the corresponding data*/ 
+        let parameters = [];
         for(let i = 0 ; i < View.MODELS.length ; i++){
-                if(View.MODELS[i].type == "price"){
-                    price_parameters.push(Input.convertModelToParameter(View.MODELS[i])); 
-                }
-
-                if(View.MODELS[i].type == "block"){
-                    block_parameters.push(Input.convertModelToParameter(View.MODELS[i]));
-                }
+                    parameters.push(Input.convertModelToParameter(View.MODELS[i])); 
             }
-        
-        Input.getAllPriceAPI(price_parameters);
-        Input.getAllBlockAPI(block_parameters);     
+        Input.getAllAPI(parameters);
     }
  
     /* Or populate the graph by dropdowns/submit button*/

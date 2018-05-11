@@ -34,8 +34,6 @@ function removeModel(id1){
             View.MODELS.splice(i,1) 
         }
     }
-    //let url_name = getURL()
-    //changeURL(url_name)
 }
 
 /*function that parses the url by interval, units, symbol... or whatever name, if that name doesn't exist
@@ -76,6 +74,7 @@ function isPriceUrl(){
 function changeURL(){
     let url_name = createBrowserUrl(View.MODELS)
     history.pushState(null,"",url_name)
+    setShareLink(getURL())
 }
 
 function getURL(){
@@ -83,10 +82,27 @@ function getURL(){
     return uri
 }
 
+function setShareLink(string){
+    let share = document.querySelector("#share-url")
+    let share_button = document.querySelector("#share-button")
+    share.value = string;
+    share_button.addEventListener("click", function(){
+        //get the text of the input and
+        share.select()
+        document.execCommand("Copy");
+    })
+}
+
+function getShareLink(){
+    string =  document.querySelector("#share-url").value
+    return string
+}
+
 module.exports = {changeURL : changeURL,
                 getURL : getURL,
                 isBlockUrl : isBlockUrl,
                 isPriceUrl : isPriceUrl,
                 removeModel : removeModel,
-                getParameterByName : getParameterByName
+                getParameterByName : getParameterByName,
+                setShareLink : setShareLink
             }
