@@ -281,7 +281,6 @@ var hchart = Highcharts.stockChart('hchart', {
             reflow: false,
             events: {
                 redraw: function() {
-                    
                     console.log("highcharts redraw, rendering-done");
                     $('body').addClass('rendering-done');
                 }
@@ -303,6 +302,17 @@ var hchart = Highcharts.stockChart('hchart', {
                     'min-width': '100px'
                 },
                 useHTML : true
+            },
+            events: {
+                afterSetExtremes: function(event){
+                    console.log("work")
+                    document.querySelector('#share-link').onclick = function(e){
+                        console.log("work")
+                        let min_window = event.min*1000
+                        let max_window = event.max*1000
+                        URL.setShareLink(URL.getURL() + "&start=" + min_window + "&end=" + max_window) 
+                    }    
+                }
             }
         },
         legend: {

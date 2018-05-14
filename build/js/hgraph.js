@@ -157,6 +157,7 @@ function addScatterPlot(id,coin,datatype,x,y){
 }
 
 //generate the Highcharts
+console.log("here is it")
 hchart = Highcharts.stockChart('hchart', {
     
     rangeSelector: {
@@ -196,7 +197,7 @@ hchart = Highcharts.stockChart('hchart', {
         },
 
         scrollbar: {
-            liveRedraw: true
+            liveRedraw: false
         },
         plotOptions: {
             area: { animation: false, enableMouseTracking: false, stickyTracking: false, shadow: false, dataLabels: { style: { textShadow: false } } },
@@ -210,9 +211,14 @@ hchart = Highcharts.stockChart('hchart', {
         chart: {
             reflow: false,
             events: {
-                redraw: function() {
+                /*redraw: function() {
                     console.log("highcharts redraw, rendering-done");
                     $('body').addClass('rendering-done');
+                },*/
+                afterSetExtremes: function(event){
+                    console.log("workin!")
+                    console.log(new Date(event.min));
+                    console.log(new Date(event.max));
                 }
             },
             animation: false
@@ -232,6 +238,13 @@ hchart = Highcharts.stockChart('hchart', {
                     'min-width': '100px'
                 },
                 useHTML : true
+            },
+            events: {
+                setExtremes: function(event){
+                    console.log("workin!")
+                    console.log(new Date(event.min));
+                    console.log(new Date(event.max));
+                }
             }
         },
         legend: {
@@ -251,7 +264,6 @@ hchart = Highcharts.stockChart('hchart', {
                  //format the tool tip if it is less than 1 then it is 7 digits and if not then it is 2.
                  var dec1;
                  var dec2;
-                 console.log(this)
                  //format the tool tip for price and volume 
                  if(this.hasOwnProperty('points') && this.points.length >= 2){
                     let string_return = "";
