@@ -1,7 +1,9 @@
 const URL = require('./url.js');
+const View = require('./url-models.js')
+
 
 //Create Highcharts for price/volume
-function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume,start,end){
+function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume,start,end,min,max){
     volume = [];
     prices = [];
   
@@ -33,8 +35,8 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume,start,end){
             height: '65%',
             lineWidth: 2,
             opposite: true,
-         }
-    );
+
+        });
 
     //price series
     hchart.addSeries({
@@ -83,33 +85,58 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume,start,end){
 
     //if the min and max of this price you are going to add is similar to the previous one the
     //on the first refresh it does i right
+    setMinMax(min,max)
     NormalizeAxis(id1, "Price")
     NormalizeAxis(id2, "Volume")
-
 }
 
 function NormalizeAxis(id, matcher){
     let hchart = $('#hchart').highcharts();
-    var current= hchart.get(id.toString() + "-axis")
-    console.log(hchart.yAxis)
+    var current_axis= hchart.get(id.toString() + "-axis")
+    arr = [] 
     if(id > 1){ 
         for(let i = 1 ; i < hchart.yAxis.length ; i++){
             iterating_axis = hchart.get(i.toString() + "-axis")
-            if(iterating_axis == current){
+            if(iterating_axis == current_axis){
                 continue;
             }
-    
-            if(nearTwentyPercent(iterating_axis.dataMax, current.dataMax) && nearTwentyPercent(iterating_axis.dataMin, current.dataMin) && iterating_axis.userOptions.title.text.includes(matcher)){
-            console.log("merging!")        
-            //add property LinkTo to the your axis. 
-            current.update({linkedTo : i})
+            //maybe here if one of them is within 20%, then they can be linked but if the other is over 50% then you can combine min and max?
+            if(nearTwentyPercent(iterating_axis.dataMax, current_axis.dataMax) || nearTwentyPercent(iterating_axis.dataMin, current_axis.dataMin) && iterating_axis.userOptions.title.text.includes(matcher)){
+            let min = current_axis.dataMin
+            arr.push(min)
+            let max = current_axis.dataMax
+                //1. you need to figure out which min is smaller and set iterating and current axis to that.
+            if(iterating_axis.dataMin < current_axis.dataMin){
+                min = iterating_axis.dataMin
+                console.log(min)
+                console.log("merging mins")
+            } 
+                //2. you needto figure out which max is bigger and set iterating and current axis to that.
+            if(iterating_axis.dataMax > current_axis.dataMax){
+                max = iterating_axis.dataMax
+                console.log("mering maxes")
             }
-        }    
+            current_axis.setExtremes(min, max)
+            iterating_axis.setExtremes(min, max)
+            console.log("merging!, setting extremes and linking")   
+            //3. Then link the current to iterating .
+            //current_axis.update({linkedTo : i})
+            }
+        }
+    }
+}
+
+function setMinMax(min,max){
+    let hchart = $('#hchart').highcharts();
+    if(!min && !max){
+        return
+    }else{
+        hchart.xAxis[0].setExtremes(min, max);
     }
 }
 
 function nearTwentyPercent(compare_minmax, current_minmax){
-    if(Math.abs(compare_minmax - current_minmax)/current_minmax < 0.2){
+    if(Math.abs(compare_minmax - current_minmax)/current_minmax < 0.1){
         return true;
     }else{
         return false;
@@ -118,7 +145,7 @@ function nearTwentyPercent(compare_minmax, current_minmax){
 
 
 //Create Highcharts for block
- function addBlockGraph(id,coin,datatype,x,y,start,end){
+ function addBlockGraph(id,coin,datatype,x,y,start,end, min, max){
     block_data = [];
     for(i = 0 ; i < x.length ; i++){
         if(x[i] >= start && x[i] <= end){
@@ -156,7 +183,7 @@ function nearTwentyPercent(compare_minmax, current_minmax){
         data: block_data,
         yAxis: id.toString() + "-axis",
     })
-
+    setMinMax(min,max)
     NormalizeAxis(id, "Block")
 }
 
@@ -224,12 +251,10 @@ if(range != null){
     }
 }
 
-
-
 //generate the Highcharts
 var hchart = Highcharts.stockChart('hchart', {
     
-    rangeSelector: {
+    rangeSelector: { //the top left buttons
         allButtonsEnabled: true,
         buttons: [{
             type: 'day',
@@ -278,13 +303,29 @@ var hchart = Highcharts.stockChart('hchart', {
             spline: { animation: false, enableMouseTracking: false, stickyTracking: false, shadow: false, dataLabels: { style: { textShadow: false } } },
         },
         chart: {
-            reflow: false,
+            reflow: false, //when size of window changes the graph does as well (responsive)
             events: {
-                redraw: function() {
+                redraw: function(event) {
                     console.log("highcharts redraw, rendering-done");
                     $('body').addClass('rendering-done');
-                }
-            },
+                    }
+                },
+/*    let hchart = $('#hchart').highcharts();
+    var current= hchart.get(id.toString() + "-axis")
+    if(id > 1){ 
+        for(let i = 1 ; i < hchart.yAxis.length ; i++){
+            iterating_axis = hchart.get(i.toString() + "-axis")
+            if(iterating_axis == current){
+                continue;
+            }
+    
+            if(nearTwentyPercent(iterating_axis.dataMax, current.dataMax) && nearTwentyPercent(iterating_axis.dataMin, current.dataMin) && iterating_axis.userOptions.title.text.includes(matcher)){
+            console.log("merging!")        
+            //add property LinkTo to the your axis. 
+            current.update({linkedTo : i})
+            }
+        }    
+    } */
             animation: false
         },
         exporting: {
@@ -305,13 +346,37 @@ var hchart = Highcharts.stockChart('hchart', {
             },
             events: {
                 afterSetExtremes: function(event){
-                    console.log("work")
                     document.querySelector('#share-link').onclick = function(e){
-                        console.log("work")
-                        let min_window = event.min*1000
-                        let max_window = event.max*1000
-                        URL.setShareLink(URL.getURL() + "&start=" + min_window + "&end=" + max_window) 
-                    }    
+                        let min_window = event.min*1000;
+                        let max_window = event.max*1000;
+                        URL.setShareLink(URL.getURL() + "&min=" + min_window + "&max=" + max_window); 
+                    }
+                    document.querySelector('#share-block-link').onclick = function(e){
+                        let min_window = event.min*1000;
+                        let max_window = event.max*1000;
+                        URL.setShareLink(URL.getURL() + "&min=" + min_window + "&max=" + max_window); 
+                    }
+                    
+                    //var hchart = $('#hchart').highcharts();
+                    // this is SLOW!!
+                    /*for(let i = 0 ; i < hchart.yAxis.length ; i++){
+                        let current_axis = hchart.yAxis[i]
+                        for(let j = 1 ; j < hchart.yAxis.length ; j++){
+                            if(i==j){
+                                continue;
+                            }   
+                            let compare_axis = hchart.yAxis[j]
+                            if(nearTwentyPercent(current_axis.dataMax, compare_axis.dataMax) && nearTwentyPercent(compare_axis.dataMin, current_axis.dataMin)){
+                                console.log("merging on redraw")
+                                current_axis.update({linkedTo : j})
+                            }
+                            if(!nearTwentyPercent(current_axis.dataMax, compare_axis.dataMax) && !nearTwentyPercent(compare_axis.dataMin, current_axis.dataMin)){
+                                console.log("unmerging on redraw")
+                                current_axis.update({linkedTo : null})
+                                
+                            }   
+                        } 
+                    }*/
                 }
             }
         },
