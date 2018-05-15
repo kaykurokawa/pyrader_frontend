@@ -92,7 +92,7 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume,start,end,min
 
 function NormalizeAxis(id, matcher){
     let hchart = $('#hchart').highcharts();
-    var current_axis= hchart.get(id.toString() + "-axis")
+    var current_axis = hchart.get(id.toString() + "-axis")
     arr = [] 
     if(id > 1){ 
         for(let i = 1 ; i < hchart.yAxis.length ; i++){
@@ -101,26 +101,8 @@ function NormalizeAxis(id, matcher){
                 continue;
             }
             //maybe here if one of them is within 20%, then they can be linked but if the other is over 50% then you can combine min and max?
-            if(nearTwentyPercent(iterating_axis.dataMax, current_axis.dataMax) || nearTwentyPercent(iterating_axis.dataMin, current_axis.dataMin) && iterating_axis.userOptions.title.text.includes(matcher)){
-            let min = current_axis.dataMin
-            arr.push(min)
-            let max = current_axis.dataMax
-                //1. you need to figure out which min is smaller and set iterating and current axis to that.
-            if(iterating_axis.dataMin < current_axis.dataMin){
-                min = iterating_axis.dataMin
-                console.log(min)
-                console.log("merging mins")
-            } 
-                //2. you needto figure out which max is bigger and set iterating and current axis to that.
-            if(iterating_axis.dataMax > current_axis.dataMax){
-                max = iterating_axis.dataMax
-                console.log("mering maxes")
-            }
-            current_axis.setExtremes(min, max)
-            iterating_axis.setExtremes(min, max)
-            console.log("merging!, setting extremes and linking")   
-            //3. Then link the current to iterating .
-            //current_axis.update({linkedTo : i})
+            if(nearTwentyPercent(iterating_axis.min, current_axis.max) && nearTwentyPercent(iterating_axis.min, current_axis.max) && iterating_axis.userOptions.title.text.includes(matcher)){
+                current_axis.update({linkedTo : i})
             }
         }
     }
@@ -136,7 +118,7 @@ function setMinMax(min,max){
 }
 
 function nearTwentyPercent(compare_minmax, current_minmax){
-    if(Math.abs(compare_minmax - current_minmax)/current_minmax < 0.1){
+    if(Math.abs(compare_minmax - current_minmax)/current_minmax < 0.2){
         return true;
     }else{
         return false;
@@ -238,7 +220,7 @@ function addScatterPlot(id,coin,datatype,x,y,start,end){
 //Allows you to pick the default range given a query parameter
 let url = URL.getURL()
 let range = URL.getParameterByName("range", url) 
-let selector = 1;
+let selector = 3;
 if(range != null){
     if(range == "day"){
         selector = 0
@@ -356,7 +338,6 @@ var hchart = Highcharts.stockChart('hchart', {
                         let max_window = event.max*1000;
                         URL.setShareLink(URL.getURL() + "&min=" + min_window + "&max=" + max_window); 
                     }
-                    
                     //var hchart = $('#hchart').highcharts();
                     // this is SLOW!!
                     /*for(let i = 0 ; i < hchart.yAxis.length ; i++){

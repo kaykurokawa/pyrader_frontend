@@ -244,6 +244,7 @@
                     let first_date = x[0];
                     let last_date = x[x.length-1];
                     let last_datatype = data.y[y.length-1];
+                    console.log(y)
 
                     //Here you will pass data to whatever Graphing library asynchronosly
                     if(plottype == "scatter"){
