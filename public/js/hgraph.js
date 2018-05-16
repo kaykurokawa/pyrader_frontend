@@ -38,6 +38,8 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume,start,end, mi
 
     //price series
     hchart.addSeries({
+        cropThreshold: Number.MAX_VALUE,
+        getExtremesFromAll: true,
         id: id1.toString(),
         colorIndex: id1,
         type: 'line',
@@ -70,6 +72,8 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume,start,end, mi
 
     //volume series
     hchart.addSeries({
+        cropThreshold: Number.MAX_VALUE,
+        getExtremesFromAll: true,
         id: id2.toString(),
         colorIndex: id2,
         type: 'column',
@@ -103,14 +107,14 @@ function NormalizeAxis(id, matcher){
             if(nearTwentyPercent(iterating_axis.dataMax, current.dataMax) && nearTwentyPercent(iterating_axis.dataMin, current.dataMin) && iterating_axis.userOptions.title.text.includes(matcher)){
             console.log("merging!")        
             //add property LinkTo to the your axis. 
-            current.update({linkedTo : i})
+            //current.update({linkedTo : i})
             }
         }    
     }
 }
 
 function nearTwentyPercent(compare_minmax, current_minmax){
-    if(Math.abs(compare_minmax - current_minmax)/current_minmax < 0.2){
+    if(Math.abs(compare_minmax - current_minmax)/current_minmax < 0.1){
         return true;
     }else{
         return false;
@@ -162,6 +166,7 @@ function setMinMax(min,max){
         //boostThreshold: 1,
         type: 'line',
         name: y_axis,
+        getExtremesFromAll: true,
         data: block_data,
         yAxis: id.toString() + "-axis",
     })
@@ -207,6 +212,7 @@ function addScatterPlot(id,coin,datatype,x,y,start,end, min, max){
         type: 'scatter',
         name: y_axis,
         data: block_data,
+        getExtremesFromAll: true,
         yAxis: id.toString()+ "-axis",
         marker: {
             enabled: true,
@@ -273,7 +279,7 @@ var hchart = Highcharts.stockChart('hchart', {
         },*/
 
         navigator: {
-            adaptToUpdatedData: true,
+            adaptToUpdatedData: false,
         },
 
         scrollbar: {
@@ -282,9 +288,9 @@ var hchart = Highcharts.stockChart('hchart', {
         plotOptions: {
             area: { animation: false, enableMouseTracking: false, stickyTracking: false, shadow: false, dataLabels: { style: { textShadow: false } } },
             bar: { animation: false, enableMouseTracking: false, stickyTracking: false, shadow: false, dataLabels: { style: { textShadow: false } } },
-            column: { animation: false, enableMouseTracking: false, stickyTracking: false, shadow: false, dataLabels: { style: { textShadow: false } } },
-            line: { animation: false, enableMouseTracking: false, stickyTracking: false, shadow: false, dataLabels: { style: { textShadow: false } } },
-            scatter: { animation: false, enableMouseTracking: false, stickyTracking: false, shadow: false, dataLabels: { style: { textShadow: false } } },
+            column: { animation: false, enableMouseTracking: false, stickyTracking: false, shadow: false, dataLabels: { style: { textShadow: false } }, getExtremesFromAll: true },
+            line: { animation: false, enableMouseTracking: false, stickyTracking: false, shadow: false, dataLabels: { style: { textShadow: false } }, getExtremesFromAll: true },
+            scatter: { animation: false, enableMouseTracking: false, stickyTracking: false, shadow: false, dataLabels: { style: { textShadow: false } }, getExtremesFromAll: true },
             series: { animation: false, enableMouseTracking: false, stickyTracking: false, shadow: false, dataLabels: { style: { textShadow: false } } },
             spline: { animation: false, enableMouseTracking: false, stickyTracking: false, shadow: false, dataLabels: { style: { textShadow: false } } },
         },
