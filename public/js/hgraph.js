@@ -1,7 +1,7 @@
 const URL = require('./url.js');
 
 //Create Highcharts for price/volume
-function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume,start,end){
+function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume,start,end, min, max){
     volume = [];
     prices = [];
   
@@ -83,6 +83,7 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume,start,end){
 
     //if the min and max of this price you are going to add is similar to the previous one the
     //on the first refresh it does i right
+    setMinMax(min,max)
     NormalizeAxis(id1, "Price")
     NormalizeAxis(id2, "Volume")
 
@@ -116,9 +117,17 @@ function nearTwentyPercent(compare_minmax, current_minmax){
     }  
 }
 
+function setMinMax(min,max){
+    let hchart = $('#hchart').highcharts();
+    if(!min && !max){
+        return
+    }else{
+        hchart.xAxis[0].setExtremes(min, max);
+    }
+}
 
 //Create Highcharts for block
- function addBlockGraph(id,coin,datatype,x,y,start,end){
+ function addBlockGraph(id,coin,datatype,x,y,start,end, min, max){
     block_data = [];
     for(i = 0 ; i < x.length ; i++){
         if(x[i] >= start && x[i] <= end){
@@ -157,10 +166,11 @@ function nearTwentyPercent(compare_minmax, current_minmax){
         yAxis: id.toString() + "-axis",
     })
 
+    setMinMax(min,max)
     NormalizeAxis(id, "Block")
 }
 
-function addScatterPlot(id,coin,datatype,x,y,start,end){
+function addScatterPlot(id,coin,datatype,x,y,start,end, min, max){
     block_data = []
     for(i = 0 ; i < x.length ; i++){
         if(x[i] >= start && x[i] <= end){
@@ -204,6 +214,7 @@ function addScatterPlot(id,coin,datatype,x,y,start,end){
         },
     })
 
+    setMinMax(min,max)
     NormalizeAxis(id, "Block")
 }
 
@@ -310,9 +321,17 @@ var hchart = Highcharts.stockChart('hchart', {
                         console.log("work")
                         let min_window = event.min*1000
                         let max_window = event.max*1000
-                        URL.setShareLink(URL.getURL() + "&start=" + min_window + "&end=" + max_window) 
+                        URL.setShareLink(URL.getURL() + "&min=" + min_window + "&max=" + max_window) 
+                    }
+
+                    document.querySelector('#share-block-link').onclick = function(e){
+                        let min_window = event.min*1000;
+                        let max_window = event.max*1000;
+                        URL.setShareLink(URL.getURL() + "&min=" + min_window + "&max=" + max_window); 
                     }    
                 }
+
+
             }
         },
         legend: {

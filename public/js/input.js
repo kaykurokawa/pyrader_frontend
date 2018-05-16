@@ -28,7 +28,7 @@
         View.MODELS.push(url_model);
         URL.changeURL();
         View.CheckPropTypes();
-        return [parameter, id1, id2, symbol, unit, exchange, type];
+        return [parameter, id1, id2, symbol, unit, exchange, interval];
     }
 
     /*reads and converts dropdown and converts it into url and returns it to be passed to Ajax call*/
@@ -51,7 +51,7 @@
         View.MODELS.push(url_model);
         URL.changeURL();
         View.CheckPropTypes();
-        return [parameter,id1, symbol, datatype, interval, type];
+        return [parameter,id1, symbol, datatype, interval];
     }
 
     /*function that parses the url by interval, units, symbol... or whatever name, if that name doesn't exist
@@ -173,8 +173,7 @@
         var exchange = arr[5];
         if(exchange == "") exchange = "Aggregated";
         var interval = arr[6];
-        var start = arr[7]/1000;
-        var end = arr[8]/1000;
+
         validateParameters(parameter)
 
         fetch(parameter)
@@ -198,8 +197,8 @@
                     let last_volume = y_volume[y_volume.length-1];
                     //let first_date = x[0];
                     //let last_date = x[x.length-1];
-                    let first_date = !start ? x[0] : start
-                    let last_date = !end ? x[x.length-1] : end
+                    let first_date = x[0];
+                    let last_date = x[x.length-1];
                      //Here you will pass data to whatever Graphing library asynchronosly
                     Table.addPriceTable(id1,id2,coin_data,unit_data,last_price,last_volume,first_date, last_date, interval, exchange);
                     High.addPriceVolumeGraph(id1,id2,coin_data,unit_data,x,y_prices,y_volume, first_date, last_date);
@@ -221,8 +220,7 @@
         var symbol = arr[2];
         var datatype = arr[3];
         var interval = arr[4];
-        var start = arr[5]/1000;
-        var end = arr[6]/1000;
+
         validateParameters(parameter)
 
         fetch(parameter)
@@ -248,8 +246,8 @@
                     }
                     let coin_data = data.coin;
                     let datatype_data = data.datatype;
-                    let first_date = !start ? x[0] : start;
-                    let last_date = !end ? x[x.length-1] : end;
+                    let first_date = x[0];
+                    let last_date = x[x.length-1];
                     let last_datatype = data.y[y.length-1];
 
                     //Here you will pass data to whatever Graphing library asynchronosly
@@ -269,6 +267,14 @@
 
                 });
     }
+
+        function getMinMax(url){
+            let min = getParameterByName("min", url)
+            let max = getParameterByName("max", url)  
+            min = (min == null ? 0 : min)
+            max = (max == null ? 0 : max)
+            return [min,max]
+        }
 
     /*fetch data for a url*/
     function getPromise(url){
@@ -291,6 +297,9 @@
         let all_promises = url_arr.map(getPromise);
         Promise.all(all_promises).then(all => {
             Table.hideError();
+            let min = getMinMax(URL.getURL())[0]/1000;
+            let max = getMinMax(URL.getURL())[1]/1000;
+            
             for(let i = 0 ; i < all_promises.length ; i++){
                 if(params[i][params[i].length-1] === "price"){
                     let id1 = params[i][1];
@@ -316,9 +325,10 @@
                     let first_date = !start ? x[0] : start
                     let last_date = !end ? x[x.length-1] : end
                     validateTimeStamps(symbol, first_date, last_date)
+
                     //Here you will pass data to whatever Graphing library asynchronosly
                     Table.addPriceTable(id1,id2,coin_data,unit_data,last_price,last_volume,first_date, last_date, interval, exchange);
-                    High.addPriceVolumeGraph(id1,id2,coin_data,unit_data,x,y_prices,y_volume, first_date, last_date);
+                    High.addPriceVolumeGraph(id1,id2,coin_data,unit_data,x,y_prices,y_volume, first_date, last_date, min, max);
                 }
                 if(params[i][params[i].length-1] === "block"){
                     let id = params[i][1];
@@ -346,10 +356,10 @@
                     validateTimeStamps(symbol, first_date, last_date)
                     //Here you will pass data to whatever Graphing library asynchronosly
                     if(plottype == "scatter"){
-                        High.addScatterPlot(id,coin_data,datatype_data,x,y, first_date, last_date);
+                        High.addScatterPlot(id,coin_data,datatype_data,x,y, first_date, last_date, min, max);
                         Table.addBlockTable(id,coin_data,datatype_data,last_datatype,first_date, last_date, interval, exchange);
                     }else{
-                        High.addBlockGraph(id,coin_data,datatype_data,x,y, first_date, last_date);
+                        High.addBlockGraph(id,coin_data,datatype_data,x,y, first_date, last_date, min, max);
                         Table.addBlockTable(id,coin_data,datatype_data,last_datatype,first_date, last_date, interval, exchange);
                     }
                 }

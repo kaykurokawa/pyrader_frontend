@@ -42,6 +42,7 @@ function addBlockTable(id,coin,datatype,last_block,first_date, last_date,interva
     from_date = new Date(first_date).toDateString() + " " + new Date(first_date).toLocaleTimeString('en-US');
     to_date = new Date(last_date).toDateString() + " " +  new Date(last_date).toLocaleTimeString('en-US');
     current_block = (last_block).toFixed(4);
+    interval = (interval == 0 ? "no averaging" : interval)
     newRow1.setAttribute("id",id);
     newRow1.innerHTML = "<td>Block</td>" + "<td>" + datatype +"</td>" + "<td>" + coin + "</td>" + "<td>Aggregated</td>"
     + "<td>" + from_date + " to " + to_date + "</td>"
