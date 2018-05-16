@@ -104,17 +104,30 @@ function NormalizeAxis(id, matcher){
                 continue;
             }
     
-            if(nearTwentyPercent(iterating_axis.dataMax, current.dataMax) && nearTwentyPercent(iterating_axis.dataMin, current.dataMin) && iterating_axis.userOptions.title.text.includes(matcher)){
+            if(nearTwentyPercent(iterating_axis.dataMax, current.dataMax) || nearTwentyPercent(iterating_axis.dataMin, current.dataMin) && iterating_axis.userOptions.title.text.includes(matcher)){
             console.log("merging!")        
-            //add property LinkTo to the your axis. 
-            //current.update({linkedTo : i})
+            //add property LinkTo to the your axis.
+            curr_min = current.dataMin
+            curr_max = current.dataMax
+            itr_min = iterating_axis.dataMin
+            itr_max = iterating_axis.dataMax
+            console.log(curr_min)
+            console.log(curr_max)
+            console.log(itr_min)
+            console.log(itr_max)
+            let min = (curr_min < itr_min ? curr_min : itr_min) 
+            let max = (curr_max > itr_min ? curr_max : itr_max)
+            console.log(min)
+            console.log(max)
+            iterating_axis.setExtremes(min, max)
+            current.update({linkedTo : i})
             }
         }    
     }
 }
 
 function nearTwentyPercent(compare_minmax, current_minmax){
-    if(Math.abs(compare_minmax - current_minmax)/current_minmax < 0.1){
+    if(Math.abs(compare_minmax - current_minmax)/current_minmax < 0.2){
         return true;
     }else{
         return false;
@@ -161,6 +174,8 @@ function setMinMax(min,max){
 
     //add block series
     hchart.addSeries({
+        cropThreshold: Number.MAX_VALUE,
+        getExtremesFromAll: true,
         id: id.toString(),
         colorIndex: id,
         //boostThreshold: 1,
@@ -206,6 +221,8 @@ function addScatterPlot(id,coin,datatype,x,y,start,end, min, max){
      )
 
     hchart.addSeries({
+        cropThreshold: Number.MAX_VALUE,
+        getExtremesFromAll: true,
         id : id.toString(),
         colorIndex: id,
         //boostThreshold: 1,
