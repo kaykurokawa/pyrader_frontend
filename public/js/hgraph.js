@@ -90,7 +90,6 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume,start,end, mi
     setMinMax(min,max)
     NormalizeAxis(id1, "Price")
     NormalizeAxis(id2, "Volume")
-
 }
 
 function NormalizeAxis(id, matcher){
@@ -340,21 +339,24 @@ var hchart = Highcharts.stockChart('hchart', {
             events: {
                 afterSetExtremes: function(event){
                     console.log("work")
+
                     document.querySelector('#share-link').onclick = function(e){
                         console.log("work")
                         let min_window = event.min*1000
                         let max_window = event.max*1000
-                        URL.setShareLink(URL.getURL() + "&min=" + min_window + "&max=" + max_window) 
+                        let url = URL.removeParameter("min", URL.getURL())
+                        url = URL.removeParameter("max", url)
+                        URL.setShareLink( url + "&min=" + min_window + "&max=" + max_window) 
                     }
 
                     document.querySelector('#share-block-link').onclick = function(e){
                         let min_window = event.min*1000;
                         let max_window = event.max*1000;
-                        URL.setShareLink(URL.getURL() + "&min=" + min_window + "&max=" + max_window); 
+                        let url = URL.removeParameter("min", URL.getURL())
+                        url = URL.removeParameter("max", url)
+                        URL.setShareLink(url + "&min=" + min_window + "&max=" + max_window); 
                     }    
                 }
-
-
             }
         },
         legend: {

@@ -48,6 +48,29 @@ function getParameterByName(name, url) {
         return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
 
+    function removeParameter(key, url) {
+        if (!url) url = window.location.href;
+    
+        var hashParts = url.split('#');
+    
+        var regex = new RegExp("([?&])" + key + "=.*?(&|#|$)", "i");
+    
+        if (hashParts[0].match(regex)) {
+            //REMOVE KEY AND VALUE
+            url = hashParts[0].replace(regex, '$1');
+    
+            //REMOVE TRAILING ? OR &
+            url = url.replace(/([?&])$/, '');
+    
+            //ADD HASH
+            if (typeof hashParts[1] !== 'undefined' && hashParts[1] !== null)
+                url += '#' + hashParts[1];
+        }
+    
+        return url;
+    }
+
+
  /*given a url from browser determine if it is a block or not*/
 function isBlockUrl(){
     if(window.location.href.includes("?block"))
@@ -104,5 +127,7 @@ module.exports = {changeURL : changeURL,
                 isPriceUrl : isPriceUrl,
                 removeModel : removeModel,
                 getParameterByName : getParameterByName,
-                setShareLink : setShareLink
+                setShareLink : setShareLink,
+                removeParameter : removeParameter
             }
+            
