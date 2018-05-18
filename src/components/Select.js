@@ -6,9 +6,6 @@ class Select extends React.Component{
     constructor(props){
         super(props);
         this.handlePriceChange = this.handlePriceChange.bind(this)
-        this.state = {
-            enabled: this.props.enabled
-        } 
     }
 
     handlePriceChange(prices, options,id,choice) {
@@ -16,24 +13,23 @@ class Select extends React.Component{
       }
 
     componentDidUpdate(){
-        
+
+        const nextKey = {"symbol" : "unit", "unit" : "exchange", "exchange" : "interval"}
         let id = this.props.id;
         let currentComponent = this;
         var current = currentComponent.props.prices
-        //1. enable drop
-        if(this.state.enabled === true){
-            enableDropdown(id);
+        let tag = document.querySelector("#" + id + "-react");
+        currentComponent = this;
+        if(this.props.enabled == true){
+            enableDropdown(id)
+        
         }else{
-            disableDropdown(id);
+            disableDropdown(id)
         }
 
-     
-        let tag = document.querySelector("#" + id + "-react");
-
-        currentComponent = this;
-        //2. filter prices array by current dropdwon
+        //1. filter prices array by current dropdwon
         tag.onchange = function(event){ 
-        //3. pass the state of x up to the dropdown component
+    
         let choice = document.getElementById(id + "-react").value;
 
             if(id === "symbol"){
@@ -45,30 +41,14 @@ class Select extends React.Component{
             }else{
 
             }
-        //4. set the dropdown to th    
-
-        //3. change the options
-        let nextid;
-        if(id === "symbol" ){
-            nextid = "unit"
-        }else if(id === "unit"){
-            nextid = "exchange"
-        }else if(id === "exchange"){
-            nextid = "interval"
-        }else{
-
-        };
-
-        let options = createOptions(current, nextid);          
+  
+        //2. create  select options from it
+        let options = createOptions(current, nextKey[id]);          
     
         //4. pass the state up to the container component for setState.
         currentComponent.handlePriceChange(current, options, id, choice);
         //5. set that dropdown to that value
             //see render method
-        //6. disable/enable dropdowns
-        currentComponent.setState({enabled : false});
-        disableDropdown(id);
-        enableDropdown(nextid);
 
         }
         
@@ -127,8 +107,9 @@ class Select extends React.Component{
         let select = document.getElementById(this.props.id + "-react")
         let id = this.props.id
         let firstOption = <option key={key_gen++}></option>;
-        //if the select is disabled, then the options should be just the state.whatever property
-        if(this.state.enabled === false){
+
+        //if the select is disabled, then the options should be just the selected choice
+        if(this.props.enabled === false){
             if(id === "symbol"){
                 optionItems = <option key={key_gen++}>{this.props.symbol}</option>;
             }else if(id === "unit"){
@@ -155,7 +136,7 @@ class Select extends React.Component{
                         <div className="col-xs-8"> 
                             <label id={this.props.id + "-label-react"}>{this.props.label}</label>       
                             <select className="form-control" id = {this.props.id + "-react"}>
-                                {this.state.enabled ? firstOption : "" }
+                                {this.props.enabled ? firstOption : "" }
                                 {optionItems}
                             </select>
                     </div>

@@ -20,13 +20,12 @@
         let p_unit = '&unit=' + unit;
         let p_symbol = 'symbol=' + symbol;
         let parameter = constants.REST_URL + '/price?' + p_symbol + p_unit + p_exchange + p_interval;
-        if(View.MODELS.length == 0) seriesID = 1  
+        if(View.MODELS.length == 0) seriesID = 1;
         let id1 = seriesID++;
         let id2 = seriesID++;
-        let type = "price"
+        let type = "price";
         let url_model = new View.UrlParam(id1, id2, type, symbol, unit, datatype, exchange, interval, 0, 0);
         View.MODELS.push(url_model);
-        URL.changeURL();
         View.CheckPropTypes();
         return [parameter, id1, id2, symbol, unit, exchange, interval];
     }
@@ -182,6 +181,14 @@
             if (response.status !== 200) {
                 console.error('Looks like there was a problem. Status Code: ' + response.status);
                 Table.displayError();
+                //delete is from the view.models
+                for(let i = 0 ; i < MODELS.length; i++){
+                    if(MODELS[i].id1 == id1){
+                        MODELS.splice(i,1);
+                    }
+                }
+                //then change the url
+                URL.changeURL();
                 return false;
                 }
                 response.json().then(function(data) {
@@ -199,6 +206,7 @@
                     //let last_date = x[x.length-1];
                     let first_date = x[0];
                     let last_date = x[x.length-1];
+                    URL.changeURL();
                      //Here you will pass data to whatever Graphing library asynchronosly
                     Table.addPriceTable(id1,id2,coin_data,unit_data,last_price,last_volume,first_date, last_date, interval, exchange);
                     High.addPriceVolumeGraph(id1,id2,coin_data,unit_data,x,y_prices,y_volume, first_date, last_date);
@@ -230,6 +238,14 @@
             console.log('Looks like there was a problem. Status Code: ' +
                 response.status);
                 Table.displayError();
+                //delete is from the view.models
+                for(let i = 0 ; i < MODELS.length; i++){
+                    if(MODELS[i].id1 == id1){
+                        MODELS.splice(i,1);
+                    }
+                }
+                //then change the url
+                URL.changeURL();
                 return;
                 }
                 response.json().then(function(data) {
@@ -258,6 +274,7 @@
                         High.addBlockGraph(id,coin_data,datatype_data,x,y, first_date, last_date);
                         Table.addBlockTable(id,coin_data,datatype_data,last_datatype,first_date, last_date, interval, exchange);
                     }
+                    URL.changeURL();
                 });
                 }
             )
