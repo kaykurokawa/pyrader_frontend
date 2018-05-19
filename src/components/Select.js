@@ -1,25 +1,36 @@
 import React from 'react';
+import Dropdowns from './Dropdowns.js';
 import { MICRO } from './constants';
 var key_gen = 0;
 
 class Select extends React.Component{
     constructor(props){
         super(props);
-        this.handlePriceChange = this.handlePriceChange.bind(this)
+        this.handlePriceChange = this.handlePriceChange.bind(this);
+        this.handleReset = this.handleReset.bind(this);
+        this.handlePriceOrBlock = this.handlePriceOrBlock.bind(this);
+    }
+    
+    handlePriceOrBlock(bool){
+        this.props.onPriceMode(bool);
     }
 
     handlePriceChange(prices, options,id,choice) {
         this.props.onPriceChange(prices, options,id,choice);
-      }
+    }
+  
+    handleReset(bool){
+        this.props.onReset(bool);
+    }
 
     componentDidUpdate(){
-
         const nextKey = {"symbol" : "unit", "unit" : "exchange", "exchange" : "interval"}
         let id = this.props.id;
         let currentComponent = this;
         var current = currentComponent.props.prices
         let tag = document.querySelector("#" + id + "-react");
         currentComponent = this;
+
         if(this.props.enabled == true){
             enableDropdown(id)
         
@@ -27,31 +38,41 @@ class Select extends React.Component{
             disableDropdown(id)
         }
 
+        if(id !== "price-or-block"){
         //1. filter prices array by current dropdwon
-        tag.onchange = function(event){ 
-    
-        let choice = document.getElementById(id + "-react").value;
+            tag.onchange = function(event){ 
+                
+                let choice = document.getElementById(id + "-react").value;
+                if(id === "symbol"){
+                    current = current.filter(line => line.symbol.includes(choice));
+                }else if(id === "unit"){
+                    current = current.filter(line => line.unit.includes(choice));
+                }else if(id === "exchange"){
+                    current = current.filter(line => line.exchange.includes(choice));
+                }else{
 
-            if(id === "symbol"){
-                current = current.filter(line => line.symbol.includes(choice));
-            }else if(id === "unit"){
-                current = current.filter(line => line.unit.includes(choice));
-            }else if(id === "exchange"){
-                current = current.filter(line => line.exchange.includes(choice));
-            }else{
-
-            }
-  
-        //2. create  select options from it
-        let options = createOptions(current, nextKey[id]);          
-    
-        //4. pass the state up to the container component for setState.
-        currentComponent.handlePriceChange(current, options, id, choice);
-        //5. set that dropdown to that value
-            //see render method
-
+                }
+                //2. create  select options from it
+                let options = createOptions(current,nextKey[id]);
+                //3. pass the state up to the container component for setState.
+                currentComponent.handlePriceChange(current, options, id, choice);
+                //4. set that dropdown to that value
+                //see render method
+                currentComponent.handleReset(false)
+            }   
         }
         
+        if(id === "price-or-block"){
+            tag.onchange = function(event){
+                let choice = document.getElementById(id + "-react").value;
+                if(choice === "Price"){
+                    currentComponent.handlePriceOrBlock(true);
+                }else{
+                    currentComponent.handlePriceOrBlock(false);
+                }
+            }
+        }
+
         function enableDropdown(select){
             let select_label = select + "-label-react"
             let arrow_label = select + "-arrow-react"
@@ -70,7 +91,19 @@ class Select extends React.Component{
             document.getElementById(select + "-react").disabled = true
             document.getElementById(select_label).style.color = "silver"
             document.getElementById(x_label).classList.remove("glyphicon", "glyphicon-remove");
-        }   
+        }
+
+
+        function convertIntervalNumberToText(interval){
+            if(interval/MICRO === 86400)
+                return "day"
+            if(interval/MICRO === 3600)
+                return "hour"
+            if(interval/MICRO === 300)
+                return "5min"
+            if(interval === 0)
+                return "No Averaging"   
+        };
 
         function createOptions(info, id){
             var info_array = [];
@@ -89,17 +122,10 @@ class Select extends React.Component{
             return info_array;
         };
 
-        function convertIntervalNumberToText(interval){
-            if(interval/MICRO === 86400)
-                return "day"
-            if(interval/MICRO === 3600)
-                return "hour"
-            if(interval/MICRO === 300)
-                return "5min"
-             if(interval === 0)
-                return "No Averaging"   
-        }
     }
+
+
+
     
     render(){
         
@@ -136,7 +162,7 @@ class Select extends React.Component{
                         <div className="col-xs-8"> 
                             <label id={this.props.id + "-label-react"}>{this.props.label}</label>       
                             <select className="form-control" id = {this.props.id + "-react"}>
-                                {this.props.enabled ? firstOption : "" }
+                                {this.props.enabled || this.props.reset ? firstOption : "" }
                                 {optionItems}
                             </select>
                     </div>
