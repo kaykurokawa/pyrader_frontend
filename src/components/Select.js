@@ -9,6 +9,7 @@ class Select extends React.Component{
         this.handlePriceChange = this.handlePriceChange.bind(this);
         this.handleReset = this.handleReset.bind(this);
         this.handlePriceOrBlock = this.handlePriceOrBlock.bind(this);
+        this.handlePriceCancel = this.handlePriceCancel.bind(this);
     }
     
     handlePriceOrBlock(bool){
@@ -23,8 +24,15 @@ class Select extends React.Component{
         this.props.onReset(bool);
     }
 
+    handlePriceCancel(id,current, options){
+        this.props.onPriceCancel(id, current, options);
+    }
+
     componentDidUpdate(){
-        const nextKey = {"symbol" : "unit", "unit" : "exchange", "exchange" : "interval"}
+        const nextKey = {"symbol" : "unit", "unit" : "exchange", "exchange" : "interval", 
+            "block-symbol" : "block-datatype", "block-datatype" : "block-interval"}
+        const prevKey= {"symbol" : "price-or-block" , "unit" : "symbol", "exchange" : "unit", "interval" : "exchange",
+            "block-symbol" : "price-or-block", "block-datatype" : "block-symbol", "block-interval" : "block-datatype"}
         let id = this.props.id;
         let currentComponent = this;
         var current = currentComponent.props.prices
@@ -72,6 +80,14 @@ class Select extends React.Component{
                 }
             }
         }
+    
+        /*let cancel = document.querySelector("#" + id + "-x-react");                
+        cancel.onclick = function(event){
+            let options = createOptions(current,id);
+            currentComponent.handlePriceCancel(id, current, options);
+            enableDropdown(prevKey[id]);
+            disableDropdown(id);
+        }*/
 
         function enableDropdown(select){
             let select_label = select + "-label-react"
@@ -114,6 +130,9 @@ class Select extends React.Component{
                 if(id === "unit"){text = info[i].unit;}
                 if(id === "exchange"){text = info[i].exchange;}
                 if(id === "interval"){text = convertIntervalNumberToText(info[i].interval);}
+                if(id === "block-symbol"){text = info[i].coin;}
+                if(id === "block-datatype"){text = info[i].datatype;}
+                if(id === "block-interval"){text = convertIntervalNumberToText(info[i].interval);}
                 if(!info_array.includes(text)){
                     info_array.push(text);
                 }
@@ -144,6 +163,8 @@ class Select extends React.Component{
                 optionItems = <option key={key_gen++}>{this.props.exchange}</option>;
             }else if(id === "interval"){
                 optionItems = <option key={key_gen++}>{this.props.interval}</option>;
+            }else if(id === "price-or-block"){ 
+                optionItems = <option key={key_gen++}>{this.props.priceMode ? "Price" : "Block"}</option>;    
             }else{
                 optionItems = <option key={key_gen++}></option>;
             }
