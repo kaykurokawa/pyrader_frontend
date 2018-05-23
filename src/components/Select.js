@@ -1,6 +1,6 @@
 import React from 'react';
-import Dropdowns from './Dropdowns.js';
 import { MICRO } from './constants';
+import PropTypes from 'prop-types'
 var key_gen = 0;
 
 class Select extends React.Component{
@@ -10,6 +10,7 @@ class Select extends React.Component{
         this.handleReset = this.handleReset.bind(this);
         this.handlePriceOrBlock = this.handlePriceOrBlock.bind(this);
         this.handlePriceCancel = this.handlePriceCancel.bind(this);
+        this.handleBlockChange = this.handleBlockChange.bind(this);
     }
     
     handlePriceOrBlock(bool){
@@ -20,6 +21,10 @@ class Select extends React.Component{
         this.props.onPriceChange(prices, options,id,choice);
     }
   
+    handleBlockChange(blocks, options, id, value){
+        this.props.onBlockChange(blocks, options, id, value);
+    }
+
     handleReset(bool){
         this.props.onReset(bool);
     }
@@ -36,12 +41,12 @@ class Select extends React.Component{
         let id = this.props.id;
         let currentComponent = this;
         var current = currentComponent.props.prices
+        var current_block = currentComponent.props.blocks
+        console.log(current_block)
         let tag = document.querySelector("#" + id + "-react");
-        currentComponent = this;
 
-        if(this.props.enabled == true){
+        if(this.props.enabled === true){
             enableDropdown(id)
-        
         }else{
             disableDropdown(id)
         }
@@ -49,23 +54,30 @@ class Select extends React.Component{
         if(id !== "price-or-block"){
         //1. filter prices array by current dropdwon
             tag.onchange = function(event){ 
-                
-                let choice = document.getElementById(id + "-react").value;
+                var choice = document.getElementById(id + "-react").value;
+                console.log(choice)
+                console.log(current_block)
                 if(id === "symbol"){
                     current = current.filter(line => line.symbol.includes(choice));
                 }else if(id === "unit"){
                     current = current.filter(line => line.unit.includes(choice));
                 }else if(id === "exchange"){
                     current = current.filter(line => line.exchange.includes(choice));
-                }else{
-
+                }else if(id === "block-symbol"){
+                    current_block = current_block.filter(line => line.coin.includes(choice));
+                }else if(id === "block-datatype"){ 
+                    current_block = current_block.filter(line => line.datatype.includes(choice));
                 }
-                //2. create  select options from it
-                let options = createOptions(current,nextKey[id]);
-                //3. pass the state up to the container component for setState.
-                currentComponent.handlePriceChange(current, options, id, choice);
-                //4. set that dropdown to that value
-                //see render method
+                if(!id.includes("block")){
+                    let options = createOptions(current,nextKey[id]);
+                    currentComponent.handlePriceChange(current, options, id, choice);
+                }else{
+                    console.log(current_block)
+                    console.log(nextKey[id])
+                    let block_options = createOptions(current_block, nextKey[id]);
+                    console.log(block_options)
+                    currentComponent.handleBlockChange(current_block, block_options, id, choice);
+                }
                 currentComponent.handleReset(false)
             }   
         }
@@ -124,14 +136,19 @@ class Select extends React.Component{
         function createOptions(info, id){
             var info_array = [];
             let text;
+            console.log(info)
             for(var i = 0 ; i < info.length ; i++){
                 if(id === "first"){text = info[i].first}
                 if(id === "symbol"){text = info[i].symbol;}
                 if(id === "unit"){text = info[i].unit;}
                 if(id === "exchange"){text = info[i].exchange;}
                 if(id === "interval"){text = convertIntervalNumberToText(info[i].interval);}
-                if(id === "block-symbol"){text = info[i].coin;}
-                if(id === "block-datatype"){text = info[i].datatype;}
+                if(id === "block-symbol"){
+                    text = info[i].coin;
+                }
+                if(id === "block-datatype"){
+                    text = info[i].datatype; 
+                    console.log(text)}
                 if(id === "block-interval"){text = convertIntervalNumberToText(info[i].interval);}
                 if(!info_array.includes(text)){
                     info_array.push(text);
@@ -140,12 +157,10 @@ class Select extends React.Component{
             info_array.sort();
             return info_array;
         };
+        
 
     }
 
-
-
-    
     render(){
         
         let optionItems;
@@ -164,10 +179,16 @@ class Select extends React.Component{
             }else if(id === "interval"){
                 optionItems = <option key={key_gen++}>{this.props.interval}</option>;
             }else if(id === "price-or-block"){ 
-                optionItems = <option key={key_gen++}>{this.props.priceMode ? "Price" : "Block"}</option>;    
-            }else{
-                optionItems = <option key={key_gen++}></option>;
+                optionItems = <option key={key_gen++}>{this.props.priceMode ? "Price" : "Block"}</option>; 
+            }else if(id === "block-symbol"){
+                console.log(this.props.block_symbol)
+                optionItems = <option key={key_gen++}>{this.props.block_symbol}</option>;
+            }else if(id === "block-datatype"){
+                optionItems = <option key={key_gen++}>{this.props.block_datatype}</option>;
+            }else if(id === "block-interval"){
+                optionItems = <option key={key_gen++}>{this.props.block_interval}</option>;
             }
+
         }else{
             //if select is enabled then the options should be a map of the options
             optionItems = this.props.options.map((item) =>
@@ -192,5 +213,21 @@ class Select extends React.Component{
         )
     }
 }
+
+Select.propTypes = {
+    symbol : PropTypes.string,
+    unit : PropTypes.string,
+    exchange : PropTypes.string,
+    interval : PropTypes.string,
+    block_symbol :  PropTypes.string,
+    block_datatype :  PropTypes.string,
+    block_interval :  PropTypes.string,
+    id :  PropTypes.string,
+    enabled :  PropTypes.bool,
+    
+    priceMode : PropTypes.bool,
+
+
+};
 
 export default Select;
