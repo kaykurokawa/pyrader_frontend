@@ -157,7 +157,6 @@ function addScatterPlot(id,coin,datatype,x,y){
 }
 
 //generate the Highcharts
-console.log("here is it")
 hchart = Highcharts.stockChart('hchart', {
     
     rangeSelector: {
@@ -216,9 +215,6 @@ hchart = Highcharts.stockChart('hchart', {
                     $('body').addClass('rendering-done');
                 },*/
                 afterSetExtremes: function(event){
-                    console.log("workin!")
-                    console.log(new Date(event.min));
-                    console.log(new Date(event.max));
                 }
             },
             animation: false
@@ -241,9 +237,6 @@ hchart = Highcharts.stockChart('hchart', {
             },
             events: {
                 setExtremes: function(event){
-                    console.log("workin!")
-                    console.log(new Date(event.min));
-                    console.log(new Date(event.max));
                 }
             }
         },

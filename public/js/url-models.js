@@ -16,7 +16,6 @@
 
     /*Check the property types of the models just as a sanity check that you are making models with right inputs*/
     function CheckPropTypes(){
-        console.log(MODELS)
         for(let i = 0 ; i < MODELS.length ; i++){
             
             if(typeof MODELS[i].id1 != "number"){

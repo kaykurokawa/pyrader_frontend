@@ -284,7 +284,7 @@
 
                 });
     }
-
+        /*get the min and max queries from a url (timestamps)*/
         function getMinMax(url){
             let min = getParameterByName("min", url)
             let max = getParameterByName("max", url)  
@@ -332,13 +332,11 @@
                     let x = processDates(all[i],interval_i);
                     let y_prices = processPrices(all[i],unit);
                     let y_volume = processVolume(all[i],unit);
-
+                    console.log(y_prices)
                     let coin_data = all[i].symbol;
                     let unit_data = all[i].unit;
                     let last_price = y_prices[y_prices.length-1];
                     let last_volume = y_volume[y_volume.length-1];
-                    //let first_date = x[0];
-                    //let last_date = x[x.length-1];
                     let first_date = !start ? x[0] : start
                     let last_date = !end ? x[x.length-1] : end
                     validateTimeStamps(symbol, first_date, last_date)
@@ -441,22 +439,23 @@
     /*given a json with prices, and units in string, eliminate zeros, convert the prices to those units and return an array of prices*/
     function processPrices(json,unit){
         for(i = 0 ; i < json.y.length ; i++){
-            if(json.y[i] == 0){
-                json.y[i] = json.y[i-1];
-            }else if(json.y[i] == 0 && i == 0){
+            if(json.y[i] === 0 && i === 0){
                 j = 0;
-                while(json.y[j] == 0){j++ }
+                while(json.y[j] === 0){j++ }
                 json.y[0] = json.y[j];
+            }else if(json.y[i] === 0){
+                json.y[i] = json.y[i-1];
             }else{
                 continue;
             }
         }
+
         pricesArray = [];
         /*if you divide your data by the conversion and it is less than 1 (ie. Comparing DOGE to units of BTC) give me 8 decimals*/
         if(json.y[0]/constants.conversions[unit] < 1){
-            json.y = json.y.map(function(units){return round(units/constants.conversions[unit],8)});
+            json.y = json.y.map(units => {return round(units/constants.conversions[unit],8)});
         }else{
-            json.y = json.y.map(function(units){return round(units/constants.conversions[unit],2)});
+            json.y = json.y.map(units => {return round(units/constants.conversions[unit],2)});
         }
         return json.y;
         }
@@ -465,7 +464,7 @@
     function processVolume(json,unit){
         json.w = json.w.map(function(vol){return round(vol/constants.conversions[unit],2)});
         return json.w;
-        }
+    }
      /*given a json block data for a line graph, 
      if the graph is majority 0's then graph as is. 
      if the graph has zeros/falsy/NaN  holes then

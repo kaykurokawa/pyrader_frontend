@@ -224,7 +224,6 @@ Select.propTypes = {
     block_interval :  PropTypes.string,
     id :  PropTypes.string,
     enabled :  PropTypes.bool,
-    
     priceMode : PropTypes.bool,
 
 

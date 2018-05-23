@@ -95,7 +95,6 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume,start,end, mi
 function NormalizeAxis(id, matcher){
     let hchart = $('#hchart').highcharts();
     var current= hchart.get(id.toString() + "-axis")
-    console.log(hchart.yAxis)
     if(id > 1){ 
         for(let i = 1 ; i < hchart.yAxis.length ; i++){
             iterating_axis = hchart.get(i.toString() + "-axis")
@@ -103,21 +102,15 @@ function NormalizeAxis(id, matcher){
                 continue;
             }
     
-            if(nearTwentyPercent((iterating_axis.dataMax, current.dataMax) || nearTwentyPercent(iterating_axis.dataMin, current.dataMin)) && iterating_axis.userOptions.title.text.includes(matcher)){
-                console.log("merging!")        
+            if((nearTwentyPercent(iterating_axis.dataMax, current.dataMax) || nearTwentyPercent(iterating_axis.dataMin, current.dataMin)) 
+                && iterating_axis.userOptions.title.text.includes(matcher)){    
                 //add property LinkTo to the your axis.
                 curr_min = current.dataMin
                 curr_max = current.dataMax
                 itr_min = iterating_axis.dataMin
                 itr_max = iterating_axis.dataMax
-                console.log(curr_min)
-                console.log(curr_max)
-                console.log(itr_min)
-                console.log(itr_max)
                 let min = (curr_min < itr_min ? curr_min : itr_min) 
                 let max = (curr_max > itr_min ? curr_max : itr_max)
-                console.log(min)
-                console.log(max)
                 iterating_axis.setExtremes(min, max)
                 current.update({linkedTo : i})
             }
@@ -126,7 +119,7 @@ function NormalizeAxis(id, matcher){
 }
 
 function nearTwentyPercent(compare_minmax, current_minmax){
-    if(Math.abs(compare_minmax - current_minmax)/current_minmax < 0.2){
+    if((Math.abs(compare_minmax - current_minmax)/current_minmax) <= 0.2){
         return true;
     }else{
         return false;
@@ -338,10 +331,8 @@ var hchart = Highcharts.stockChart('hchart', {
             },
             events: {
                 afterSetExtremes: function(event){
-                    console.log("work")
 
                     document.querySelector('#share-link').onclick = function(e){
-                        console.log("work")
                         let min_window = event.min*1000
                         let max_window = event.max*1000
                         let url = URL.removeParameter("min", URL.getURL())
