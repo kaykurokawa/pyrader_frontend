@@ -34,8 +34,37 @@ const createDevServerConfig = require('../config/webpackDevServer.config');
 const useYarn = fs.existsSync(paths.yarnLockFile);
 const isInteractive = process.stdout.isTTY;
 
-const express = require('express');
-const app = express();
+const constants = require('../public/js/constants')
+const fetch = require('node-fetch')
+
+//Fetch the info, then take in command line arguments to filter by type of coin
+let url= constants.REST_URL + "/info";
+fetch(url).then(response => {response.json().then( data => {
+        let args = process.argv
+        if(args[2]){
+          let coin = args[2]
+            //get only rows with XMR
+            let info_json = {price : [], block : []}
+            info_json.price = data.price.filter(row => {return row.symbol.includes(coin)})
+            info_json.block = data.block.filter(row => {return row.coin.includes(coin)})
+            let json = "const info_json = " + JSON.stringify(info_json) + "\n module.exports.info_json = info_json" 
+            fs.writeFile("./public/js/info_data.js", json, function(err) {
+                if(err) {
+                    return console.log(err);
+                } 
+                console.log("Information was loaded and saved in info_data.js");
+            }); 
+        }else{
+            let json = "const info_json = " + JSON.stringify(data) + "\n module.exports.info_json = info_json" 
+            fs.writeFile("./public/js/info_data.js", json, function(err) {
+                if(err) {
+                    return console.log(err);
+                } 
+                console.log("Information was loaded and saved in info_data.js");
+            }); 
+        }
+    });
+})
 
 // Warn and crash if required files are missing
 if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {

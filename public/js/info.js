@@ -1,46 +1,61 @@
 const constants = require('./constants.js')
-
+const Info = require('./info_data.js')
+const Url= require('./url.js')
 //Call Info API and pass information to dropdowns
 
         function getInfo(){
-            url= constants.REST_URL + "/info"
-             fetch(url)
-             .then(
-             response => {
-                 if (response.status !== 200) {
-                 console.log('Looks like there was a problem. Status Code: ' +
-                     response.status);
-                     return;
-                     }
-                     response.json().then( data => {
-                        resetDropdown("first");
-                        setInitialFirst("first");
-                        enableDropdown("first");
-                        disableDropdown("symbol");
-                        disableDropdown("unit");
-                        disableDropdown("exchange");
-                        disableDropdown("interval");
-                        var first = document.querySelector("#first")
-                        first.onchange = event => {
-                            disableDropdown("first");
-                            var choice = document.getElementById("first").value
-                            if(choice == "Block"){
-                                renderBlockDropDowns();
-                                processBlockInfo(data.block)
-                            }
-                            if(choice == "Price/Volume"){
-                                renderPriceDropDowns();
-                                processInfo(data.price);
-                            }
-                        }
-                     });
-                     }
-                 )
-                     .catch( err => {
-                         console.log('Fetch Error :-S', err);
-                     });
-         }
+            resetDropdown("first");
+            setInitialFirst("first");
+            enableDropdown("first");
+            disableDropdown("symbol");
+            disableDropdown("unit");
+            disableDropdown("exchange");
+            disableDropdown("interval");
+            let info_json = [];
+            if(isFilter()){
+                let coin = isFilter();
+                info_json = mutateInfo(coin);
+            }else{
+                 info_json = Info.info_json;
+            }
 
+            var first = document.querySelector("#first")
+            first.onchange = event => {
+                disableDropdown("first");
+                var choice = document.getElementById("first").value
+                    if(choice == "Block"){
+                        renderBlockDropDowns();
+                        processBlockInfo(info_json.block);               
+                
+                    }
+                    if(choice == "Price/Volume"){
+                        renderPriceDropDowns();
+                        processInfo(info_json.price);                           
+                    }
+                }
+            }
+        /*checks if the browser url has a /&filter parameter, if it does return the type of coin else return null*/    
+        function isFilter(){
+            let url = Url.getURL();
+            let coin = Url.getParameterByName("filter", url);
+            return coin;
+            //what if the user puts in garbage??
+        }
+        /* given the info_data.js file filter it's content to only show coins of the argument passed in*/
+        function mutateInfo(coin){
+            coin = coin.split("/")
+            let info_json = { price : [], block : []}
+            let info_price_arr = [];
+            let info_block_arr = [];
+            for(i = 0 ; i < coin.length ; i++){
+                info_price_arr.push(Info.info_json.price.filter(row => {return row.symbol.includes(coin[i])}))
+                info_block_arr.push(Info.info_json.block.filter(row => {return row.coin.includes(coin[i])}))
+            }
+            info_json.price = info_price_arr.reduce((acc, val) => acc.concat(val), []);
+            info_json.block = info_block_arr.reduce((acc, val) => acc.concat(val), []);
+           
+            return info_json          
+        }
          /*sets default for the first dropdown*/
          function setInitialFirst(id){
             let price_volume = document.createElement("option");

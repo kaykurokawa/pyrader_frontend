@@ -4,7 +4,8 @@
   "description": "Frontend for pyradar API",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "start": "npm run client",
+    "load" : "node scripts/load.js",
     "client": "node scripts/start.js",
     "server": "node scripts/server.js",
     "build": "node scripts/build.js",
