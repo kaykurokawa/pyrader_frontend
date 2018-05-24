@@ -36,8 +36,8 @@ class Select extends React.Component{
     componentDidUpdate(){
         const nextKey = {"symbol" : "unit", "unit" : "exchange", "exchange" : "interval", 
             "block-symbol" : "block-datatype", "block-datatype" : "block-interval"}
-        const prevKey= {"symbol" : "price-or-block" , "unit" : "symbol", "exchange" : "unit", "interval" : "exchange",
-            "block-symbol" : "price-or-block", "block-datatype" : "block-symbol", "block-interval" : "block-datatype"}
+        //const prevKey= {"symbol" : "price-or-block" , "unit" : "symbol", "exchange" : "unit", "interval" : "exchange",
+         //   "block-symbol" : "price-or-block", "block-datatype" : "block-symbol", "block-interval" : "block-datatype"}
         let id = this.props.id;
         let currentComponent = this;
         var current = currentComponent.props.prices

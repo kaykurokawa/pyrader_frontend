@@ -332,7 +332,6 @@
                     let x = processDates(all[i],interval_i);
                     let y_prices = processPrices(all[i],unit);
                     let y_volume = processVolume(all[i],unit);
-                    console.log(y_prices)
                     let coin_data = all[i].symbol;
                     let unit_data = all[i].unit;
                     let last_price = y_prices[y_prices.length-1];

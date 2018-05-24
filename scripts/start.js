@@ -34,13 +34,16 @@ const createDevServerConfig = require('../config/webpackDevServer.config');
 const useYarn = fs.existsSync(paths.yarnLockFile);
 const isInteractive = process.stdout.isTTY;
 
+const express = require('express');
+const app = express();
+
 // Warn and crash if required files are missing
 if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
   process.exit(1);
 }
 
 // Tools like Cloud9 rely on this.
-const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 80;
+const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 80; //modify this to set port
 const HOST = process.env.HOST || '0.0.0.0';
 
 if (process.env.HOST) {
@@ -88,8 +91,10 @@ choosePort(HOST, DEFAULT_PORT)
       if (isInteractive) {
         clearConsole();
       }
+      
       console.log(chalk.cyan('Starting the development server...\n'));
       openBrowser(urls.localUrlForBrowser);
+    
     });
 
     ['SIGINT', 'SIGTERM'].forEach(function(sig) {
@@ -105,3 +110,4 @@ choosePort(HOST, DEFAULT_PORT)
     }
     process.exit(1);
   });
+

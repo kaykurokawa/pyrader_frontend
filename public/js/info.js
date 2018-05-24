@@ -6,13 +6,13 @@ const constants = require('./constants.js')
             url= constants.REST_URL + "/info"
              fetch(url)
              .then(
-             function(response) {
+             response => {
                  if (response.status !== 200) {
                  console.log('Looks like there was a problem. Status Code: ' +
                      response.status);
                      return;
                      }
-                     response.json().then(function(data) {
+                     response.json().then( data => {
                         resetDropdown("first");
                         setInitialFirst("first");
                         enableDropdown("first");
@@ -21,7 +21,7 @@ const constants = require('./constants.js')
                         disableDropdown("exchange");
                         disableDropdown("interval");
                         var first = document.querySelector("#first")
-                        first.onchange = function(event){
+                        first.onchange = event => {
                             disableDropdown("first");
                             var choice = document.getElementById("first").value
                             if(choice == "Block"){
@@ -36,7 +36,7 @@ const constants = require('./constants.js')
                      });
                      }
                  )
-                     .catch(function(err) {
+                     .catch( err => {
                          console.log('Fetch Error :-S', err);
                      });
          }
