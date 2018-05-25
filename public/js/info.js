@@ -12,9 +12,9 @@ const Url= require('./url.js')
             disableDropdown("exchange");
             disableDropdown("interval");
             let info_json = [];
-            if(isFilter()){
-                let coin = isFilter();
-                info_json = mutateInfo(coin);
+            let filt_coin = isFilter();
+            if(filt_coin){ 
+                info_json = mutateInfo(filt_coin);
             }else{
                  info_json = Info.info_json;
             }
@@ -34,16 +34,38 @@ const Url= require('./url.js')
                     }
                 }
             }
-        /*checks if the browser url has a /&filter parameter, if it does return the type of coin else return null*/    
+        /*checks if the browser url has a /?filter= parameter, if it does return the type of coin else return null*/    
         function isFilter(){
+            let all_symbols = []
+            for(let i = 0 ; i < Info.info_json.price.length ; i++){
+                line = Info.info_json.price[i].symbol
+                if(!all_symbols.includes(line)){
+                    all_symbols.push(line);
+                }
+            }
+            for(let i = 0 ; i < Info.info_json.block.length ; i++){
+                line = Info.info_json.block[i].coin
+                if(!all_symbols.includes(line)){
+                    all_symbols.push(line);
+                }
+            }
             let url = Url.getURL();
-            let coin = Url.getParameterByName("filter", url);
-            return coin;
-            //what if the user puts in garbage??
+            let filt_coins = Url.getParameterByName("filter", url);
+            if(filt_coins != null){
+                filt_coins = filt_coins.split("/")
+                for(let i = 0 ; i < filt_coins.length ; i++){
+                    if(!all_symbols.includes(filt_coins[i])){
+                        return null
+                    }
+                }
+                return filt_coins
+            }else{
+                return null
+            }
         }
+        
         /* given the info_data.js file filter it's content to only show coins of the argument passed in*/
         function mutateInfo(coin){
-            coin = coin.split("/")
             let info_json = { price : [], block : []}
             let info_price_arr = [];
             let info_block_arr = [];

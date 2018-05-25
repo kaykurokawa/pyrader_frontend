@@ -5,7 +5,7 @@ class App extends React.Component{
     render() {
         return (
             <div>
-                <p> this is written in React.js </p>
+                <p></p>
             </div>
         )
     }

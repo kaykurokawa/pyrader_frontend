@@ -41,28 +41,25 @@ const fetch = require('node-fetch')
 let url= constants.REST_URL + "/info";
 fetch(url).then(response => {response.json().then( data => {
         let args = process.argv
+        let info_json = {price : [], block : []}
         if(args[2]){
           let coin = args[2]
             //get only rows with XMR
-            let info_json = {price : [], block : []}
             info_json.price = data.price.filter(row => {return row.symbol.includes(coin)})
             info_json.block = data.block.filter(row => {return row.coin.includes(coin)})
-            let json = "const info_json = " + JSON.stringify(info_json) + "\n module.exports.info_json = info_json" 
-            fs.writeFile("./public/js/info_data.js", json, function(err) {
-                if(err) {
-                    return console.log(err);
-                } 
-                console.log("Information was loaded and saved in info_data.js");
-            }); 
+             
         }else{
-            let json = "const info_json = " + JSON.stringify(data) + "\n module.exports.info_json = info_json" 
-            fs.writeFile("./public/js/info_data.js", json, function(err) {
-                if(err) {
-                    return console.log(err);
-                } 
-                console.log("Information was loaded and saved in info_data.js");
-            }); 
+            info_json = data
         }
+        info_json.price = data.price.filter(row => {return row.exchange !== "poloniex"})
+        info_json.block = data.block.filter(row => {return ((row.datatype !== "total_transfer_volume") && (row.datatype !== "total_transfer_volume_usd"))})
+        let json = "const info_json = " + JSON.stringify(info_json) + "\n module.exports.info_json = info_json"      
+        fs.writeFile("./public/js/info_data.js", json, function(err) {
+          if(err) {
+              return console.log(err);
+          } 
+          console.log("Information was loaded and saved in info_data.js");
+      }); 
     });
 })
 
