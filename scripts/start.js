@@ -59,7 +59,13 @@ fetch(url).then(response => {response.json().then( data => {
               return console.log(err);
           } 
           console.log("Information was loaded and saved in info_data.js");
-      }); 
+        });
+        fs.writeFile("./src/info_data.js", json, function(err) {
+          if(err) {
+              return console.log(err);
+          } 
+          console.log("Information was loaded and saved in info_data.js");
+        });  
     });
 })
 

@@ -5,4 +5,4 @@ import Dropdowns from './components/Dropdowns';
 
 /*The following is where your React components will go*/
 ReactDOM.render(<App />, document.getElementById('root'));
-//ReactDOM.render(<Dropdowns />, document.getElementById('dropdown'));
+ReactDOM.render(<Dropdowns />, document.getElementById('dropdown'));

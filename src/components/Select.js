@@ -42,7 +42,6 @@ class Select extends React.Component{
         let currentComponent = this;
         var current = currentComponent.props.prices
         var current_block = currentComponent.props.blocks
-        console.log(current_block)
         let tag = document.querySelector("#" + id + "-react");
 
         if(this.props.enabled === true){
@@ -55,8 +54,6 @@ class Select extends React.Component{
         //1. filter prices array by current dropdwon
             tag.onchange = function(event){ 
                 var choice = document.getElementById(id + "-react").value;
-                console.log(choice)
-                console.log(current_block)
                 if(id === "symbol"){
                     current = current.filter(line => line.symbol.includes(choice));
                 }else if(id === "unit"){
@@ -72,10 +69,7 @@ class Select extends React.Component{
                     let options = createOptions(current,nextKey[id]);
                     currentComponent.handlePriceChange(current, options, id, choice);
                 }else{
-                    console.log(current_block)
-                    console.log(nextKey[id])
                     let block_options = createOptions(current_block, nextKey[id]);
-                    console.log(block_options)
                     currentComponent.handleBlockChange(current_block, block_options, id, choice);
                 }
                 currentComponent.handleReset(false)
@@ -93,13 +87,9 @@ class Select extends React.Component{
             }
         }
     
-        /*let cancel = document.querySelector("#" + id + "-x-react");                
+        let cancel = document.querySelector("#" + id + "-x-react");                
         cancel.onclick = function(event){
-            let options = createOptions(current,id);
-            currentComponent.handlePriceCancel(id, current, options);
-            enableDropdown(prevKey[id]);
-            disableDropdown(id);
-        }*/
+        }
 
         function enableDropdown(select){
             let select_label = select + "-label-react"
@@ -136,7 +126,6 @@ class Select extends React.Component{
         function createOptions(info, id){
             var info_array = [];
             let text;
-            console.log(info)
             for(var i = 0 ; i < info.length ; i++){
                 if(id === "first"){text = info[i].first}
                 if(id === "symbol"){text = info[i].symbol;}
@@ -148,7 +137,7 @@ class Select extends React.Component{
                 }
                 if(id === "block-datatype"){
                     text = info[i].datatype; 
-                    console.log(text)}
+                }
                 if(id === "block-interval"){text = convertIntervalNumberToText(info[i].interval);}
                 if(!info_array.includes(text)){
                     info_array.push(text);
@@ -181,7 +170,6 @@ class Select extends React.Component{
             }else if(id === "price-or-block"){ 
                 optionItems = <option key={key_gen++}>{this.props.priceMode ? "Price" : "Block"}</option>; 
             }else if(id === "block-symbol"){
-                console.log(this.props.block_symbol)
                 optionItems = <option key={key_gen++}>{this.props.block_symbol}</option>;
             }else if(id === "block-datatype"){
                 optionItems = <option key={key_gen++}>{this.props.block_datatype}</option>;
