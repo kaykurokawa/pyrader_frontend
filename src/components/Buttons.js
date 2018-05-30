@@ -6,6 +6,7 @@ class Buttons extends React.Component{
 
         this.disableButton.bind(this)
         this.enableButton.bind(this)
+        this.handleCancel.bind(this)
     }
 
     disableButton(select){
@@ -29,9 +30,19 @@ class Buttons extends React.Component{
 
     }
 
-    componentDidUpdate(){
-        this.props.enabled ? this.enableButton("submit-react") : this.disableButton("submit-react")
+    handleCancel(){
+        console.log(this.props.priceMode)
+        this.props.priceMode === true ? this.props.onCancel("price") : this.props.onCancel("block")
     }
+
+    componentDidUpdate(){
+        let currentComp = this
+        this.props.enabled ? this.enableButton("submit-react") : this.disableButton("submit-react")
+        document.querySelector('#submit-react-x').onclick = () => {
+            currentComp.handleCancel()
+        }
+    }
+
 
     render(){
     

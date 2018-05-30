@@ -11,6 +11,7 @@ class Select extends React.Component{
         this.handlePriceOrBlock = this.handlePriceOrBlock.bind(this);
         this.handlePriceCancel = this.handlePriceCancel.bind(this);
         this.handleBlockChange = this.handleBlockChange.bind(this);
+        this.handleBlockCancel = this.handleBlockCancel.bind(this);
     }
     
     handlePriceOrBlock(bool){
@@ -29,8 +30,12 @@ class Select extends React.Component{
         this.props.onReset(bool);
     }
 
-    handlePriceCancel(id,current, options){
-        this.props.onPriceCancel(id, current, options);
+    handlePriceCancel(id){
+        this.props.onPriceCancel(id);
+    }
+
+    handleBlockCancel(id){
+        this.props.onBlockCancel(id);
     }
 
     componentDidUpdate(){
@@ -39,7 +44,7 @@ class Select extends React.Component{
         //const prevKey= {"symbol" : "price-or-block" , "unit" : "symbol", "exchange" : "unit", "interval" : "exchange",
          //   "block-symbol" : "price-or-block", "block-datatype" : "block-symbol", "block-interval" : "block-datatype"}
         let id = this.props.id;
-        let currentComponent = this;
+        var currentComponent = this;
         var current = currentComponent.props.prices
         var current_block = currentComponent.props.blocks
         let tag = document.querySelector("#" + id + "-react");
@@ -86,9 +91,18 @@ class Select extends React.Component{
                 }
             }
         }
-    
-        let cancel = document.querySelector("#" + id + "-x-react");                
-        cancel.onclick = function(event){
+        
+        if(this.props.id !== 'price-or-block'){
+            let cancel = document.querySelector("#" + id + "-x-react");                
+            cancel.onclick = function(event){
+                console.log("hi")
+                if(currentComponent.props.onPriceCancel){
+                    currentComponent.handlePriceCancel(id);
+                }
+                if(currentComponent.props.onBlockCancel){
+                    currentComponent.handleBlockCancel(id);
+                }
+            } 
         }
 
         function enableDropdown(select){
@@ -97,9 +111,11 @@ class Select extends React.Component{
             let x_label = select + "-x-react"
             document.getElementById(select + "-react").disabled = false
             document.getElementById(arrow_label).classList.add("glyphicon", "glyphicon-arrow-right");
-            document.getElementById(x_label).classList.add("glyphicon", "glyphicon-remove");
-            document.getElementById(select_label).style.color = "black"
-        }
+            if(currentComponent.props.id !== 'price-or-block'){
+                document.getElementById(x_label).classList.add("glyphicon", "glyphicon-remove");
+            }
+                document.getElementById(select_label).style.color = "black"
+            }
 
         function disableDropdown(select){
             let select_label = select + "-label-react"
@@ -108,7 +124,9 @@ class Select extends React.Component{
             document.getElementById(arrow_label).classList.remove("glyphicon", "glyphicon-arrow-right");
             document.getElementById(select + "-react").disabled = true
             document.getElementById(select_label).style.color = "silver"
-            document.getElementById(x_label).classList.remove("glyphicon", "glyphicon-remove");
+            if(currentComponent.props.id !== 'price-or-block'){
+                document.getElementById(x_label).classList.remove("glyphicon", "glyphicon-remove");
+            }
         }
 
 
@@ -179,15 +197,24 @@ class Select extends React.Component{
 
         }else{
             //if select is enabled then the options should be a map of the options
-            optionItems = this.props.options.map((item) =>
-            <option key={key_gen++}>{item}</option>);
+            if(this.props.options){
+                optionItems = this.props.options.map((item) =>
+                <option key={key_gen++}>{item}</option>);
+            }else if(this.props.block_options){
+                optionItems = this.props.block_options.map((item) =>
+                <option key={key_gen++}>{item}</option>);
+            }
         }
+
         return(
             <div className="col-xs-2" id={this.props.id + "-div-react"}>
                 <div className="row" >
                     <div className="col-xs-2 text-center">
+                        {this.props.id != 'price-or-block' ? 
+                            ( <span id={this.props.id + "-x-react"}></span>) : 
+                            (<span></span>)
+                            }
                         <span id={this.props.id + "-arrow-react"}></span>
-                        <span id={this.props.id + "-x-react"}></span>
                     </div>
                         <div className="col-xs-8"> 
                             <label id={this.props.id + "-label-react"}>{this.props.label}</label>       

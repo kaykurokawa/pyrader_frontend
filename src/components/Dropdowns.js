@@ -43,6 +43,8 @@ class Dropdowns extends React.Component{
         this.handlePriceMode = this.handlePriceMode.bind(this);
         this.handlePriceCancel = this.handlePriceCancel.bind(this);
         this.handleBlockChange = this.handleBlockChange.bind(this);
+        this.handleButtonCancel = this.handleButtonCancel.bind(this);
+        this.handleBlockCancel = this.handleBlockCancel.bind(this)
     }
 
     handlePriceChange(prices, options, key, value){
@@ -65,6 +67,29 @@ class Dropdowns extends React.Component{
         }        
     }
 
+    handleButtonCancel(id){
+        if(id == "price"){
+            console.log("that")
+            let current = this.state.prices
+            current.pop()
+            let prev = current
+            let options = this.state.options
+            options.pop()
+            let prev_op = options
+            this.setState({prices : prev, options : prev_op, symbol_enabled : false, unit_enabled : false, exchange_enabled : false,  interval_enabled : true, submit_enabled : false});
+        }
+        if(id == "block"){
+            let current = this.state.blocks
+            current.pop()
+            let prev = current
+            let options = this.state.block_options
+            options.pop()
+            let prev_op = options
+            this.setState({blocks : prev, block_options : prev_op, block_interval_enabled :true, submit_enabled : false});
+        }
+       
+    }
+
     handleBlockChange(blocks, options, id, value){
         let current = this.state.blocks
         current.push(blocks)
@@ -81,27 +106,47 @@ class Dropdowns extends React.Component{
         }
     }
 
-    handlePriceCancel(id, prices, options){
+    handlePriceCancel(id){
         let current = this.state.prices
         current.pop()
         let prev = current
 
-        options = this.state.options
+        let options = this.state.options
         options.pop()
         let prev_op = options
 
         if(id === "symbol"){ // this means you are done with the symbol select
-            this.setState({price_mode_enabled : true, symbol_enabled: false, prices : prev, options : prev_op});
+            this.setState({price_mode_enabled : true, symbol_enabled: false, symbol : "", prices : prev, options : prev_op});
 
         }else if(id === "unit"){
-            this.setState({symbol_enabled: true, unit_enabled : false, prices : prev, options : prev_op});
+            this.setState({symbol_enabled: true, unit_enabled : false, unit : "", prices : prev, options : prev_op});
   
         }else if(id === "exchange"){
-            this.setState({unit_enabled : true, exchange_enabled : false, prices : prev, options : prev_op});
+            this.setState({unit_enabled : true, exchange_enabled : false, exchange : "", prices : prev, options : prev_op});
 
         }else if(id === "interval"){
-            this.setState({exhcange_enabled : true, interval_enabled : false, prices : prev, options : prev_op});
+            this.setState({exchange_enabled : true, interval_enabled : false, interval : "", prices : prev, options : prev_op});
         }        
+    }
+
+    handleBlockCancel(id){
+        let current = this.state.blocks
+        current.pop()
+        let prev = current
+
+        let options = this.state.block_options
+        options.pop()
+        let prev_op = options
+
+        if(id === "block-symbol"){ // this means you are done with the symbol select
+            this.setState({price_mode_enabled : true, block_symbol_enabled: false, block_symbol : "", blocks : prev, block_options : prev_op});
+
+        }else if(id === "block-datatype"){
+            this.setState({block_symbol_enabled: true, block_datatype_enabled : false, block_datatype : "", blocks : prev, block_options : prev_op});
+  
+        }else if(id === "block-interval"){
+            this.setState({block_datatype_enabled : true, block_interval_enabled : false, block_interval : "", blocks : prev, block_options : prev_op});
+        }
     }
 
     handlePriceMode(bool){
@@ -142,7 +187,7 @@ class Dropdowns extends React.Component{
             var initial_prices;
             var initial_blocks
 
-            let currentComponent = this;
+            var currentComponent = this;
             let data = Info.info_json;
             prices = data.price;
             prices = eliminateNulls(prices)
@@ -228,7 +273,7 @@ class Dropdowns extends React.Component{
                     block_interval_enabled : false,
                     prices : [initial_prices],
                     blocks : [initial_blocks],
-                    symbol : "", //the following states we will keep track of the selection and if that select is enabled or not.  
+                    symbol : "", //the following states we will keep track of thpe selection and if that select is enabled or not.  
                     unit : "",  
                     exchange : "",
                     interval : "",
@@ -268,15 +313,15 @@ class Dropdowns extends React.Component{
             <div>
                 <Select enabled = {this.state.block_symbol_enabled} reset = {this.state.reset} block_symbol = {this.state.block_symbol[this.state.block_symbol.length-1] } 
                     blocks = {this.state.blocks[this.state.blocks.length-1]} options = {this.state.block_options[this.state.block_options.length-1]} id = "block-symbol" 
-                    label = "Symbols" onBlockChange = {this.handleBlockChange} onReset = {this.handleReset} onPriceMode = {this.handlePriceMode} />
+                    label = "Symbols" onBlockChange = {this.handleBlockChange} onReset = {this.handleReset} onPriceMode = {this.handlePriceMode} onBlockCancel = {this.handleBlockCancel}/>
 
                 <Select enabled = {this.state.block_datatype_enabled} reset = {this.state.reset} block_datatype = {this.state.block_datatype} 
                     blocks = {this.state.blocks[this.state.blocks.length-1]} options = {this.state.block_options[this.state.block_options.length-1]} id = "block-datatype" 
-                    label = "Datatype" onBlockChange = {this.handleBlockChange} onReset = {this.handleReset} onPriceMode = {this.handlePriceMode} />
+                    label = "Datatype" onBlockChange = {this.handleBlockChange} onReset = {this.handleReset} onPriceMode = {this.handlePriceMode} onBlockCancel = {this.handleBlockCancel} />
 
                 <Select enabled = {this.state.block_interval_enabled} reset = {this.state.reset} block_interval = {this.state.block_interval} 
                     blocks = {this.state.blocks[this.state.blocks.length-1]} options = {this.state.block_options[this.state.block_options.length-1]} id = "block-interval" 
-                    label = "Averaging" onBlockChange = {this.handleBlockChange} onReset = {this.handleReset} onPriceMode = {this.handlePriceMode} />
+                    label = "Averaging" onBlockChange = {this.handleBlockChange} onReset = {this.handleReset} onPriceMode = {this.handlePriceMode} onBlockCancel = {this.handleBlockCancel} />
             </div>
         }
 
@@ -284,7 +329,7 @@ class Dropdowns extends React.Component{
         <div>
             <Select enabled = {this.state.price_mode_enabled} options= {["Price", "Block"]} id = "price-or-block" label = "Price or Block" priceMode = {this.state.price_mode} onPriceMode = {this.handlePriceMode} />
             {selectRows}
-            <Buttons enabled = {this.state.submit_enabled}/>
+            <Buttons  enabled = {this.state.submit_enabled} onCancel = {this.handleButtonCancel} priceMode = {this.state.price_mode} />
         </div>
         )
     }
