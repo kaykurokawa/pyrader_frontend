@@ -37,10 +37,23 @@ class Buttons extends React.Component{
 
     componentDidUpdate(){
         let currentComp = this
-        this.props.enabled ? this.enableButton("submit-react") : this.disableButton("submit-react")
-        document.querySelector('#submit-react-x').onclick = () => {
-            currentComp.handleCancel()
+        if(this.props.priceMode){
+            this.props.enabled ? this.enableButton("submit") : this.disableButton("submit")
+            document.querySelector('#submit-x').onclick = () => {
+                currentComp.handleCancel()
+            }
+            document.getElementById("block-submit-buttons").style.display = "none"
+            document.getElementById("submit-buttons").style.display = "block"
+        }else{
+            this.props.enabled ? this.enableButton("block-submit") : this.disableButton("block-submit")
+            document.querySelector('#block-submit-x').onclick = () => {
+                currentComp.handleCancel()
+            }
+            document.getElementById("block-submit-buttons").style.display = "block"
+            document.getElementById("submit-buttons").style.display = "none"
         }
+
+
     }
 
 
@@ -48,21 +61,30 @@ class Buttons extends React.Component{
     
         return(
             <div className="row">
-                <div className="col-xs-8" style={{'marginLeft' : '4%', 'marginTop' : '2%'}} id="submit-react-div">
+                <div className="col-xs-8" style={{'marginLeft' : '4%', 'marginTop' : '2%'}} id="submit-div">
                     <div className="row">
-                        <div className="col-xs-2 text-center" id="submit-react-parent" style={{'display' : 'none'}} >
-                            <span id="submit-react-arrow" ></span>
-                            <span id="submit-react-x"></span>
+                        <div className="col-xs-2 text-center" id="submit-parent" style={{'display' : 'none'}} >
+                            <span id="submit-arrow" ></span>
+                            <span id="submit-x"></span>
+                        </div>
+                        <div className="col-xs-2 text-center" id="block-submit-parent" style={{'display' : 'none'}} >
+                            <span id="block-submit-arrow" ></span>
+                            <span id="block-submit-x"></span>
                         </div>
                         <div className="col-xs-4" >
-                            <div>    
-                                <button type="button" className="btn btn-primary floated" id="submit-react">Submit</button>
-                                <button type="button" className="btn btn-success floated" id="reset-react">Reset</button>
+                            <div id="submit-buttons">
+                                <button type="button" className="btn btn-primary floated" id="submit">Submit</button>
+                                <button type="button" className="btn btn-success floated" id="reset">Reset</button>
+                            </div>
+                            <div id="block-submit-buttons">
+                                <button type="button" className="btn btn-primary floated" id="block-submit">Submit</button>
+                                <button type="button" className="btn btn-success floated" id="block-reset">Reset</button>
+                            </div>
                                 <span className="glyphicon glyphicon-question-sign" title="Help" data-toggle="modal" data-target="#myInstruct"></span>
-                                <button data-toggle="modal" id = "share-link-react" data-target="#myShare" title="Share Link!">
+                                <button data-toggle="modal" id = "share-link" data-target="#myShare" title="Share Link!">
                                     <img src="/graphics/clippy.svg" height="18" width="18" alt="Copy to clipboard"></img>
                                 </button>
-                            </div>     
+                                 
                         </div>
                     </div>
                 </div>                                          

@@ -162,21 +162,21 @@ class Dropdowns extends React.Component{
     }
 
     enableDropdown(select){
-        let select_label = select + "-label-react"
-        let arrow_label = select + "-arrow-react"
-        let x_label = select + "-x-react"
-        document.getElementById(select + "-react").disabled = false
+        let select_label = select + "-label"
+        let arrow_label = select + "-arrow"
+        let x_label = select + "-x"
+        document.getElementById(select).disabled = false
         document.getElementById(arrow_label).classList.add("glyphicon", "glyphicon-arrow-right");
         document.getElementById(x_label).classList.add("glyphicon", "glyphicon-remove");
         document.getElementById(select_label).style.color = "black"
     }
 
     disableDropdown(select){
-        let select_label = select + "-label-react"
-        let arrow_label = select + "-arrow-react"
-        let x_label = select + "-x-react"
+        let select_label = select + "-label"
+        let arrow_label = select + "-arrow"
+        let x_label = select + "-x"
         document.getElementById(arrow_label).classList.remove("glyphicon", "glyphicon-arrow-right");
-        document.getElementById(select + "-react").disabled = true
+        document.getElementById(select).disabled = true
         document.getElementById(select_label).style.color = "silver"
         document.getElementById(x_label).classList.remove("glyphicon", "glyphicon-remove");
     }   
@@ -232,7 +232,7 @@ class Dropdowns extends React.Component{
                     return info 
                 };
 
-            document.querySelector('#reset-react').onclick = () => {
+            document.querySelector('#reset').onclick = () => {
                     currentComponent.setState({
                         reset : true,
                         submit_enabled : false,
@@ -259,7 +259,7 @@ class Dropdowns extends React.Component{
                     
                 }
 
-            let submit = document.querySelector('#submit-react')
+            let submit = document.querySelector('#submit')
             submit.onclick = () => {
                 currentComponent.setState({
                     reset : true,
@@ -311,7 +311,7 @@ class Dropdowns extends React.Component{
         }else{
             selectRows = 
             <div>
-                <Select enabled = {this.state.block_symbol_enabled} reset = {this.state.reset} block_symbol = {this.state.block_symbol[this.state.block_symbol.length-1] } 
+                <Select enabled = {this.state.block_symbol_enabled} reset = {this.state.reset} block_symbol = {this.state.block_symbol} 
                     blocks = {this.state.blocks[this.state.blocks.length-1]} options = {this.state.block_options[this.state.block_options.length-1]} id = "block-symbol" 
                     label = "Symbols" onBlockChange = {this.handleBlockChange} onReset = {this.handleReset} onPriceMode = {this.handlePriceMode} onBlockCancel = {this.handleBlockCancel}/>
 

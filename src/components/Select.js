@@ -47,7 +47,7 @@ class Select extends React.Component{
         var currentComponent = this;
         var current = currentComponent.props.prices
         var current_block = currentComponent.props.blocks
-        let tag = document.querySelector("#" + id + "-react");
+        let tag = document.querySelector("#" + id);
 
         if(this.props.enabled === true){
             enableDropdown(id)
@@ -58,7 +58,7 @@ class Select extends React.Component{
         if(id !== "price-or-block"){
         //1. filter prices array by current dropdwon
             tag.onchange = function(event){ 
-                var choice = document.getElementById(id + "-react").value;
+                var choice = document.getElementById(id).value;
                 if(id === "symbol"){
                     current = current.filter(line => line.symbol.includes(choice));
                 }else if(id === "unit"){
@@ -83,7 +83,7 @@ class Select extends React.Component{
         
         if(id === "price-or-block"){
             tag.onchange = function(event){
-                let choice = document.getElementById(id + "-react").value;
+                let choice = document.getElementById(id).value;
                 if(choice === "Price"){
                     currentComponent.handlePriceOrBlock(true);
                 }else{
@@ -93,7 +93,7 @@ class Select extends React.Component{
         }
         
         if(this.props.id !== 'price-or-block'){
-            let cancel = document.querySelector("#" + id + "-x-react");                
+            let cancel = document.querySelector("#" + id + "-x");                
             cancel.onclick = function(event){
                 console.log("hi")
                 if(currentComponent.props.onPriceCancel){
@@ -106,10 +106,10 @@ class Select extends React.Component{
         }
 
         function enableDropdown(select){
-            let select_label = select + "-label-react"
-            let arrow_label = select + "-arrow-react"
-            let x_label = select + "-x-react"
-            document.getElementById(select + "-react").disabled = false
+            let select_label = select + "-label"
+            let arrow_label = select + "-arrow"
+            let x_label = select + "-x"
+            document.getElementById(select).disabled = false
             document.getElementById(arrow_label).classList.add("glyphicon", "glyphicon-arrow-right");
             if(currentComponent.props.id !== 'price-or-block'){
                 document.getElementById(x_label).classList.add("glyphicon", "glyphicon-remove");
@@ -118,11 +118,11 @@ class Select extends React.Component{
             }
 
         function disableDropdown(select){
-            let select_label = select + "-label-react"
-            let arrow_label = select + "-arrow-react"
-            let x_label = select + "-x-react"
+            let select_label = select + "-label"
+            let arrow_label = select + "-arrow"
+            let x_label = select + "-x"
             document.getElementById(arrow_label).classList.remove("glyphicon", "glyphicon-arrow-right");
-            document.getElementById(select + "-react").disabled = true
+            document.getElementById(select).disabled = true
             document.getElementById(select_label).style.color = "silver"
             if(currentComponent.props.id !== 'price-or-block'){
                 document.getElementById(x_label).classList.remove("glyphicon", "glyphicon-remove");
@@ -171,7 +171,7 @@ class Select extends React.Component{
     render(){
         
         let optionItems;
-        let select = document.getElementById(this.props.id + "-react")
+        let select = document.getElementById(this.props.id)
         let id = this.props.id
         let firstOption = <option key={key_gen++}></option>;
 
@@ -207,18 +207,18 @@ class Select extends React.Component{
         }
 
         return(
-            <div className="col-xs-2" id={this.props.id + "-div-react"}>
+            <div className="col-xs-2" id={this.props.id + "-div"}>
                 <div className="row" >
                     <div className="col-xs-2 text-center">
                         {this.props.id != 'price-or-block' ? 
-                            ( <span id={this.props.id + "-x-react"}></span>) : 
+                            ( <span id={this.props.id + "-x"}></span>) : 
                             (<span></span>)
                             }
-                        <span id={this.props.id + "-arrow-react"}></span>
+                        <span id={this.props.id + "-arrow"}></span>
                     </div>
                         <div className="col-xs-8"> 
-                            <label id={this.props.id + "-label-react"}>{this.props.label}</label>       
-                            <select className="form-control" id = {this.props.id + "-react"}>
+                            <label id={this.props.id + "-label"}>{this.props.label}</label>       
+                            <select className="form-control" id = {this.props.id}>
                                 {this.props.enabled || this.props.reset ? firstOption : "" }
                                 {optionItems}
                             </select>
