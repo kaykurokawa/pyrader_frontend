@@ -69,7 +69,6 @@ class Dropdowns extends React.Component{
 
     handleButtonCancel(id){
         if(id === "price"){
-            console.log("that")
             let current = this.state.prices
             current.pop()
             let prev = current
@@ -85,9 +84,8 @@ class Dropdowns extends React.Component{
             let options = this.state.block_options
             options.pop()
             let prev_op = options
-            this.setState({blocks : prev, block_options : prev_op, block_interval_enabled :true, submit_enabled : false});
+            this.setState({blocks : prev, block_options : prev_op, block_interval_enabled : true, submit_enabled : false});
         }
-       
     }
 
     handleBlockChange(blocks, options, id, value){
@@ -154,9 +152,9 @@ class Dropdowns extends React.Component{
 
     handlePriceMode(bool){
         if(bool){
-            this.setState({price_mode : bool, price_field : "Price", price_mode_enabled: false, symbol_enabled : true})
+            this.setState({price_mode : bool, price_mode_enabled: false, symbol_enabled : true, unit_enabled : false, exhcange_enabled : false, interval_enabled : false, reset: false })
         }else{
-            this.setState({price_mode : bool , price_field : "Block", price_mode_enabled: false, block_symbol_enabled :true})
+            this.setState({price_mode : bool , price_mode_enabled: false, block_symbol_enabled :true, reset: false})
         }
     }
 
@@ -267,17 +265,16 @@ class Dropdowns extends React.Component{
                     block_options : [createOptions(initial_blocks, "block-symbol")]
                 });   
             }
-            document.querySelector('#submit').onclick = () => {
+            document.querySelector('#submit').addEventListener("click", () => {
                 handleSubmit();
-            }
+            }, false)
 
-            document.querySelector('#block-submit').onclick = () => {
+            document.querySelector('#block-submit').addEventListener("click", () => {
                 handleSubmit();
-            }
+            }, false)
 
             function handleSubmit(){
                 currentComponent.setState({
-                    reset : true,
                     price_mode_enabled : true,
                     symbol_enabled: false, 
                     unit_enabled : false, 
@@ -286,15 +283,9 @@ class Dropdowns extends React.Component{
                     block_symbol_enabled : false,
                     block_datatype_enabled : false,
                     block_interval_enabled : false,
+                    submit_enabled : false,
                     prices : [initial_prices],
                     blocks : [initial_blocks],
-                    symbol : "", //the following states we will keep track of thpe selection and if that select is enabled or not.  
-                    unit : "",  
-                    exchange : "",
-                    interval : "",
-                    block_symbol : "",
-                    block_interval : "",
-                    block_datatype : "",
                     options : [createOptions(initial_prices,"symbol")], //set states to originial
                     block_options : [createOptions(initial_blocks, "block-symbol")]
                 });

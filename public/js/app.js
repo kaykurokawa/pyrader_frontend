@@ -37,12 +37,14 @@ $(document).ready(function () {
     }
  
     /* Or populate the graph by dropdowns/submit button*/
-    document.getElementById("block-submit").onclick = function(event){
+    document.getElementById("block-submit").addEventListener("click", () => {
+        console.log("this is working block")
         Input.getBlockAPI(Input.readBlockValues());
-    }
+    }, false)  
 
-    document.getElementById("submit").onclick = function(event){
+    document.getElementById("submit").addEventListener("click", () => {
+        console.log("this is working price")
         Input.getPriceAPI(Input.readPricesValues());
-    }
+    }, false) 
 
     });

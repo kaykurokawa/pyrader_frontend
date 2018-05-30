@@ -48,7 +48,6 @@ class Select extends React.Component{
         var current = currentComponent.props.prices
         var current_block = currentComponent.props.blocks
         let tag = document.querySelector("#" + id);
-
         if(this.props.enabled === true){
             enableDropdown(id)
         }else{
@@ -95,7 +94,6 @@ class Select extends React.Component{
         if(this.props.id !== 'price-or-block'){
             let cancel = document.querySelector("#" + id + "-x");                
             cancel.onclick = function(event){
-                console.log("hi")
                 if(currentComponent.props.onPriceCancel){
                     currentComponent.handlePriceCancel(id);
                 }
