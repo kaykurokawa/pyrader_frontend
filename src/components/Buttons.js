@@ -71,7 +71,7 @@ class Buttons extends React.Component{
                             <span id="block-submit-arrow" ></span>
                             <span id="block-submit-x"></span>
                         </div>
-                        <div className="col-xs-4" >
+                        <div className="col-xs-10" >
                             <div id="submit-buttons">
                                 <button type="button" className="btn btn-primary floated" id="submit">Submit</button>
                                 <button type="button" className="btn btn-success floated" id="reset">Reset</button>

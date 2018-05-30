@@ -37,7 +37,7 @@ function addPriceTable(id1,id2,coin,unit,last_price,last_volume,first_date, last
     }
 }
 
-function addBlockTable(id,coin,datatype,last_block,first_date, last_date,interval,exchange){
+function addBlockTable(id,coin,datatype,last_block,first_date, last_date,interval){
     var newRow1 = document.querySelector("#table-of-prices").insertRow();
     from_date = new Date(first_date).toDateString() + " " + new Date(first_date).toLocaleTimeString('en-US');
     to_date = new Date(last_date).toDateString() + " " +  new Date(last_date).toLocaleTimeString('en-US');

@@ -1,4 +1,0 @@
-
-need to swtichover react dropdowns to js dropdowns
-make sure submit works for both. 
-block reset does not work, full x backout does not work.

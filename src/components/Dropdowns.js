@@ -68,7 +68,7 @@ class Dropdowns extends React.Component{
     }
 
     handleButtonCancel(id){
-        if(id == "price"){
+        if(id === "price"){
             console.log("that")
             let current = this.state.prices
             current.pop()
@@ -78,7 +78,7 @@ class Dropdowns extends React.Component{
             let prev_op = options
             this.setState({prices : prev, options : prev_op, symbol_enabled : false, unit_enabled : false, exchange_enabled : false,  interval_enabled : true, submit_enabled : false});
         }
-        if(id == "block"){
+        if(id === "block"){
             let current = this.state.blocks
             current.pop()
             let prev = current
@@ -107,16 +107,18 @@ class Dropdowns extends React.Component{
     }
 
     handlePriceCancel(id){
+      if(id !== "symbol"){
         let current = this.state.prices
         current.pop()
-        let prev = current
-
+        var prev = current
         let options = this.state.options
         options.pop()
-        let prev_op = options
+        var prev_op = options      
+      }
 
-        if(id === "symbol"){ // this means you are done with the symbol select
-            this.setState({price_mode_enabled : true, symbol_enabled: false, symbol : "", prices : prev, options : prev_op});
+        if(id === "symbol"){ // this means you are done with the symbol select, 
+                            //also for this condition consider the fact  that you may be goin to
+            this.setState({price_mode_enabled : true, symbol_enabled: false, symbol : ""});
 
         }else if(id === "unit"){
             this.setState({symbol_enabled: true, unit_enabled : false, unit : "", prices : prev, options : prev_op});
@@ -130,16 +132,17 @@ class Dropdowns extends React.Component{
     }
 
     handleBlockCancel(id){
-        let current = this.state.blocks
-        current.pop()
-        let prev = current
-
-        let options = this.state.block_options
-        options.pop()
-        let prev_op = options
+        if(id !== "block-symbol"){
+            let current = this.state.blocks
+            current.pop()
+            var prev = current
+            let options = this.state.block_options
+            options.pop()
+            var prev_op = options
+        }
 
         if(id === "block-symbol"){ // this means you are done with the symbol select
-            this.setState({price_mode_enabled : true, block_symbol_enabled: false, block_symbol : "", blocks : prev, block_options : prev_op});
+            this.setState({price_mode_enabled : true, block_symbol_enabled: false, block_symbol : ""});
 
         }else if(id === "block-datatype"){
             this.setState({block_symbol_enabled: true, block_datatype_enabled : false, block_datatype : "", blocks : prev, block_options : prev_op});
@@ -231,36 +234,48 @@ class Dropdowns extends React.Component{
                 }
                     return info 
                 };
-
             document.querySelector('#reset').onclick = () => {
-                    currentComponent.setState({
-                        reset : true,
-                        submit_enabled : false,
-                        price_mode_enabled : true,
-                        symbol_enabled: false, 
-                        unit_enabled : false, 
-                        exchange_enabled : false, 
-                        interval_enabled : false,
-                        block_symbol_enabled : false,
-                        block_datatype_enabled : false,
-                        block_interval_enabled : false,
-                        prices : [initial_prices],
-                        blocks : [initial_blocks],
-                        symbol : "", //the following states we will keep track of the selection and if that select is enabled or not.  
-                        unit : "",  
-                        exchange : "",
-                        interval : "",
-                        block_symbol : "",
-                        block_interval : "",
-                        block_datatype : "",
-                        options : [createOptions(initial_prices,"symbol")], //set states to originial
-                        block_options : [createOptions(initial_blocks, "block-symbol")]
-                    }); 
-                    
-                }
+                handleReset();
+            }
 
-            let submit = document.querySelector('#submit')
-            submit.onclick = () => {
+            document.querySelector('#block-reset').onclick = () => {
+                handleReset();
+            }
+
+            function handleReset(){
+                currentComponent.setState({
+                    reset : true,
+                    submit_enabled : false,
+                    price_mode_enabled : true,
+                    symbol_enabled: false, 
+                    unit_enabled : false, 
+                    exchange_enabled : false, 
+                    interval_enabled : false,
+                    block_symbol_enabled : false,
+                    block_datatype_enabled : false,
+                    block_interval_enabled : false,
+                    prices : [initial_prices],
+                    blocks : [initial_blocks],
+                    symbol : "", //the following states we will keep track of the selection and if that select is enabled or not.  
+                    unit : "",  
+                    exchange : "",
+                    interval : "",
+                    block_symbol : "",
+                    block_interval : "",
+                    block_datatype : "",
+                    options : [createOptions(initial_prices,"symbol")], //set states to originial
+                    block_options : [createOptions(initial_blocks, "block-symbol")]
+                });   
+            }
+            document.querySelector('#submit').onclick = () => {
+                handleSubmit();
+            }
+
+            document.querySelector('#block-submit').onclick = () => {
+                handleSubmit();
+            }
+
+            function handleSubmit(){
                 currentComponent.setState({
                     reset : true,
                     price_mode_enabled : true,
@@ -327,7 +342,7 @@ class Dropdowns extends React.Component{
 
         return (
         <div>
-            <Select enabled = {this.state.price_mode_enabled} options= {["Price", "Block"]} id = "price-or-block" label = "Price or Block" priceMode = {this.state.price_mode} onPriceMode = {this.handlePriceMode} />
+            <Select enabled = {this.state.price_mode_enabled} options= {["Price", "Block"]} id = "price-or-block" label = "Price/Block" priceMode = {this.state.price_mode} onPriceMode = {this.handlePriceMode} />
             {selectRows}
             <Buttons  enabled = {this.state.submit_enabled} onCancel = {this.handleButtonCancel} priceMode = {this.state.price_mode} />
         </div>

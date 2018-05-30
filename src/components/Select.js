@@ -210,7 +210,7 @@ class Select extends React.Component{
             <div className="col-xs-2" id={this.props.id + "-div"}>
                 <div className="row" >
                     <div className="col-xs-2 text-center">
-                        {this.props.id != 'price-or-block' ? 
+                        {this.props.id !== 'price-or-block' ? 
                             ( <span id={this.props.id + "-x"}></span>) : 
                             (<span></span>)
                             }
