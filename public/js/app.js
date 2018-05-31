@@ -1,4 +1,3 @@
-const Info = require('/js/info.js');
 const Input = require('/js/input.js');
 const Url = require('/js/url.js');
 const View = require('/js/url-models.js');
@@ -15,9 +14,6 @@ const View = require('/js/url-models.js');
 
 
 $(document).ready(function () {
-
-    /*populate the dropdowns*/
-    Info.getInfo();
 
     /*set the "share link" button initial state"*/
     Url.setShareLink(Url.getURL())
@@ -41,10 +37,14 @@ $(document).ready(function () {
     }
  
     /* Or populate the graph by dropdowns/submit button*/
-    document.getElementById("submit").onclick = function(event){
+    document.getElementById("block-submit").addEventListener("click", () => {
+        console.log("this is working block")
+        Input.getBlockAPI(Input.readBlockValues());
+    }, false)  
+
+    document.getElementById("submit").addEventListener("click", () => {
+        console.log("this is working price")
         Input.getPriceAPI(Input.readPricesValues());
-    }
-        document.getElementById("block-submit").onclick = function(event){
-            Input.getBlockAPI(Input.readBlockValues());
-        }
+    }, false) 
+
     });

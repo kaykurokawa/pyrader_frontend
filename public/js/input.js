@@ -250,6 +250,7 @@
                 }
                 response.json().then(function(data) {
                     Table.hideError();
+                    console.log(View.MODELS)
                     let interval_i = data.interval/1000;
                     let plottype = data.plottype;
                     if(plottype == "scatter"){
@@ -265,14 +266,14 @@
                     let first_date = x[0];
                     let last_date = x[x.length-1];
                     let last_datatype = data.y[y.length-1];
-
+                    
                     //Here you will pass data to whatever Graphing library asynchronosly
                     if(plottype == "scatter"){
                         High.addScatterPlot(id,coin_data,datatype_data,x,y, first_date, last_date);
-                        Table.addBlockTable(id,coin_data,datatype_data,last_datatype,first_date, last_date, interval, exchange);
+                        Table.addBlockTable(id,coin_data,datatype_data,last_datatype,first_date, last_date, interval);
                     }else{
                         High.addBlockGraph(id,coin_data,datatype_data,x,y, first_date, last_date);
-                        Table.addBlockTable(id,coin_data,datatype_data,last_datatype,first_date, last_date, interval, exchange);
+                        Table.addBlockTable(id,coin_data,datatype_data,last_datatype,first_date, last_date, interval);
                     }
                     URL.changeURL();
                 });
@@ -371,10 +372,10 @@
                     //Here you will pass data to whatever Graphing library asynchronosly
                     if(plottype == "scatter"){
                         High.addScatterPlot(id,coin_data,datatype_data,x,y, first_date, last_date, min, max);
-                        Table.addBlockTable(id,coin_data,datatype_data,last_datatype,first_date, last_date, interval, exchange);
+                        Table.addBlockTable(id,coin_data,datatype_data,last_datatype,first_date, last_date, interval);
                     }else{
                         High.addBlockGraph(id,coin_data,datatype_data,x,y, first_date, last_date, min, max);
-                        Table.addBlockTable(id,coin_data,datatype_data,last_datatype,first_date, last_date, interval, exchange);
+                        Table.addBlockTable(id,coin_data,datatype_data,last_datatype,first_date, last_date, interval);
                     }
                 }
             }    

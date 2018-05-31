@@ -1,7 +1,7 @@
 import React from 'react';
-import { REST_URL } from './constants';
 import Select from './Select.js';
 import Buttons from './Buttons.js';
+import Info from '../info_data.js'
 
 class Dropdowns extends React.Component{
 
@@ -25,134 +25,178 @@ class Dropdowns extends React.Component{
             exchange_enabled : false,
             interval : "",
             interval_enabled : false,
+            submit_enabled : false,
             block_symbol : "",
             block_symbol_enabled : true,
             block_datatype : "",
             block_datatype_enabled : false,
             block_interval : "",
             block_interval_enabled : false,
-            reset : false // triggers true when reset is clicked and sets all selects to restart
         };
 
         this.handlePriceChange = this.handlePriceChange.bind(this);
         this.enableDropDown = this.enableDropdown.bind(this);
         this.disableDropdown = this.disableDropdown.bind(this);
-        this.handleReset = this.handleReset.bind(this);
         this.handleBlockChange = this.handleBlockChange.bind(this);
         this.handlePriceMode = this.handlePriceMode.bind(this);
         this.handlePriceCancel = this.handlePriceCancel.bind(this);
         this.handleBlockChange = this.handleBlockChange.bind(this);
+        this.handleButtonCancel = this.handleButtonCancel.bind(this);
+        this.handleBlockCancel = this.handleBlockCancel.bind(this)
     }
 
     handlePriceChange(prices, options, key, value){
+        let current = this.state.prices
+        current.push(prices)
 
-        if(key === "symbol"){ // this means you are done with the symbol select
-            this.setState({prices : prices, options : options, symbol : value, symbol_enabled : false, unit_enabled: true, exchange_enabled: false, interval_enabled : false});
+        let curr_op = this.state.options
+        curr_op.push(options)
+
+        if(key === "symbol"){ // this means you are done with the symbol select 
+            this.setState({prices : current, options : curr_op, symbol : value, symbol_enabled : false, unit_enabled: true, exchange_enabled: false, interval_enabled : false});
         }else if(key === "unit"){
-            this.setState({prices : prices, options : options, unit : value, symbol_enabled : false, unit_enabled : false, exchange_enabled : true, interval_enabled : false});
+            this.setState({prices : current, options : curr_op, unit : value, symbol_enabled : false, unit_enabled : false, exchange_enabled : true, interval_enabled : false});
   
         }else if(key === "exchange"){
-            this.setState({prices : prices, options : options, exchange : value, symbol_enabled : false, unit_enabled : false, exchange_enabled : false, interval_enabled : true});
+            this.setState({prices : current, options : curr_op, exchange : value, symbol_enabled : false, unit_enabled : false, exchange_enabled : false, interval_enabled : true});
 
         }else if(key === "interval"){
-            this.setState({prices : prices, options : options, interval : value, symbol_enabled : false, unit_enabled : false, interval_enabled : false, exchange_enabled : false});
+            this.setState({prices : current, options : curr_op, interval : value, symbol_enabled : false, unit_enabled : false, interval_enabled : false, exchange_enabled : false, submit_enabled : true});
         }        
     }
 
-    handleBlockChange(blocks, options, id, value){
-        if(id === "block-symbol"){            
-            this.setState({blocks : blocks, block_options : options, block_symbol : value, block_symbol_enabled : false, block_datatype_enabled: true});
-        }else if(id === "block-datatype"){
-            this.setState({blocks : blocks, block_options : options, block_datatype : value, block_datatype_enabled : false, block_interval_enabled: true});
-        }else if(id === "block-interval"){
-            this.setState({blocks : blocks, block_options : options, block_interval : value, block_datatype_enabled : false, block_interval_enabled : false});
+    handleButtonCancel(id){
+        if(id === "price"){
+            let current = this.state.prices
+            current.pop()
+            let prev = current
+            let options = this.state.options
+            options.pop()
+            let prev_op = options
+            this.setState({prices : prev, options : prev_op, symbol_enabled : false, unit_enabled : false, exchange_enabled : false,  interval_enabled : true, submit_enabled : false});
+        }
+        if(id === "block"){
+            let current = this.state.blocks
+            current.pop()
+            let prev = current
+            let options = this.state.block_options
+            options.pop()
+            let prev_op = options
+            this.setState({blocks : prev, block_options : prev_op, block_interval_enabled : true, submit_enabled : false});
         }
     }
 
-    handlePriceCancel(id, prices, options){
-        
-        if(id === "symbol"){ // this means you are done with the symbol select
-            this.setState({price_mode_enabled : true, symbol_enabled: false, prices : prices, options : options});
+    handleBlockChange(blocks, options, id, value){
+        let current = this.state.blocks
+        current.push(blocks)
+
+        let curr_op = this.state.block_options
+        curr_op.push(options)
+
+        if(id === "block-symbol"){            
+            this.setState({blocks : current, block_options : curr_op, block_symbol : value, block_symbol_enabled : false, block_datatype_enabled: true});
+        }else if(id === "block-datatype"){
+            this.setState({blocks : current, block_options : curr_op, block_datatype : value, block_datatype_enabled : false, block_interval_enabled: true});
+        }else if(id === "block-interval"){
+            this.setState({blocks : current, block_options : curr_op, block_interval : value, block_datatype_enabled : false, block_interval_enabled : false, submit_enabled : true});
+        }
+    }
+
+    handlePriceCancel(id){
+      if(id !== "symbol"){
+        let current = this.state.prices
+        current.pop()
+        var prev = current
+        let options = this.state.options
+        options.pop()
+        var prev_op = options      
+      }
+
+        if(id === "symbol"){ // this means you are done with the symbol select, 
+                            //also for this condition consider the fact  that you may be goin to
+            this.setState({price_mode_enabled : true, symbol_enabled: false, symbol : ""});
 
         }else if(id === "unit"){
-            this.setState({symbol_enabled: true, unit_enabled : false, prices : prices, options : options});
+            this.setState({symbol_enabled: true, unit_enabled : false, unit : "", prices : prev, options : prev_op});
   
         }else if(id === "exchange"){
-            this.setState({unit_enabled : true, exchange_enabled : false, prices : prices, options : options});
+            this.setState({unit_enabled : true, exchange_enabled : false, exchange : "", prices : prev, options : prev_op});
 
         }else if(id === "interval"){
-            this.setState({exhcange_enabled : true, interval_enabled : false, prices : prices, options : options});
+            this.setState({exchange_enabled : true, interval_enabled : false, interval : "", prices : prev, options : prev_op});
         }        
+    }
+
+    handleBlockCancel(id){
+        if(id !== "block-symbol"){
+            let current = this.state.blocks
+            current.pop()
+            var prev = current
+            let options = this.state.block_options
+            options.pop()
+            var prev_op = options
+        }
+
+        if(id === "block-symbol"){ // this means you are done with the symbol select
+            this.setState({price_mode_enabled : true, block_symbol_enabled: false, block_symbol : ""});
+
+        }else if(id === "block-datatype"){
+            this.setState({block_symbol_enabled: true, block_datatype_enabled : false, block_datatype : "", blocks : prev, block_options : prev_op});
+  
+        }else if(id === "block-interval"){
+            this.setState({block_datatype_enabled : true, block_interval_enabled : false, block_interval : "", blocks : prev, block_options : prev_op});
+        }
     }
 
     handlePriceMode(bool){
         if(bool){
-            this.setState({price_mode : bool, price_field : "Price", price_mode_enabled: false, symbol_enabled : true})
+            this.setState({price_mode : bool, price_mode_enabled: false, symbol_enabled : true})
         }else{
-            this.setState({price_mode : bool , price_field : "Block", price_mode_enabled: false, block_symbol_enabled :true})
+            this.setState({price_mode : bool , price_mode_enabled: false, block_symbol_enabled :true})
         }
     }
 
-    handleReset(bool){
-        this.setState({reset: bool});
-    }
-
     enableDropdown(select){
-        let select_label = select + "-label-react"
-        let arrow_label = select + "-arrow-react"
-        let x_label = select + "-x-react"
-        document.getElementById(select + "-react").disabled = false
+        let select_label = select + "-label"
+        let arrow_label = select + "-arrow"
+        let x_label = select + "-x"
+        document.getElementById(select).disabled = false
         document.getElementById(arrow_label).classList.add("glyphicon", "glyphicon-arrow-right");
         document.getElementById(x_label).classList.add("glyphicon", "glyphicon-remove");
         document.getElementById(select_label).style.color = "black"
     }
 
     disableDropdown(select){
-        let select_label = select + "-label-react"
-        let arrow_label = select + "-arrow-react"
-        let x_label = select + "-x-react"
+        let select_label = select + "-label"
+        let arrow_label = select + "-arrow"
+        let x_label = select + "-x"
         document.getElementById(arrow_label).classList.remove("glyphicon", "glyphicon-arrow-right");
-        document.getElementById(select + "-react").disabled = true
+        document.getElementById(select).disabled = true
         document.getElementById(select_label).style.color = "silver"
         document.getElementById(x_label).classList.remove("glyphicon", "glyphicon-remove");
     }   
 
     componentDidMount(){
-            let url= REST_URL + "/info"
             var prices;
             var blocks;
             var initial_prices;
             var initial_blocks
 
-            let currentComponent = this;
-             fetch(url)
-             .then(
-             function(response) {
-                 if (response.status !== 200) {
-                 console.log('Looks like there was a problem. Status Code: ' +
-                     response.status);
-                     return;
-                     }
-                     response.json().then(function(data){
-                         prices = data.price;
-                         prices = eliminateNulls(prices)
-                         initial_prices = prices
-                         blocks = data.block;
-                         initial_blocks = blocks
-                         //set the state for initial conditions i.e. where the symbol Select is enabled with its options
-                         currentComponent.setState({
-                            prices : prices,
-                            blocks : blocks,
-                            options : createOptions(prices, "symbol"), //I need an array of just symbols.
-                            block_options : createOptions(blocks, "block-symbol"),
-                        });
-                     });
-                     }
-                 )
-                     .catch(function(err) {
-                         console.log('Fetch Error :-S', err);
-                     });
-
+            var currentComponent = this;
+            let data = Info.info_json;
+            prices = data.price;
+            prices = eliminateNulls(prices)
+            initial_prices = prices
+            blocks = data.block;
+            initial_blocks = blocks
+            //set the state for initial conditions i.e. where the symbol Select is enabled with its options
+            currentComponent.setState({
+                prices : [prices],
+                blocks : [blocks],
+                options : [createOptions(prices, "symbol")], //I need an array of just symbols.
+                block_options : [createOptions(blocks, "block-symbol")],
+            });
+        
         /*given info array of objects and string id populate the dropdowns with the info of type id. */
           function createOptions(info, id){
                 var info_array = [];
@@ -182,79 +226,109 @@ class Dropdowns extends React.Component{
                 }
                     return info 
                 };
-
-            document.querySelector('#reset-react').onclick  = function(event){
-                    currentComponent.setState({
-                        reset : true,
-                        price_mode_enabled : true,
-                        symbol_enabled: false, 
-                        unit_enabled : false, 
-                        exchange_enabled : false, 
-                        interval_enabled : false,
-                        block_symbol_enabled : false,
-                        block_datatype_enabled : false,
-                        block_interval_enabled : false,
-                        prices : initial_prices,
-                        blocks : initial_blocks,
-                        symbol : "", //the following states we will keep track of the selection and if that select is enabled or not.  
-                        unit : "",  
-                        exchange : "",
-                        interval : "",
-                        block_symbol : "",
-                        block_interval : "",
-                        block_datatype : "",
-                        options : createOptions(initial_prices,"symbol"), //set states to originial
-                        block_options : createOptions(initial_blocks, "block-symbol")
-                    }); 
-                    console.log("hello") 
-                    
-                }
+            document.querySelector('#reset').onclick = () => {
+                handleReset();
             }
+
+            document.querySelector('#block-reset').onclick = () => {
+                handleReset();
+            }
+
+            function handleReset(){
+                currentComponent.setState({
+                    submit_enabled : false,
+                    price_mode_enabled : true,
+                    symbol_enabled: false, 
+                    unit_enabled : false, 
+                    exchange_enabled : false, 
+                    interval_enabled : false,
+                    block_symbol_enabled : false,
+                    block_datatype_enabled : false,
+                    block_interval_enabled : false,
+                    prices : [initial_prices],
+                    blocks : [initial_blocks],
+                    symbol : "", //the following states we will keep track of the selection and if that select is enabled or not.  
+                    unit : "",  
+                    exchange : "",
+                    interval : "",
+                    block_symbol : "",
+                    block_interval : "",
+                    block_datatype : "",
+                    options : [createOptions(initial_prices,"symbol")], //set states to originial
+                    block_options : [createOptions(initial_blocks, "block-symbol")]
+                });   
+            }
+            document.querySelector('#submit').addEventListener("click", () => {
+                handleSubmit();
+            }, false)
+
+            document.querySelector('#block-submit').addEventListener("click", () => {
+                handleSubmit();
+            }, false)
+
+            function handleSubmit(){
+                currentComponent.setState({
+                    price_mode_enabled : true,
+                    symbol_enabled: false, 
+                    unit_enabled : false, 
+                    exchange_enabled : false, 
+                    interval_enabled : false,
+                    block_symbol_enabled : false,
+                    block_datatype_enabled : false,
+                    block_interval_enabled : false,
+                    submit_enabled : false,
+                    prices : [initial_prices],
+                    blocks : [initial_blocks],
+                    options : [createOptions(initial_prices,"symbol")], //set states to originial
+                    block_options : [createOptions(initial_blocks, "block-symbol")]
+                });
+            }
+        }
     
     render() {
         let selectRows;
         if(this.state.price_mode === true){
             selectRows = 
                 <div>
-                    <Select enabled = {this.state.symbol_enabled} reset = {this.state.reset} symbol = {this.state.symbol} 
-                        prices = {this.state.prices} options = {this.state.options} id = "symbol" 
-                        label = "Symbols" onPriceChange = {this.handlePriceChange} onReset = {this.handleReset} onPriceMode = {this.handlePriceMode} onPriceCancel = {this.handlePriceCancel}/>
+                    <Select enabled = {this.state.symbol_enabled}  symbol = {this.state.symbol} 
+                        prices = {this.state.prices[this.state.prices.length-1]} options = {this.state.options[this.state.options.length-1]} id = "symbol" 
+                        label = "Symbols" onPriceChange = {this.handlePriceChange} onPriceMode = {this.handlePriceMode} onPriceCancel = {this.handlePriceCancel}/>
 
-                    <Select enabled = {this.state.unit_enabled} reset = {this.state.reset} unit = {this.state.unit} 
-                        prices = {this.state.prices} options = {this.state.options} 
-                        id = "unit" label = "Units" onPriceChange = {this.handlePriceChange} onReset = {this.handleReset} onPriceMode = {this.handlePriceMode} onPriceCancel = {this.handlePriceCancel}/>
+                    <Select enabled = {this.state.unit_enabled}  unit = {this.state.unit} 
+                        prices = {this.state.prices[this.state.prices.length-1]} options = {this.state.options[this.state.options.length-1]} 
+                        id = "unit" label = "Units" onPriceChange = {this.handlePriceChange}  onPriceMode = {this.handlePriceMode} onPriceCancel = {this.handlePriceCancel}/>
 
-                    <Select enabled = {this.state.exchange_enabled} reset = {this.state.reset} exchange = {this.state.exchange} 
-                        prices = {this.state.prices} options = {this.state.options} 
-                        id = "exchange" label = "Exchange" onPriceChange = {this.handlePriceChange}  onReset = {this.handleReset} onPriceMode = {this.handlePriceMode} onPriceCancel = {this.handlePriceCancel}/>
+                    <Select enabled = {this.state.exchange_enabled}  exchange = {this.state.exchange} 
+                        prices = {this.state.prices[this.state.prices.length-1]} options = {this.state.options[this.state.options.length-1]} 
+                        id = "exchange" label = "Exchange" onPriceChange = {this.handlePriceChange}   onPriceMode = {this.handlePriceMode} onPriceCancel = {this.handlePriceCancel}/>
 
-                    <Select enabled = {this.state.interval_enabled} reset = {this.state.reset} interval = {this.state.interval} 
-                        prices = {this.state.prices} options = {this.state.options} 
-                        id = "interval" label = "Averaging" onPriceChange = {this.handlePriceChange}  onReset = {this.handleReset} onPriceMode = {this.handlePriceMode} onPriceCancel = {this.handlePriceCancel}/>
+                    <Select enabled = {this.state.interval_enabled}  interval = {this.state.interval} 
+                        prices = {this.state.prices[this.state.prices.length-1]} options = {this.state.options[this.state.options.length-1]} 
+                        id = "interval" label = "Averaging" onPriceChange = {this.handlePriceChange}   onPriceMode = {this.handlePriceMode} onPriceCancel = {this.handlePriceCancel}/>
                 </div>
    
         }else{
             selectRows = 
             <div>
-                <Select enabled = {this.state.block_symbol_enabled} reset = {this.state.reset} block_symbol = {this.state.block_symbol } 
-                    blocks = {this.state.blocks} options = {this.state.block_options} id = "block-symbol" 
-                    label = "Symbols" onBlockChange = {this.handleBlockChange} onReset = {this.handleReset} onPriceMode = {this.handlePriceMode} />
+                <Select enabled = {this.state.block_symbol_enabled} block_symbol = {this.state.block_symbol} 
+                    blocks = {this.state.blocks[this.state.blocks.length-1]} options = {this.state.block_options[this.state.block_options.length-1]} id = "block-symbol" 
+                    label = "Symbols" onBlockChange = {this.handleBlockChange} onPriceMode = {this.handlePriceMode} onBlockCancel = {this.handleBlockCancel}/>
 
-                <Select enabled = {this.state.block_datatype_enabled} reset = {this.state.reset} block_datatype = {this.state.block_datatype} 
-                    blocks = {this.state.blocks} options = {this.state.block_options} id = "block-datatype" 
-                    label = "Datatype" onBlockChange = {this.handleBlockChange} onReset = {this.handleReset} onPriceMode = {this.handlePriceMode} />
+                <Select enabled = {this.state.block_datatype_enabled}  block_datatype = {this.state.block_datatype} 
+                    blocks = {this.state.blocks[this.state.blocks.length-1]} options = {this.state.block_options[this.state.block_options.length-1]} id = "block-datatype" 
+                    label = "Datatype" onBlockChange = {this.handleBlockChange} onPriceMode = {this.handlePriceMode} onBlockCancel = {this.handleBlockCancel} />
 
-                <Select enabled = {this.state.block_interval_enabled} reset = {this.state.reset} block_interval = {this.state.block_interval} 
-                    blocks = {this.state.blocks} options = {this.state.block_options} id = "block-interval" 
-                    label = "Averaging" onBlockChange = {this.handleBlockChange} onReset = {this.handleReset} onPriceMode = {this.handlePriceMode} />
+                <Select enabled = {this.state.block_interval_enabled} block_interval = {this.state.block_interval} 
+                    blocks = {this.state.blocks[this.state.blocks.length-1]} options = {this.state.block_options[this.state.block_options.length-1]} id = "block-interval" 
+                    label = "Averaging" onBlockChange = {this.handleBlockChange} onPriceMode = {this.handlePriceMode} onBlockCancel = {this.handleBlockCancel} />
             </div>
         }
 
         return (
         <div>
-            <Select enabled = {this.state.price_mode_enabled} options= {["Price", "Block"]} id = "price-or-block" label = "Price or Block" priceMode = {this.state.price_mode} onPriceMode = {this.handlePriceMode} />
+            <Select enabled = {this.state.price_mode_enabled} options= {["Price", "Block"]} id = "price-or-block" label = "Price/Block" priceMode = {this.state.price_mode} onPriceMode = {this.handlePriceMode} />
             {selectRows}
-            <Buttons />
+            <Buttons  enabled = {this.state.submit_enabled} onCancel = {this.handleButtonCancel} priceMode = {this.state.price_mode} />
         </div>
         )
     }

@@ -7,10 +7,10 @@ class Select extends React.Component{
     constructor(props){
         super(props);
         this.handlePriceChange = this.handlePriceChange.bind(this);
-        this.handleReset = this.handleReset.bind(this);
         this.handlePriceOrBlock = this.handlePriceOrBlock.bind(this);
         this.handlePriceCancel = this.handlePriceCancel.bind(this);
         this.handleBlockChange = this.handleBlockChange.bind(this);
+        this.handleBlockCancel = this.handleBlockCancel.bind(this);
     }
     
     handlePriceOrBlock(bool){
@@ -25,12 +25,12 @@ class Select extends React.Component{
         this.props.onBlockChange(blocks, options, id, value);
     }
 
-    handleReset(bool){
-        this.props.onReset(bool);
+    handlePriceCancel(id){
+        this.props.onPriceCancel(id);
     }
 
-    handlePriceCancel(id,current, options){
-        this.props.onPriceCancel(id, current, options);
+    handleBlockCancel(id){
+        this.props.onBlockCancel(id);
     }
 
     componentDidUpdate(){
@@ -39,12 +39,10 @@ class Select extends React.Component{
         //const prevKey= {"symbol" : "price-or-block" , "unit" : "symbol", "exchange" : "unit", "interval" : "exchange",
          //   "block-symbol" : "price-or-block", "block-datatype" : "block-symbol", "block-interval" : "block-datatype"}
         let id = this.props.id;
-        let currentComponent = this;
+        var currentComponent = this;
         var current = currentComponent.props.prices
         var current_block = currentComponent.props.blocks
-        console.log(current_block)
-        let tag = document.querySelector("#" + id + "-react");
-
+        let tag = document.querySelector("#" + id);
         if(this.props.enabled === true){
             enableDropdown(id)
         }else{
@@ -54,9 +52,7 @@ class Select extends React.Component{
         if(id !== "price-or-block"){
         //1. filter prices array by current dropdwon
             tag.onchange = function(event){ 
-                var choice = document.getElementById(id + "-react").value;
-                console.log(choice)
-                console.log(current_block)
+                var choice = document.getElementById(id).value;
                 if(id === "symbol"){
                     current = current.filter(line => line.symbol.includes(choice));
                 }else if(id === "unit"){
@@ -72,19 +68,15 @@ class Select extends React.Component{
                     let options = createOptions(current,nextKey[id]);
                     currentComponent.handlePriceChange(current, options, id, choice);
                 }else{
-                    console.log(current_block)
-                    console.log(nextKey[id])
                     let block_options = createOptions(current_block, nextKey[id]);
-                    console.log(block_options)
                     currentComponent.handleBlockChange(current_block, block_options, id, choice);
                 }
-                currentComponent.handleReset(false)
             }   
         }
         
         if(id === "price-or-block"){
             tag.onchange = function(event){
-                let choice = document.getElementById(id + "-react").value;
+                let choice = document.getElementById(id).value;
                 if(choice === "Price"){
                     currentComponent.handlePriceOrBlock(true);
                 }else{
@@ -92,33 +84,41 @@ class Select extends React.Component{
                 }
             }
         }
-    
-        /*let cancel = document.querySelector("#" + id + "-x-react");                
-        cancel.onclick = function(event){
-            let options = createOptions(current,id);
-            currentComponent.handlePriceCancel(id, current, options);
-            enableDropdown(prevKey[id]);
-            disableDropdown(id);
-        }*/
-
-        function enableDropdown(select){
-            let select_label = select + "-label-react"
-            let arrow_label = select + "-arrow-react"
-            let x_label = select + "-x-react"
-            document.getElementById(select + "-react").disabled = false
-            document.getElementById(arrow_label).classList.add("glyphicon", "glyphicon-arrow-right");
-            document.getElementById(x_label).classList.add("glyphicon", "glyphicon-remove");
-            document.getElementById(select_label).style.color = "black"
+        
+        if(this.props.id !== 'price-or-block'){
+            let cancel = document.querySelector("#" + id + "-x");                
+            cancel.onclick = function(event){
+                if(currentComponent.props.onPriceCancel){
+                    currentComponent.handlePriceCancel(id);
+                }
+                if(currentComponent.props.onBlockCancel){
+                    currentComponent.handleBlockCancel(id);
+                }
+            } 
         }
 
+        function enableDropdown(select){
+            let select_label = select + "-label"
+            let arrow_label = select + "-arrow"
+            let x_label = select + "-x"
+            document.getElementById(select).disabled = false
+            document.getElementById(arrow_label).classList.add("glyphicon", "glyphicon-arrow-right");
+            if(currentComponent.props.id !== 'price-or-block'){
+                document.getElementById(x_label).classList.add("glyphicon", "glyphicon-remove");
+            }
+                document.getElementById(select_label).style.color = "black"
+            }
+
         function disableDropdown(select){
-            let select_label = select + "-label-react"
-            let arrow_label = select + "-arrow-react"
-            let x_label = select + "-x-react"
+            let select_label = select + "-label"
+            let arrow_label = select + "-arrow"
+            let x_label = select + "-x"
             document.getElementById(arrow_label).classList.remove("glyphicon", "glyphicon-arrow-right");
-            document.getElementById(select + "-react").disabled = true
+            document.getElementById(select).disabled = true
             document.getElementById(select_label).style.color = "silver"
-            document.getElementById(x_label).classList.remove("glyphicon", "glyphicon-remove");
+            if(currentComponent.props.id !== 'price-or-block'){
+                document.getElementById(x_label).classList.remove("glyphicon", "glyphicon-remove");
+            }
         }
 
 
@@ -136,7 +136,6 @@ class Select extends React.Component{
         function createOptions(info, id){
             var info_array = [];
             let text;
-            console.log(info)
             for(var i = 0 ; i < info.length ; i++){
                 if(id === "first"){text = info[i].first}
                 if(id === "symbol"){text = info[i].symbol;}
@@ -148,7 +147,7 @@ class Select extends React.Component{
                 }
                 if(id === "block-datatype"){
                     text = info[i].datatype; 
-                    console.log(text)}
+                }
                 if(id === "block-interval"){text = convertIntervalNumberToText(info[i].interval);}
                 if(!info_array.includes(text)){
                     info_array.push(text);
@@ -164,7 +163,7 @@ class Select extends React.Component{
     render(){
         
         let optionItems;
-        let select = document.getElementById(this.props.id + "-react")
+        let select = document.getElementById(this.props.id)
         let id = this.props.id
         let firstOption = <option key={key_gen++}></option>;
 
@@ -181,7 +180,6 @@ class Select extends React.Component{
             }else if(id === "price-or-block"){ 
                 optionItems = <option key={key_gen++}>{this.props.priceMode ? "Price" : "Block"}</option>; 
             }else if(id === "block-symbol"){
-                console.log(this.props.block_symbol)
                 optionItems = <option key={key_gen++}>{this.props.block_symbol}</option>;
             }else if(id === "block-datatype"){
                 optionItems = <option key={key_gen++}>{this.props.block_datatype}</option>;
@@ -191,20 +189,29 @@ class Select extends React.Component{
 
         }else{
             //if select is enabled then the options should be a map of the options
-            optionItems = this.props.options.map((item) =>
-            <option key={key_gen++}>{item}</option>);
+            if(this.props.options){
+                optionItems = this.props.options.map((item) =>
+                <option key={key_gen++}>{item}</option>);
+            }else if(this.props.block_options){
+                optionItems = this.props.block_options.map((item) =>
+                <option key={key_gen++}>{item}</option>);
+            }
         }
+
         return(
-            <div className="col-xs-2" id={this.props.id + "-div-react"}>
+            <div className="col-xs-2" id={this.props.id + "-div"}>
                 <div className="row" >
                     <div className="col-xs-2 text-center">
-                        <span id={this.props.id + "-arrow-react"}></span>
-                        <span id={this.props.id + "-x-react"}></span>
+                        {this.props.id !== 'price-or-block' ? 
+                            ( <span id={this.props.id + "-x"}></span>) : 
+                            (<span></span>)
+                            }
+                        <span id={this.props.id + "-arrow"}></span>
                     </div>
                         <div className="col-xs-8"> 
-                            <label id={this.props.id + "-label-react"}>{this.props.label}</label>       
-                            <select className="form-control" id = {this.props.id + "-react"}>
-                                {this.props.enabled || this.props.reset ? firstOption : "" }
+                            <label id={this.props.id + "-label"} style= {{color : this.props.enabled === true ? 'black' : 'silver'}}>{this.props.label}</label>       
+                            <select className="form-control" id = {this.props.id} disabled = {this.props.enabled === false ? true : true}>
+                                {this.props.enabled ? firstOption : "" }
                                 {optionItems}
                             </select>
                     </div>

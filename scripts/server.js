@@ -4,6 +4,7 @@ const cache = require('memory-cache')
 const constants = require('../public/js/constants')
 const fetch = require('node-fetch')
 
+/* starts an instance of a node server for the back end it is not used regulary but start as needed*/
 app.set('port', (process.env.PORT || 8001));
 url= constants.REST_URL + "/info";
 global.myInfo = {};
