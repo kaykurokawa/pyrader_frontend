@@ -7,7 +7,6 @@ class Select extends React.Component{
     constructor(props){
         super(props);
         this.handlePriceChange = this.handlePriceChange.bind(this);
-        this.handleReset = this.handleReset.bind(this);
         this.handlePriceOrBlock = this.handlePriceOrBlock.bind(this);
         this.handlePriceCancel = this.handlePriceCancel.bind(this);
         this.handleBlockChange = this.handleBlockChange.bind(this);
@@ -24,10 +23,6 @@ class Select extends React.Component{
   
     handleBlockChange(blocks, options, id, value){
         this.props.onBlockChange(blocks, options, id, value);
-    }
-
-    handleReset(bool){
-        this.props.onReset(bool);
     }
 
     handlePriceCancel(id){
@@ -76,7 +71,6 @@ class Select extends React.Component{
                     let block_options = createOptions(current_block, nextKey[id]);
                     currentComponent.handleBlockChange(current_block, block_options, id, choice);
                 }
-                currentComponent.handleReset(false)
             }   
         }
         
@@ -215,9 +209,9 @@ class Select extends React.Component{
                         <span id={this.props.id + "-arrow"}></span>
                     </div>
                         <div className="col-xs-8"> 
-                            <label id={this.props.id + "-label"}>{this.props.label}</label>       
-                            <select className="form-control" id = {this.props.id}>
-                                {this.props.enabled || this.props.reset ? firstOption : "" }
+                            <label id={this.props.id + "-label"} style= {{color : this.props.enabled === true ? 'black' : 'silver'}}>{this.props.label}</label>       
+                            <select className="form-control" id = {this.props.id} disabled = {this.props.enabled === false ? true : true}>
+                                {this.props.enabled ? firstOption : "" }
                                 {optionItems}
                             </select>
                     </div>

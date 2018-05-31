@@ -32,13 +32,11 @@ class Dropdowns extends React.Component{
             block_datatype_enabled : false,
             block_interval : "",
             block_interval_enabled : false,
-            reset : false // triggers true when reset is clicked and sets all selects to restart
         };
 
         this.handlePriceChange = this.handlePriceChange.bind(this);
         this.enableDropDown = this.enableDropdown.bind(this);
         this.disableDropdown = this.disableDropdown.bind(this);
-        this.handleReset = this.handleReset.bind(this);
         this.handleBlockChange = this.handleBlockChange.bind(this);
         this.handlePriceMode = this.handlePriceMode.bind(this);
         this.handlePriceCancel = this.handlePriceCancel.bind(this);
@@ -152,14 +150,10 @@ class Dropdowns extends React.Component{
 
     handlePriceMode(bool){
         if(bool){
-            this.setState({price_mode : bool, price_mode_enabled: false, symbol_enabled : true, unit_enabled : false, exhcange_enabled : false, interval_enabled : false, reset: false })
+            this.setState({price_mode : bool, price_mode_enabled: false, symbol_enabled : true})
         }else{
-            this.setState({price_mode : bool , price_mode_enabled: false, block_symbol_enabled :true, reset: false})
+            this.setState({price_mode : bool , price_mode_enabled: false, block_symbol_enabled :true})
         }
-    }
-
-    handleReset(bool){
-        this.setState({reset: bool});
     }
 
     enableDropdown(select){
@@ -242,7 +236,6 @@ class Dropdowns extends React.Component{
 
             function handleReset(){
                 currentComponent.setState({
-                    reset : true,
                     submit_enabled : false,
                     price_mode_enabled : true,
                     symbol_enabled: false, 
@@ -297,37 +290,37 @@ class Dropdowns extends React.Component{
         if(this.state.price_mode === true){
             selectRows = 
                 <div>
-                    <Select enabled = {this.state.symbol_enabled} reset = {this.state.reset} symbol = {this.state.symbol} 
+                    <Select enabled = {this.state.symbol_enabled}  symbol = {this.state.symbol} 
                         prices = {this.state.prices[this.state.prices.length-1]} options = {this.state.options[this.state.options.length-1]} id = "symbol" 
-                        label = "Symbols" onPriceChange = {this.handlePriceChange} onReset = {this.handleReset} onPriceMode = {this.handlePriceMode} onPriceCancel = {this.handlePriceCancel}/>
+                        label = "Symbols" onPriceChange = {this.handlePriceChange} onPriceMode = {this.handlePriceMode} onPriceCancel = {this.handlePriceCancel}/>
 
-                    <Select enabled = {this.state.unit_enabled} reset = {this.state.reset} unit = {this.state.unit} 
+                    <Select enabled = {this.state.unit_enabled}  unit = {this.state.unit} 
                         prices = {this.state.prices[this.state.prices.length-1]} options = {this.state.options[this.state.options.length-1]} 
-                        id = "unit" label = "Units" onPriceChange = {this.handlePriceChange} onReset = {this.handleReset} onPriceMode = {this.handlePriceMode} onPriceCancel = {this.handlePriceCancel}/>
+                        id = "unit" label = "Units" onPriceChange = {this.handlePriceChange}  onPriceMode = {this.handlePriceMode} onPriceCancel = {this.handlePriceCancel}/>
 
-                    <Select enabled = {this.state.exchange_enabled} reset = {this.state.reset} exchange = {this.state.exchange} 
+                    <Select enabled = {this.state.exchange_enabled}  exchange = {this.state.exchange} 
                         prices = {this.state.prices[this.state.prices.length-1]} options = {this.state.options[this.state.options.length-1]} 
-                        id = "exchange" label = "Exchange" onPriceChange = {this.handlePriceChange}  onReset = {this.handleReset} onPriceMode = {this.handlePriceMode} onPriceCancel = {this.handlePriceCancel}/>
+                        id = "exchange" label = "Exchange" onPriceChange = {this.handlePriceChange}   onPriceMode = {this.handlePriceMode} onPriceCancel = {this.handlePriceCancel}/>
 
-                    <Select enabled = {this.state.interval_enabled} reset = {this.state.reset} interval = {this.state.interval} 
+                    <Select enabled = {this.state.interval_enabled}  interval = {this.state.interval} 
                         prices = {this.state.prices[this.state.prices.length-1]} options = {this.state.options[this.state.options.length-1]} 
-                        id = "interval" label = "Averaging" onPriceChange = {this.handlePriceChange}  onReset = {this.handleReset} onPriceMode = {this.handlePriceMode} onPriceCancel = {this.handlePriceCancel}/>
+                        id = "interval" label = "Averaging" onPriceChange = {this.handlePriceChange}   onPriceMode = {this.handlePriceMode} onPriceCancel = {this.handlePriceCancel}/>
                 </div>
    
         }else{
             selectRows = 
             <div>
-                <Select enabled = {this.state.block_symbol_enabled} reset = {this.state.reset} block_symbol = {this.state.block_symbol} 
+                <Select enabled = {this.state.block_symbol_enabled} block_symbol = {this.state.block_symbol} 
                     blocks = {this.state.blocks[this.state.blocks.length-1]} options = {this.state.block_options[this.state.block_options.length-1]} id = "block-symbol" 
-                    label = "Symbols" onBlockChange = {this.handleBlockChange} onReset = {this.handleReset} onPriceMode = {this.handlePriceMode} onBlockCancel = {this.handleBlockCancel}/>
+                    label = "Symbols" onBlockChange = {this.handleBlockChange} onPriceMode = {this.handlePriceMode} onBlockCancel = {this.handleBlockCancel}/>
 
-                <Select enabled = {this.state.block_datatype_enabled} reset = {this.state.reset} block_datatype = {this.state.block_datatype} 
+                <Select enabled = {this.state.block_datatype_enabled}  block_datatype = {this.state.block_datatype} 
                     blocks = {this.state.blocks[this.state.blocks.length-1]} options = {this.state.block_options[this.state.block_options.length-1]} id = "block-datatype" 
-                    label = "Datatype" onBlockChange = {this.handleBlockChange} onReset = {this.handleReset} onPriceMode = {this.handlePriceMode} onBlockCancel = {this.handleBlockCancel} />
+                    label = "Datatype" onBlockChange = {this.handleBlockChange} onPriceMode = {this.handlePriceMode} onBlockCancel = {this.handleBlockCancel} />
 
-                <Select enabled = {this.state.block_interval_enabled} reset = {this.state.reset} block_interval = {this.state.block_interval} 
+                <Select enabled = {this.state.block_interval_enabled} block_interval = {this.state.block_interval} 
                     blocks = {this.state.blocks[this.state.blocks.length-1]} options = {this.state.block_options[this.state.block_options.length-1]} id = "block-interval" 
-                    label = "Averaging" onBlockChange = {this.handleBlockChange} onReset = {this.handleReset} onPriceMode = {this.handlePriceMode} onBlockCancel = {this.handleBlockCancel} />
+                    label = "Averaging" onBlockChange = {this.handleBlockChange} onPriceMode = {this.handlePriceMode} onBlockCancel = {this.handleBlockCancel} />
             </div>
         }
 
