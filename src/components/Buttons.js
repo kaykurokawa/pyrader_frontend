@@ -31,7 +31,6 @@ class Buttons extends React.Component{
     }
 
     handleCancel(){
-        console.log(this.props.priceMode)
         this.props.priceMode === true ? this.props.onCancel("price") : this.props.onCancel("block")
     }
 

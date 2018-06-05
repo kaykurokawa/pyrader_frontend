@@ -214,7 +214,7 @@ class Select extends React.Component{
                                 {this.props.enabled ? firstOption : "" }
                                 {optionItems}
                             </select>
-                    </div>
+                        </div>
                 </div>      
             </div>
         )

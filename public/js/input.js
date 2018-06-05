@@ -250,7 +250,7 @@
                 }
                 response.json().then(function(data) {
                     Table.hideError();
-                    console.log(View.MODELS)
+              
                     let interval_i = data.interval/1000;
                     let plottype = data.plottype;
                     if(plottype == "scatter"){

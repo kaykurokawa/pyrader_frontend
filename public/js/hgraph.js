@@ -1,4 +1,5 @@
 const URL = require('./url.js');
+const Input =  require('./input.js')
 
 //Create Highcharts for price/volume
 function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume,start,end, min, max){
@@ -14,14 +15,13 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume,start,end, mi
 
     prices.sort();
     volume.sort();
-    minimum = Math.min.apply(null, y_prices);
     title = coin + " Charts";
     y_axis1 = "Price of " + coin + " in " + unit;
     y_axis2 = "Volume of " + coin + " in " + unit;
     
     //price axis
     hchart.addAxis({   
-            id: id1.toString() + "-axis",
+            id: id1 + "-axis",
             colorIndex: id1,
             className: 'highcharts-color-' + id1,
             labels: {
@@ -40,20 +40,20 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume,start,end, mi
     hchart.addSeries({
         cropThreshold: Number.MAX_VALUE,
         getExtremesFromAll: true,
-        id: id1.toString(),
+        id: id1 + "-series",
         colorIndex: id1,
         type: 'line',
         name: y_axis1,
         unit: unit,
         data: prices,
-        yAxis: hchart.yAxis.length-1,
-        //yAxis: id1.toString() + "-axis",
+        //yAxis: hchart.yAxis.length-1,
+        yAxis: id1 + "-axis",
         //boostThreshold: 1
     });
 
     //volume axis  
     hchart.addAxis({
-            id: id2.toString() + "-axis",
+            id: id2 + "-axis",
             colorIndex: id2,
             className: 'highcharts-color-' + id2,
             labels: {
@@ -74,31 +74,31 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume,start,end, mi
     hchart.addSeries({
         cropThreshold: Number.MAX_VALUE,
         getExtremesFromAll: true,
-        id: id2.toString(),
+        id: id2 + "-series",
         colorIndex: id2,
         type: 'column',
         name: y_axis2,
         unit: unit,
         data: volume,
-        yAxis: hchart.yAxis.length-1,
-        //yAxis: id2.toString() + "-axis",
+        //yAxis: hchart.yAxis.length-1,
+        yAxis: id2 + "-axis",
         //boostThreshold: 1
     });
 
-    //if the min and max of this price you are going to add is similar to the previous one the
-    //on the first refresh it does i right
-    setMinMax(min,max)
-    NormalizeAxis(id1, "Price")
-    NormalizeAxis(id2, "Volume")
+ 
+    setMinMax(min,max) //from the url min and max query set the xAxis to min and max
+    AlignAxis(id1, "Price")
+    AlignAxis(id2, "Volume")
 }
 
-function NormalizeAxis(id, matcher){
+/*For adding a new Yaxis, if there is an existing axis that has a min or max within 20 percent, then align the axes to have the same values */
+function AlignAxis(id, matcher){
     let hchart = $('#hchart').highcharts();
-    var current= hchart.get(id.toString() + "-axis")
+    let current= hchart.get(id + "-axis")
     if(id > 1){ 
-        for(let i = 1 ; i < hchart.yAxis.length ; i++){
-            iterating_axis = hchart.get(i.toString() + "-axis")
-            if(iterating_axis == current){
+        for(let i = 1 ; i < id ; i++){
+            iterating_axis = hchart.get(i + "-axis")
+            if(iterating_axis === current){
                 continue;
             }
     
@@ -112,7 +112,7 @@ function NormalizeAxis(id, matcher){
                 let min = (curr_min < itr_min ? curr_min : itr_min) 
                 let max = (curr_max > itr_min ? curr_max : itr_max)
                 iterating_axis.setExtremes(min, max)
-                current.update({linkedTo : i})
+                hchart.get(id + "-axis").update({linkedTo : i.toString()})
             }
         }    
     }
@@ -148,7 +148,7 @@ function setMinMax(min,max){
     y_axis = datatype + " of " + coin + " Block";
     //add block axis
     hchart.addAxis({   
-             id: id.toString() + "-axis",
+             id: id + "-axis",
              className: 'highcharts-color-' + id,
              colorIndex: id,
              labels: {
@@ -168,18 +168,18 @@ function setMinMax(min,max){
     hchart.addSeries({
         cropThreshold: Number.MAX_VALUE,
         getExtremesFromAll: true,
-        id: id.toString(),
+        id: id + "-series",
         colorIndex: id,
         //boostThreshold: 1,
         type: 'line',
         name: y_axis,
         getExtremesFromAll: true,
         data: block_data,
-        yAxis: id.toString() + "-axis",
+        yAxis: id + "-axis",
     })
 
     setMinMax(min,max)
-    NormalizeAxis(id, "Block")
+    AlignAxis(id, "Block")
 }
 
 function addScatterPlot(id,coin,datatype,x,y,start,end, min, max){
@@ -196,7 +196,7 @@ function addScatterPlot(id,coin,datatype,x,y,start,end, min, max){
     hchart.addAxis(
         
          {   
-             id: id.toString() + "-axis",
+             id: id + "-axis",
              className: 'highcharts-color-' + id,
              colorIndex: id,
              labels: {
@@ -215,14 +215,14 @@ function addScatterPlot(id,coin,datatype,x,y,start,end, min, max){
     hchart.addSeries({
         cropThreshold: Number.MAX_VALUE,
         getExtremesFromAll: true,
-        id : id.toString(),
+        id : id + "-series",
         colorIndex: id,
         //boostThreshold: 1,
         type: 'scatter',
         name: y_axis,
         data: block_data,
         getExtremesFromAll: true,
-        yAxis: id.toString()+ "-axis",
+        yAxis: id + "-axis",
         marker: {
             enabled: true,
             radius: 5
@@ -230,11 +230,11 @@ function addScatterPlot(id,coin,datatype,x,y,start,end, min, max){
     })
 
     setMinMax(min,max)
-    NormalizeAxis(id, "Block")
+    AlignAxis(id, "Block")
 }
 
 
-//Allows you to pick the default range given a query parameter
+//Read the default range given a query parameter
 let url = URL.getURL()
 let range = URL.getParameterByName("range", url) 
 let selector = 1;
