@@ -29,7 +29,6 @@ function addPriceTable(id1,id2,coin,unit,last_price,last_volume,first_date, last
     document.querySelector("#remove" + id1).onclick = function(btn){ 
         let hchart = $('#hchart').highcharts();
         $("#data-row-" + id1).remove();
-        console.log(View.MODELS)
         for(let i = 0 ; i < View.MODELS.length ; i++){
             hchart.get(View.MODELS[i].id1 + "-axis").update({linkedTo : null})
         }
@@ -43,6 +42,7 @@ function addPriceTable(id1,id2,coin,unit,last_price,last_volume,first_date, last
         let hchart = $('#hchart').highcharts();
         $("#data-row-" + id2).remove();
         for(let i = 0 ; i < View.MODELS.length ; i++){
+            console.log(View.MODELS[i].id2)
             if(View.MODELS[i].id2){
                 hchart.get(View.MODELS[i].id2 + "-axis").update({linkedTo : null})
             }
