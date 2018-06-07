@@ -21,13 +21,15 @@
         let p_symbol = 'symbol=' + symbol;
         let parameter = constants.REST_URL + '/price?' + p_symbol + p_unit + p_exchange + p_interval;
         if(View.MODELS.length == 0) seriesID = 1;
-        let id1 = seriesID++;
-        let id2 = seriesID++;
-        let type = "price";
-        let url_model = new View.UrlParam(id1, id2, type, symbol, unit, datatype, exchange, interval, 0, 0);
-        View.MODELS.push(url_model);
+        let priceId = seriesID++;
+        let volumeId = seriesID++;
+        let url_model_price = new View.UrlParam(priceId,"price", symbol, unit, datatype, exchange, interval, 0, 0);
+        let url_model_volume = new View.UrlParam(volumeId, "volume", symbol, unit, datatype, exchange, interval, 0, 0);
+        View.MODELS.push(url_model_price);
+        View.MODELS.push(url_model_volume);
         View.CheckPropTypes();
-        return [parameter, id1, id2, symbol, unit, exchange, interval];
+        return {parameter : parameter, priceId : priceId, volumeId : volumeId, symbol : symbol,
+                 unit : unit, exchange: exchange, interval : interval};
     }
 
     /*reads and converts dropdown and converts it into url and returns it to be passed to Ajax call*/
@@ -43,14 +45,13 @@
         let parameter = constants.REST_URL + '/block?' + p_symbol +  p_datatype + p_interval;
         /*reset id's to 1 if MODEL is empty*/
         if(View.MODELS.length == 0) seriesID = 1;
-        let id1 =  seriesID++;
-        let id2 = 0;
-        let type = "block"
-        let url_model = new View.UrlParam(id1, id2, "block", symbol, "", datatype, "", interval, 0, 0);
+        let id =  seriesID++;
+        let type = "block";
+        let url_model = new View.UrlParam(id, "block", symbol, "", datatype, "", interval, 0, 0);
         View.MODELS.push(url_model);
         URL.changeURL();
         View.CheckPropTypes();
-        return [parameter,id1, symbol, datatype, interval];
+        return {parameter : parameter, blockId : id, symbol : symbol, datatype : datatype, interval : interval};
     }
 
     /*function that parses the url by interval, units, symbol... or whatever name, if that name doesn't exist
@@ -67,12 +68,9 @@
     
     /*convert a url to a Model*/
     function convertToModel(url){
-       
         url = url.split("?");
-
         for(let i = 1 ; i < url.length ; i++){
             current = url[i];
-            
             if(current.includes("price")){
                 let symbol =  getParameterByName("symbol", current);
                 symbol = (symbol == null ? "" : symbol); 
@@ -90,11 +88,12 @@
                 let end = getParameterByName("end", current);
                 end = (end == null ? 0 : Number(end));
                 if(View.MODELS.length == 0) seriesID = 1;  
-                let id1 = seriesID++;
-                let id2 = seriesID++;
-                let urlparam = new View.UrlParam(id1, id2, "price", symbol, unit, "none", exchange, interval, start, end); 
-                View.MODELS.push(urlparam);
-                
+                let priceId = seriesID++;
+                let volumeId = seriesID++;
+                let url_model_price = new View.UrlParam(priceId, "price", symbol, unit, "none", exchange, interval, start, end);
+                let url_model_vol = new View.UrlParam(volumeId, "volume", symbol, unit, "none", exchange, interval, start, end);
+                View.MODELS.push(url_model_price);
+                View.MODELS.push(url_model_vol);         
             }
 
             if(current.includes("block")){
@@ -111,10 +110,9 @@
                 let end = getParameterByName("end", current);
                 end = (end == null ? 0 : Number(end));
                 if(View.MODELS.length == 0) seriesID = 1;
-                let id1 = seriesID++;
-                let id2 = "none";
-                urlparam = new View.UrlParam(id1,id2,"block", symbol, "none", datatype, "Aggregated", interval, start, end); 
-                View.MODELS.push(urlparam);
+                let id = seriesID++;
+                url_model = new View.UrlParam(id,"block", symbol, "none", datatype, "Aggregated", interval, start, end); 
+                View.MODELS.push(url_model);
                
             }
         }
@@ -123,7 +121,7 @@
 
     /*given a model, convert it to usable parameters*/
     function convertModelToParameter(model){
-        if(model.type == "price"){
+        if(model.type === "price" || model.type === "volume"){
             let symbol = model.symbol;
             let unit = model.unit;
             let exchange = model.exchange;
@@ -137,13 +135,13 @@
             let p_start = (!start ? "" : "&start=" + start);
             let p_end = (!end ?  "" : "&end=" + end);
             let parameter = constants.REST_URL + "/price?" + p_symbol + p_unit + p_interval + p_exchange //+ p_start + p_end;
-            let id1 = model.id1;
-            let id2 = model.id2;
+            let id = model.id;
             let type = model.type
-            return [parameter, id1, id2, symbol, unit, exchange, interval, start, end, type];
+            return {parameter : parameter, id : id, symbol : symbol, unit : unit, exchange : exchange, interval : interval, 
+                    start : start, end : end, type : type};
         }
 
-        if(model.type == "block"){
+        if(model.type === "block"){
             let symbol = model.symbol;
             let interval = model.interval;
             let datatype = model.datatype;
@@ -155,24 +153,23 @@
             let p_start = (!start ? "" : "&start=" +  start);
             let p_end = (!end ? "" : "&end=" + end);
             let parameter = constants.REST_URL + '/block' + p_symbol + p_datatype + p_interval //+ p_start + p_end;
-            let id = model.id1;
+            let id = model.id;
             let type = model.type
-            return [parameter, id, symbol, datatype, interval, start, end, type];       
+            return {parameter : parameter, id : id, symbol : symbol, datatype : datatype, interval : interval,start : start, end : end, type : type};       
         }
-
     } 
 
     /*call API and Generate the Price and Volume graphs for a single url*/
-    function getPriceAPI(arr){
-        var parameter = arr[0];
-        var id1 = arr[1];
-        var id2 = arr[2];
-        var symbol = arr[3];
-        var unit = arr[4];
-        var exchange = arr[5];
-        if(exchange == "") exchange = "Aggregated";
-        var interval = arr[6];
 
+    function getPriceAPI(obj){
+        var parameter = obj.parameter;
+        var priceId = obj.priceId;
+        var volumeId = obj.volumeId;
+        var symbol = obj.symbol;
+        var unit = obj.unit;
+        var exchange = obj.exchange;
+        exchange === "" ? exchange = "Aggregated" : exchange
+        var interval = obj.interval;
         validateParameters(parameter)
 
         fetch(parameter)
@@ -181,9 +178,9 @@
             if (response.status !== 200) {
                 console.error('Looks like there was a problem. Status Code: ' + response.status);
                 Table.displayError();
-                //delete is from the view.models
+                //delete from the view.models
                 for(let i = 0 ; i < MODELS.length; i++){
-                    if(MODELS[i].id1 == id1){
+                    if(MODELS[i].id === id){
                         MODELS.splice(i,1);
                     }
                 }
@@ -202,14 +199,14 @@
                     let unit_data = data.unit;
                     let last_price = y_prices[y_prices.length-1];
                     let last_volume = y_volume[y_volume.length-1];
-                    //let first_date = x[0];
-                    //let last_date = x[x.length-1];
                     let first_date = x[0];
                     let last_date = x[x.length-1];
                     URL.changeURL();
                      //Here you will pass data to whatever Graphing library asynchronosly
-                    Table.addPriceTable(id1,id2,coin_data,unit_data,last_price,last_volume,first_date, last_date, interval, exchange);
-                    High.addPriceVolumeGraph(id1,id2,coin_data,unit_data,x,y_prices,y_volume, first_date, last_date);
+                    Table.addPriceTable(priceId, coin_data, unit_data, last_price, last_volume, first_date, last_date, interval, exchange);
+                    Table.addVolumeTable(volumeId, coin_data, unit_data, last_volume, first_date, last_date, interval, exchange);  
+                    High.addPriceGraph(priceId, coin_data, unit_data, x, y_prices, first_date, last_date);
+                    High.addVolumeGraph(volumeId, coin_data, unit_data, x, y_volume, first_date, last_date);
                     return true;
                 });
                 }
@@ -222,12 +219,12 @@
     }
 
     /*Call the API and generate graph for Block data for a single url*/
-    function getBlockAPI(arr){    
-        var parameter = arr[0];
-        var id = arr[1];
-        var symbol = arr[2];
-        var datatype = arr[3];
-        var interval = arr[4];
+    function getBlockAPI(obj){    
+        var parameter = obj.parameter;
+        var id = obj.blockId;
+        var symbol = obj.symbol;
+        var datatype = obj.datatype;
+        var interval = obj.interval;
 
         validateParameters(parameter)
 
@@ -240,7 +237,7 @@
                 Table.displayError();
                 //delete is from the view.models
                 for(let i = 0 ; i < MODELS.length; i++){
-                    if(MODELS[i].id1 == id1){
+                    if(MODELS[i].id == id){
                         MODELS.splice(i,1);
                     }
                 }
@@ -305,11 +302,15 @@
         });
     }
 
-    /* collect all urls, and fetch data for all them and then render tables and graphs*/
+    /* collect all urls, and fetch data for all them and then render tables and graphs params are made of array of converted models*/
+    /* price - {parameter : parameter, id : id, symbol : symbol, unit : unit, exchange : exchange, interval : interval, 
+        start : start, end : end, type : type};
+        block- {parameter : parameter, id : id, symbol : symbol, datatype : datatype, interval : interval,start : start, end : end, type : type};*/       
+
     function getAllAPI(params){
         let url_arr = []
         for(let i = 0 ; i < params.length ; i++){
-            url_arr.push(params[i][0])
+            url_arr.push(params[i].parameter)
         }
         validateParameters(url_arr);
         let all_promises = url_arr.map(getPromise);
@@ -319,16 +320,15 @@
             let max = getMinMax(URL.getURL())[1]/1000;
             
             for(let i = 0 ; i < all_promises.length ; i++){
-                if(params[i][params[i].length-1] === "price"){
-                    let id1 = params[i][1];
-                    let id2 = params[i][2];
-                    let symbol = params[i][3];
-                    let unit = params[i][4];
-                    let exchange = params[i][5];
+                if(params[i].type === "price" || params[i].type === "block"){
+                    let id = params[i].id;
+                    let symbol = params[i].symbol;
+                    let unit = params[i].unit;
+                    let exchange = params[i].exchange;
                     if(exchange == "") exchange = "Aggregated";
-                    let interval = params[i][6];
-                    let start = params[i][7]/1000;
-                    let end = params[i][8]/1000;
+                    let interval = params[i].interval;
+                    let start = params[i].start/1000;
+                    let end = params[i].end/1000;
                     let interval_i = all[i].interval/1000;
                     let x = processDates(all[i],interval_i);
                     let y_prices = processPrices(all[i],unit);
@@ -337,21 +337,26 @@
                     let unit_data = all[i].unit;
                     let last_price = y_prices[y_prices.length-1];
                     let last_volume = y_volume[y_volume.length-1];
-                    let first_date = !start ? x[0] : start
-                    let last_date = !end ? x[x.length-1] : end
-                    validateTimeStamps(symbol, first_date, last_date)
-
+                    let first_date = !start ? x[0] : start;
+                    let last_date = !end ? x[x.length-1] : end;
+                    validateTimeStamps(symbol, first_date, last_date);
                     //Here you will pass data to whatever Graphing library asynchronosly
-                    Table.addPriceTable(id1,id2,coin_data,unit_data,last_price,last_volume,first_date, last_date, interval, exchange);
-                    High.addPriceVolumeGraph(id1,id2,coin_data,unit_data,x,y_prices,y_volume, first_date, last_date, min, max);
+                    if(params[i] === "price"){
+                        Table.addPriceTable(id, coin_data, unit_data, last_price, first_date, last_date, interval, exchange);
+                        High.addPriceGraph(id, coin_data, unit_data, x, y_prices, first_date, last_date, min, max);
+                    }
+                    else{
+                        Table.addVolumeTable(id, coin_data, unit_data, last_volume, first_date, last_date, interval, exchange);      
+                        High.addVolumeGraph(id, coin_data, unit_data, x, y_volume, first_date, last_date, min, max);
+                    }
                 }
                 if(params[i][params[i].length-1] === "block"){
-                    let id = params[i][1];
-                    let symbol = params[i][2];
-                    let datatype = params[i][3];
-                    let interval = params[i][4];
-                    let start = params[i][5]/1000;
-                    let end = params[i][6]/1000;
+                    let id = params[i].id;
+                    let symbol = params[i].symbol;
+                    let datatype = params[i].datatype;
+                    let interval = params[i].interval;
+                    let start = params[i].start/1000;
+                    let end = params[i].end/1000;
                     let interval_i = all[i].interval/1000;
                     let plottype = all[i].plottype;
     
@@ -371,11 +376,11 @@
                     validateTimeStamps(symbol, first_date, last_date)
                     //Here you will pass data to whatever Graphing library asynchronosly
                     if(plottype == "scatter"){
+                        Table.addBlockTable(id,coin_data,datatype_data,last_datatype,first_date, last_date, interval);
                         High.addScatterPlot(id,coin_data,datatype_data,x,y, first_date, last_date, min, max);
-                        Table.addBlockTable(id,coin_data,datatype_data,last_datatype,first_date, last_date, interval);
                     }else{
-                        High.addBlockGraph(id,coin_data,datatype_data,x,y, first_date, last_date, min, max);
                         Table.addBlockTable(id,coin_data,datatype_data,last_datatype,first_date, last_date, interval);
+                        High.addBlockGraph(id,coin_data,datatype_data,x,y, first_date, last_date, min, max);
                     }
                 }
             }    

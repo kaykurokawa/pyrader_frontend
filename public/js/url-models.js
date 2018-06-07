@@ -1,9 +1,8 @@
     var MODELS = []
 
     /* a Model is the stored data representation of a query request. User makes request using url string or dropdowns*/
-    function UrlParam(id1,id2,type, symbol, unit, datatype,exchange,interval,start,end, selected){
-        this.id1  = id1; 
-        this.id2 = id2; 
+    function UrlParam(id,type, symbol, unit, datatype,exchange,interval,start,end){
+        this.id  = id; 
         this.type = type; 
         this.symbol = symbol;
         this.unit = unit; 
@@ -18,11 +17,8 @@
     function CheckPropTypes(){
         for(let i = 0 ; i < MODELS.length ; i++){
             
-            if(typeof MODELS[i].id1 != "number"){
-                console.warn("id1 in the Url-Model is not a number")
-            }
-            if(typeof MODELS[i].id2 != "number"){
-                console.warn( "id2 in the Url-Model is not a number")
+            if(typeof MODELS[i].id != "number"){
+                console.warn("id in the Url-Model is not a number")
             }
             if(typeof MODELS[i].type != "string"){
                 console.warn( "type in the Url-Model is not a string")
