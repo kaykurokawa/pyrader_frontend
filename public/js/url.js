@@ -28,9 +28,9 @@ function createBrowserUrl(models){
         }
 }
 
-function removeModel(id1){
+function removeModel(id){
     for(let i = 0 ; i < View.MODELS.length ; i++){
-        if(View.MODELS[i].id1 == id1){
+        if(View.MODELS[i].id == id){
             View.MODELS.splice(i,1) 
         }
     }

@@ -1,34 +1,29 @@
 const URL = require('./url.js');
 const Input =  require('./input.js')
+/*Create Highcharts for price*/
+// High.addPriceGraph(id, coin_data, unit_data, x, y_prices, first_date, last_date, min, max);
 
-//Create Highcharts for price/volume
-function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume,start,end, min, max){
-    volume = [];
+function addPriceGraph(id,coin,unit,x,y_prices,start,end, min, max){
     prices = [];
-  
     for(i = 0 ; i < x.length ; i++){
         if(x[i] >= start && x[i] <= end){
             prices.push([x[i], y_prices[i]]);
-            volume.push([x[i], y_volume[i]]);
         }
     }
-
     prices.sort();
-    volume.sort();
     title = coin + " Charts";
-    y_axis1 = "Price of " + coin + " in " + unit;
-    y_axis2 = "Volume of " + coin + " in " + unit;
+    y_axis = "Price of " + coin + " in " + unit;
     
     //price axis
     hchart.addAxis({   
-            id: id1 + "-axis",
-            colorIndex: id1,
-            className: 'highcharts-color-' + id1,
+            id: id + "-axis",
+            colorIndex: id,
+            className: 'highcharts-color-' + id,
             labels: {
                 align: 'left',
             },
             title: {
-                text:  '<div class="highcharts-color-' + id1 + '">' + y_axis1 + '</div>'
+                text:  '<div class="highcharts-color-' + id + '">' + y_axis + '</div>'
             },
             height: '65%',
             lineWidth: 2,
@@ -40,28 +35,45 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume,start,end, mi
     hchart.addSeries({
         cropThreshold: Number.MAX_VALUE,
         getExtremesFromAll: true,
-        id: id1 + "-series",
-        colorIndex: id1,
+        id: id + "-series",
+        colorIndex: id,
         type: 'line',
-        name: y_axis1,
+        name: y_axis,
         unit: unit,
         data: prices,
         //yAxis: hchart.yAxis.length-1,
-        yAxis: id1 + "-axis",
+        yAxis: id + "-axis",
         //boostThreshold: 1
     });
 
-    //volume axis  
-    hchart.addAxis({
-            id: id2 + "-axis",
-            colorIndex: id2,
-            className: 'highcharts-color-' + id2,
+    setMinMax(min,max) //from the url min and max query set the xAxis to min and max
+    AlignAxis(id, "Price")
+}
+
+/*Create Highcharts for volume*/
+//High.addVolumeGraph(id, coin_data, unit_data, x, y_volume, first_date, last_date, min, max);
+function addVolumeGraph(id,coin,unit,x,y_volume,start,end, min, max){
+    volumes = [];
+    for(i = 0 ; i < x.length ; i++){
+        if(x[i] >= start && x[i] <= end){
+            volumes.push([x[i], y_volume[i]]);
+        }
+    }
+    volumes.sort();
+    title = coin + " Charts";
+    y_axis = "Volume of " + coin + " in " + unit;
+
+        //volume axis  
+        hchart.addAxis({
+            id: id + "-axis",
+            colorIndex: id,
+            className: 'highcharts-color-' + id,
             labels: {
                 align: 'left',
                 x: -40
             },
             title: {
-                text: '<div class="highcharts-color-' + id2 + '">' + y_axis2 + '</div>'
+                text: '<div class="highcharts-color-' + id + '">' + y_axis + '</div>'
             },
             top: '70%',
             height: '30%',
@@ -74,21 +86,18 @@ function addPriceVolumeGraph(id1,id2,coin,unit,x,y_prices,y_volume,start,end, mi
     hchart.addSeries({
         cropThreshold: Number.MAX_VALUE,
         getExtremesFromAll: true,
-        id: id2 + "-series",
-        colorIndex: id2,
+        id: id + "-series",
+        colorIndex: id,
         type: 'column',
-        name: y_axis2,
+        name: y_axis,
         unit: unit,
-        data: volume,
+        data: volumes,
         //yAxis: hchart.yAxis.length-1,
-        yAxis: id2 + "-axis",
+        yAxis: id + "-axis",
         //boostThreshold: 1
     });
-
- 
     setMinMax(min,max) //from the url min and max query set the xAxis to min and max
-    AlignAxis(id1, "Price")
-    AlignAxis(id2, "Volume")
+    AlignAxis(id, "Volume")
 }
 
 /*For adding a new Yaxis, if there is an existing axis that has a min or max within 20 percent, then align the axes to have the same values */
@@ -397,6 +406,8 @@ var hchart = Highcharts.stockChart('hchart', {
 module.exports = {
     addBlockGraph : addBlockGraph,
     addScatterPlot : addScatterPlot,
-    addPriceVolumeGraph : addPriceVolumeGraph
+    addPriceGraph : addPriceGraph,
+    addVolumeGraph : addVolumeGraph
+
   }
   
