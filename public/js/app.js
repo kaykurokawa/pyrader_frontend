@@ -31,7 +31,7 @@ $(document).ready(function () {
         /*collect all queryies from url string into one model and get the corresponding data*/ 
         let parameters = [];
         for(let i = 0 ; i < View.MODELS.length ; i++){
-                    parameters.push(Input.convertModelToParameter(View.MODELS[i])); 
+                parameters.push(Input.convertModelToParameter(View.MODELS[i])); 
             }
         Input.getAllAPI(parameters);
     }

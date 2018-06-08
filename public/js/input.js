@@ -203,7 +203,7 @@
                     let last_date = x[x.length-1];
                     URL.changeURL();
                      //Here you will pass data to whatever Graphing library asynchronosly
-                    Table.addPriceTable(priceId, coin_data, unit_data, last_price, last_volume, first_date, last_date, interval, exchange);
+                    Table.addPriceTable(priceId, coin_data, unit_data, last_price, first_date, last_date, interval, exchange);
                     Table.addVolumeTable(volumeId, coin_data, unit_data, last_volume, first_date, last_date, interval, exchange);  
                     High.addPriceGraph(priceId, coin_data, unit_data, x, y_prices, first_date, last_date);
                     High.addVolumeGraph(volumeId, coin_data, unit_data, x, y_volume, first_date, last_date);
@@ -219,6 +219,7 @@
     }
 
     /*Call the API and generate graph for Block data for a single url*/
+
     function getBlockAPI(obj){    
         var parameter = obj.parameter;
         var id = obj.blockId;
@@ -320,7 +321,7 @@
             let max = getMinMax(URL.getURL())[1]/1000;
             
             for(let i = 0 ; i < all_promises.length ; i++){
-                if(params[i].type === "price" || params[i].type === "block"){
+                if(params[i].type === "price" || params[i].type === "volume"){
                     let id = params[i].id;
                     let symbol = params[i].symbol;
                     let unit = params[i].unit;
@@ -331,26 +332,26 @@
                     let end = params[i].end/1000;
                     let interval_i = all[i].interval/1000;
                     let x = processDates(all[i],interval_i);
-                    let y_prices = processPrices(all[i],unit);
-                    let y_volume = processVolume(all[i],unit);
                     let coin_data = all[i].symbol;
                     let unit_data = all[i].unit;
-                    let last_price = y_prices[y_prices.length-1];
-                    let last_volume = y_volume[y_volume.length-1];
                     let first_date = !start ? x[0] : start;
                     let last_date = !end ? x[x.length-1] : end;
                     validateTimeStamps(symbol, first_date, last_date);
                     //Here you will pass data to whatever Graphing library asynchronosly
-                    if(params[i] === "price"){
+                    if(params[i].type === "price"){
+                        let y_prices = processPrices(all[i],unit);
+                        let last_price = y_prices[y_prices.length-1];
                         Table.addPriceTable(id, coin_data, unit_data, last_price, first_date, last_date, interval, exchange);
                         High.addPriceGraph(id, coin_data, unit_data, x, y_prices, first_date, last_date, min, max);
                     }
                     else{
+                        let y_volume = processVolume(all[i],unit);
+                        let last_volume = y_volume[y_volume.length-1];
                         Table.addVolumeTable(id, coin_data, unit_data, last_volume, first_date, last_date, interval, exchange);      
                         High.addVolumeGraph(id, coin_data, unit_data, x, y_volume, first_date, last_date, min, max);
                     }
                 }
-                if(params[i][params[i].length-1] === "block"){
+                if(params[i].type === "block"){
                     let id = params[i].id;
                     let symbol = params[i].symbol;
                     let datatype = params[i].datatype;
