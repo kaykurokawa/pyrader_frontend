@@ -1,6 +1,7 @@
 import React from 'react';
-import { MICRO } from './constants';
+import { MICRO } from '../constants';
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 var key_gen = 0;
 
 class Select extends React.Component{
@@ -236,4 +237,6 @@ Select.propTypes = {
 
 };
 
-export default Select;
+export default connect((state) => ({
+    row: state.row
+  }))(Select)

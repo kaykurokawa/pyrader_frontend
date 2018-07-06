@@ -2,6 +2,11 @@ import React from 'react';
 import Select from './Select.js';
 import Buttons from './Buttons.js';
 import Info from '../info_data.js'
+import { connect } from 'react-redux'
+import {
+    handleAddRow,
+    handleDeleteRow
+    } from '../actions/rowActions'
 
 class Dropdowns extends React.Component{
 
@@ -259,14 +264,15 @@ class Dropdowns extends React.Component{
                 });   
             }
             document.querySelector('#submit').addEventListener("click", () => {
-                handleSubmit();
+                handleSubmit("price");
             }, false)
 
             document.querySelector('#block-submit').addEventListener("click", () => {
-                handleSubmit();
+                handleSubmit("block");
             }, false)
 
-            function handleSubmit(){
+            function handleSubmit(type){
+                let cc = currentComponent
                 currentComponent.setState({
                     price_mode_enabled : true,
                     symbol_enabled: false, 
@@ -282,6 +288,14 @@ class Dropdowns extends React.Component{
                     options : [createOptions(initial_prices,"symbol")], //set states to originial
                     block_options : [createOptions(initial_blocks, "block-symbol")]
                 });
+
+                if(type === "block"){
+                    cc.props.dispatch(handleAddRow("block", cc.state.block_symbol, "", cc.state.block_datatype , cc.state.exchange, cc.state.block_interval, null, null))
+                }else{
+                    cc.props.dispatch(handleAddRow("price", cc.state.symbol, cc.state.unit, "" , cc.state.exchange, cc.state.interval, null, null))
+                    cc.props.dispatch(handleAddRow("volume", cc.state.symbol, cc.state.unit, "" , cc.state.exchange, cc.state.interval, null, null))
+                }  
+                
             }
         }
     
@@ -334,4 +348,6 @@ class Dropdowns extends React.Component{
     }
 }
 
-export default Dropdowns;
+export default connect((state) => ({
+    row : state.row
+}))(Dropdowns) 
