@@ -37,7 +37,7 @@ function processDates(json,interval_i){
 }
 
 
-    /*given a json with prices, and units in string, eliminate zeros, convert the prices to those units and return an array of prices*/
+/*given a json with prices, and units in string, eliminate zeros, convert the prices to those units and return an array of prices*/
 function processPrices(json,unit){
     for(let i = 0 ; i < json.y.length ; i++){
         if(json.y[i] === 0 && i === 0){
@@ -50,7 +50,17 @@ function processPrices(json,unit){
             continue;
         }
     }
-}
+
+    let pricesArray = [];
+    /*if you divide your data by the conversion and it is less than 1 (ie. Comparing DOGE to units of BTC) give me 8 decimals*/
+    if(json.y[0]/conversions[unit] < 1){
+        json.y = json.y.map(units => {return round(units/conversions[unit],8)});
+    }else{
+        json.y = json.y.map(units => {return round(units/conversions[unit],2)});
+    }
+    return json.y;
+    }
+
 function round(value, precision) {
     let multiplier = Math.pow(10, precision || 0);
     return Math.round(value * multiplier) / multiplier;
@@ -63,12 +73,11 @@ function processVolume(json,unit){
 }
 
 function callApi(type, symbol, unit, datatype, exchange, interval){
-    exchange = exchange == "Aggregated" ? "" : exchange;
-    interval = (interval == "None" ? "" : interval);
-    interval = (interval == "No Averaging" ? "0" : interval);  
-    datatype = "";
-    let p_exchange = (exchange == "" ? "" : '&exchange=' + exchange);
-    let p_interval = (interval == "" ? "" : '&interval=' + interval);
+    exchange = exchange === "Aggregated" ? "" : exchange;
+    interval = (interval === "None" ? "" : interval);
+    interval = (interval === "No Averaging" ? "0" : interval);  
+    let p_exchange = (exchange === "" ? "" : '&exchange=' + exchange);
+    let p_interval = (interval === "" ? "" : '&interval=' + interval);
     let p_unit = '&unit=' + unit;
     let parameter = ""
     if(type === "price" || type === "volume"){
@@ -92,7 +101,7 @@ function callApi(type, symbol, unit, datatype, exchange, interval){
         var count = 0;
         var holes = true;
         for(let i = 0 ; i < json.y.length ; i++){
-            if(json.y[i] == 0 ){
+            if(json.y[i] === 0 ){
                 count++;
             }
         }
@@ -103,7 +112,7 @@ function callApi(type, symbol, unit, datatype, exchange, interval){
         
         if(holes){
             for(let i = 0 ; i < json.y.length ; i++){
-                if(!json.y[i] && i == 0){
+                if(!json.y[i] && i === 0){
                     let j = 0;
                     while(!json.y[j]){j++; }
                         json.y[0] = json.y[j];
@@ -126,19 +135,22 @@ function handleAddRow(type,symbol,unit,datatype,exchange,interval,start,end){
     
     return function(dispatch){
         return fetch(url).then((res) => res.json().then((data) => {
-            let interval_i = (data.interval/1000)
+            let interval_i = (data.interval/1000);
             let x = processDates(data,interval_i);
-            let y = []
+            let y = [];
+            let coin_data =  "";
             if(type === "volume"){
                 y = processVolume(data,unit);
+                coin_data = data.symbol;
             }
             if(type === "price"){
                 y = processPrices(data,unit);
+                coin_data = data.symbol;
             } 
             if(type ==="block"){
                 y = processData(data)
+                coin_data = data.coin;
             }
-            let coin_data = data.symbol;
             let unit_data = data.unit;
             let last_price = y[y.length-1];
             let first_date = x[0];

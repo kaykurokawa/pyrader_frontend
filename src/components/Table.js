@@ -26,6 +26,7 @@ class Table extends React.Component{
             <td>{data.symbol}</td>
             <td>{data.exchange}</td>
             <td>time</td>
+            <td>{data.last_data}</td>
             <td>{data.units}</td>
             <td>{data.interval}</td>
             <td className = 'text-center'><span id='remove-row-react' className = {'glyphicon glyphicon-remove' + ' remove-react-' + data.id} onClick = { () => this.handleRemove(data.id)}></span></td>
