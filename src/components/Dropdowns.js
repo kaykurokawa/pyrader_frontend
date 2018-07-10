@@ -290,10 +290,10 @@ class Dropdowns extends React.Component{
                 });
 
                 if(type === "block"){
-                    cc.props.dispatch(handleAddRow("block", cc.state.block_symbol, "", cc.state.block_datatype , cc.state.exchange, cc.state.block_interval, null, null))
+                    cc.props.dispatch(handleAddRow("block", cc.state.block_symbol, "", cc.state.block_datatype , cc.state.exchange, cc.state.block_interval, null))
                 }else{
-                    cc.props.dispatch(handleAddRow("price", cc.state.symbol, cc.state.unit, "" , cc.state.exchange, cc.state.interval, null, null))
-                    cc.props.dispatch(handleAddRow("volume", cc.state.symbol, cc.state.unit, "" , cc.state.exchange, cc.state.interval, null, null))
+                    cc.props.dispatch(handleAddRow("price", cc.state.symbol, cc.state.unit, "" , cc.state.exchange, cc.state.interval))
+                    cc.props.dispatch(handleAddRow("volume", cc.state.symbol, cc.state.unit, "" , cc.state.exchange, cc.state.interval))
                 }  
                 
             }

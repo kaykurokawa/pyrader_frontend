@@ -130,7 +130,7 @@ function handleDeleteRow(id){
     return removeRow(id)
 }
 
-function handleAddRow(type,symbol,unit,datatype,exchange,interval,start,end){
+function handleAddRow(type,symbol,unit,datatype,exchange,interval){
     let url = callApi(type,symbol,unit,datatype,exchange,interval)
     
     return function(dispatch){
@@ -167,8 +167,6 @@ function handleAddRow(type,symbol,unit,datatype,exchange,interval,start,end){
                     last_data: last_price,
                     first_date: first_date,
                     last_date: last_date,
-                    start: start,
-                    end: end,
             }
             dispatch(addRow(row))
         }

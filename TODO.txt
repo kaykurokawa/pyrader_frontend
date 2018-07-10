@@ -1,0 +1,2 @@
+1. make Table component. 
+2. 

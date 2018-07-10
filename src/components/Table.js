@@ -13,7 +13,7 @@ class Table extends React.Component{
     }
     
     static getDerivedStateFromProps(props, prevState){
-        console.log(props.row)
+        
         return null;
     }
 
@@ -25,7 +25,8 @@ class Table extends React.Component{
             <td>{data.type}</td>
             <td>{data.symbol}</td>
             <td>{data.exchange}</td>
-            <td>time</td>
+            <td>{new Date(data.first_date).toDateString() + " " + new Date(data.first_date).toLocaleTimeString('en-US') + " to " +
+                 new Date(data.last_date).toDateString() + " " + new Date(data.last_date).toLocaleTimeString('en-US')}</td>
             <td>{data.last_data}</td>
             <td>{data.units}</td>
             <td>{data.interval}</td>
@@ -34,7 +35,7 @@ class Table extends React.Component{
         )
         return(
         <div>
-            <table className="table-react" id="table-of-prices-react">
+            <table className="table" id="table-of-prices-react">
                 <thead>
                     <tr>
                         <th>Price/Data Information:</th>
@@ -47,7 +48,7 @@ class Table extends React.Component{
                         <th>Averaging:</th>
                         <th>Remove:</th>
                     </tr>
-                </thead>    
+                </thead>
                 <tbody>
                     {rowItems}
                 </tbody>
