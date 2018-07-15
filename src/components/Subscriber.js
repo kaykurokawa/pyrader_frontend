@@ -3,6 +3,7 @@ import { handleDeleteRow } from '../actions/rowActions';
 import { REST_URL } from '../constants';
 import axios from 'axios';
 import Info from '../info_data.js';
+var keygen = 0;
 
 class Subscriber extends React.Component{
     constructor(props){
@@ -93,9 +94,9 @@ class Subscriber extends React.Component{
         let prices = this.createOptions(Info.info_json.price,"symbol")
         let blocks = this.createOptions(Info.info_json.block,"block-symbol")
         let priceItems = prices.map((item) =>
-            <option key={item}>{item}</option>);
+            <option key={keygen++}>{item}</option>);
         let blockItems = blocks.map((item) =>
-            <option key={item}>{item}</option>);
+            <option key={keygen++}>{item}</option>);
         priceItems = priceItems.concat(blockItems)
 
 

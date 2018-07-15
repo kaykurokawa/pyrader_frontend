@@ -15,11 +15,15 @@ class Chart extends React.Component{
 
 
     render(){
-        return()
+        
+        return(
+            <div></div>
+        
+        )
     }
 
 }
 
 export default connect((state) => ({
     row : state.row
-}))(Table) 
+}))(Chart) 

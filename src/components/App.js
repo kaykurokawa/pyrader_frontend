@@ -12,8 +12,6 @@ class App extends React.Component{
         return (
             <div>
                 <Dropdowns />
-                <Table />
-                <Chart />
             </div>
         )
     }
