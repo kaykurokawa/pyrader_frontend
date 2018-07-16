@@ -30,7 +30,7 @@ class Table extends React.Component{
             <td>{data.last_data}</td>
             <td>{data.units}</td>
             <td>{data.interval}</td>
-            <td className = 'text-center'><span id='remove-row-react' className = {'glyphicon glyphicon-remove' + ' remove-react-' + data.id} onClick = { () => this.handleRemove(data.id)}></span></td>
+            <td className = 'text-center'><span id='remove-row-react' className = {"glyphicon glyphicon-remove remove-react-" + data.id} onClick = { () => this.handleRemove(data.id)}></span></td>
         </tr>
         )
         return(

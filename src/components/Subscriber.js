@@ -101,37 +101,40 @@ class Subscriber extends React.Component{
 
 
         return(
-        <form>
-            <div className="form-row">
-                <div className="form-group col-xs-4">
-                        <label htmlFor="watch">Instr. to Watch:</label>
-                        <select id="watch" className="form-control" value={this.state.watch} onChange={(e) => this.handleWatchSelect(e)}>
-                            {priceItems}
-                        </select>
+            <div className="container">
+            <h3>Subsricption Notifications</h3>
+            <form>
+                <div className="form-row">
+                    <div className="form-group col-xs-4">
+                            <label htmlFor="watch">Instr. to Watch:</label>
+                            <select id="watch" className="form-control" value={this.state.watch} onChange={(e) => this.handleWatchSelect(e)}>
+                                {priceItems}
+                            </select>
+                    </div>
+                    <div className="form-group col-xs-4">
+                            <label htmlFor="condition">What to Look for:</label>
+                            <select id="condition" className="form-control" value={this.state.choice} onChange={(e) => this.handleChoiceSelect(e)}>
+                                <option value="none">Choose...</option>
+                                <option value="less than">Price</option>
+                                <option value="greater than">Block</option>
+                            </select>
+                    </div>
+                    <div className="form-group col-xs-4">
+                            <label htmlFor="condition">Condition:</label>
+                            <select id="condition" className="form-control" value={this.state.condition} onChange={(e) => this.handleCondSelect(e)}>
+                                <option value="none">Choose...</option>
+                                <option value="less than">less than</option>
+                                <option value="greater than">greater than</option>
+                            </select>
+                    </div>
+                    <div className="form-group col-xs-4">
+                        <label htmlFor="inputEmail4">Price/Block Point:</label>
+                        <input type="text" className="form-control" id="point" placeholder="0" value={this.state.price_point} onChange={this.handleChange} />
+                    </div>
                 </div>
-                <div className="form-group col-xs-4">
-                        <label htmlFor="condition">What to Look for:</label>
-                        <select id="condition" className="form-control" value={this.state.choice} onChange={(e) => this.handleChoiceSelect(e)}>
-                            <option value="none">Choose...</option>
-                            <option value="less than">Price</option>
-                            <option value="greater than">Block</option>
-                        </select>
-                </div>
-                <div className="form-group col-xs-4">
-                        <label htmlFor="condition">Condition:</label>
-                        <select id="condition" className="form-control" value={this.state.condition} onChange={(e) => this.handleCondSelect(e)}>
-                            <option value="none">Choose...</option>
-                            <option value="less than">less than</option>
-                            <option value="greater than">greater than</option>
-                        </select>
-                </div>
-                <div className="form-group col-xs-4">
-                    <label htmlFor="inputEmail4">Price/Block Point:</label>
-                    <input type="text" className="form-control" id="point" placeholder="0" value={this.state.price_point} onChange={this.handleChange} />
-                </div>
-            </div>
-            <button type="submit" className="btn btn-primary" onClick = {(e) => this.handleFormSubmit(e)}>Subscribe</button>
-        </form>    
+                <button type="submit" className="btn btn-primary" onClick = {(e) => this.handleFormSubmit(e)}>Subscribe</button>
+            </form>
+        </div>    
         )
     }
 }
