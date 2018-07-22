@@ -4,7 +4,8 @@ import { handleDeleteRow } from '../actions/rowActions';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import './react-bootstrap-table-all.min.css';
 import './Notifier.css'
-import {MICRO, MILLI} from '../constants.js'
+import {MICRO, MILLI, NOTIFY_URL, STANDARD_PARAMETER, SAVE_PARAMETER} from '../constants.js'
+import axios from 'axios';
 var key_gen = 0
 
 
@@ -22,21 +23,28 @@ class Notifier extends React.Component{
     }
 
     componentDidMount(){
-        let url = 'http://localhost:8888/notify'
-        fetch(url).then(res => res.json().then(data => {
-            let convertedMessages = data.notifications.map(entry => 
-                ({message : entry.message, date : new Date(entry.timestamp/MILLI).toString()}));
-            this.setState({messages : convertedMessages})
-        })).catch(function(err) {
-            console.error('Fetch Error :-S', err);
-            return false;   
-        });
+        const curr_component = this
+        poll() // every 5 minutes
+        function poll(){
+            fetch(NOTIFY_URL + STANDARD_PARAMETER).then(res => res.json().then(
+ 	            data => {
+                    let convertedMessages = data.notifications.map(entry => 
+                        ({message : entry.message, date : new Date(entry.timestamp/MILLI).toString()}));
+                    curr_component.setState({messages : convertedMessages})
+ 	                setTimeout(poll, 300 * MILLI);
+                        }
+                    )
+                ).catch(function(err) {
+                    console.error('Fetch Error :-S', err);
+                    setTimeout(poll, 300 * MILLI);  
+                });
+        }
     }
 
     handleExpand(e){
         e.preventDefault();
         this.setState({expanded : true})
-        let url = 'http://localhost:8888/notify'
+        let url = NOTIFY_URL + SAVE_PARAMETER;
         fetch(url).then(res =>res.json().then(data => {
             let expiredMessages = data.saved.map(entry => 
                 ({message : entry.message, date : new Date(entry.timestamp/MILLI).toString()}));
@@ -55,7 +63,14 @@ class Notifier extends React.Component{
     handleClear(e){
         e.preventDefault();
         this.setState({expired_messages : []})
-        console.log("clear")
+        let post_body = {clear_saves : "true"}
+        axios.post(NOTIFY_URL, post_body)
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     }
         
     render(){

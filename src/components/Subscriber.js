@@ -1,6 +1,6 @@
 import React from 'react';
 import { handleDeleteRow } from '../actions/rowActions';
-import { REST_URL } from '../constants';
+import { REST_URL, NOTIFY_URL } from '../constants';
 import axios from 'axios';
 import Info from '../info_data.js';
 var keygen = 0;
@@ -30,7 +30,7 @@ class Subscriber extends React.Component{
         if(this.state.condition === "less than"){
             condition = "<"
         }
-        let post_url = "http://localhost:8888/notify";
+        let post_url = NOTIFY_URL;
         let post_body = {}
         if(this.state.choice === "block"){
             post_body = {
