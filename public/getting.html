@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<link rel="manifest" href="">
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="theme-color" content="#000000">
+    <!--
+      manifest.json provides metadata used when your web app is added to the
+      homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
+    -->
+    <link rel="stylesheet" href="./css/project.css" />
+    <link rel="stylesheet" href="./css/highcharts.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>Blk dat</title>
+  </head>
+  <body>
+    <header class="navbar navbar-default navbar-static-top">
+      <div class="container">
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="/">Home</a></li>
+            <li><a href="getting.html">Getting Started</a></li>
+            <li><a href="more.html">More...</a></li>
+            <li><a href="https://github.com/kaykurokawa/pyrader_frontend">GitHub</a></li>
+            <li><a href="api.html">API</a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+    <div class="container">
+        <img src="../graphics/blkdat_logo_small.png" alt="logo" height="200" width="200">
+            <h2>Getting Started</h2>
+                <div class="row"> 
+                    <h4>1. In the first dropdown, pick <b>"Block"</b> for data related to the blockchain or <b>"Price/Volume"</b> for just price and volume data.</h4>
+                    <h4>2. In the next dropdown, select what coin you want to look up the following coins are supported: <b>Bitcoin,</b>
+                        <b>Litecoin,</b>
+                        <b>Dogecoin,</b>
+                        <b>Bitcoin Cash,</b>
+                        <b>Monero,</b>
+                        <b>MoneroO,</b>
+                        <b>Lbry</b>. </h4>
+                    <h4>3. Follow the arrows <span class ="glyphicon glyphicon-arrow-right"></span> to select the inputs for the request.</h4>
+                    <div id="indent-1">
+                    <h4>The following is an explanation of the drop down menus:</h4>
+                    <table class="table">
+                        <thead>
+                          <tr>
+                            <th>Dropdown</th>
+                            <th>About</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>Units</td>
+                            <td> Units you want to see the data in terms of: <b>USD, BTC, EUR</b>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Exchange</td>
+                                <td>Pick <b>Aggregated</b> for an average of all exchanges. Otherwise, get your data from the following exchanges:</h4>
+                                    <ul>
+                                        <li><b>Bittrex</b></li>
+                                        <li><b>Bitfinex</b></li>
+                                        <li><b>Coinbase</b></li>
+                                        <li><b>Bitstamp</b></li>
+                                        <li><b>Gemini</b></li>
+                                        <li><b>Itbit</b></li>
+                                        <li><b>Kraken</b></li>
+                                        <li><b>Korbit</b></li>
+                                        <li><b>Poloniex</b></li>
+                                    </ul>
+                                </td>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Datatype</td>
+                            <td>The type of block data:                     
+                                <ul>
+                                    <li><b>Block size:</b> Size of the block in bytes</li>
+                                    <li><b>Block Time:</b> Average time to advance to a new block</li>
+                                    <li><b>Difficulty:</b> How difficult it is to find a a hash below a given target </li>
+                                    <li><b>Height:</b> The number of blocks preceding a block on a block chain</li>
+                                    <li><b>Number of Tickets</b> Number of transactions</li>
+                                </ul>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Averaging</td>
+                            <td>The frequency of the intreval of data point.
+                                <ul>
+                                    <li><b>5 minutes:</b><br> Data collected every 5 minutes.</li>
+                                    <li><b>1 hour:</b><br> Data collected every hour.</li>
+                                    <li><b>daily:</b><br> Data collected every day.</li>
+                                    <li><b>No Averaging:</b><br> Data is collected at random intervals and displayed in scatter plot.</li>
+                                </ul>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                </div>    
+                <h4>4. If at anypoint you want to go back click the  <span class ="glyphicon glyphicon-remove"></span>.</h4>
+                <h4>5. Hit the <button class="btn btn-primary btn-md">Submit</button> button to graph the data. Hit <button class="btn btn-success btn-md">Reset</button> to reset the drop downs.</h4>
+                <h4>6. You can add multiple data types to the graph. For example you can compare the price of Bitcoin to the price of Litecoin or mix and match graph types: compare the hashrate of Bitcoin to it's price.</h4>
+                <h4>7. Use the range slider or date input on the graph to navigate your chart:</h4>
+                <img src="../graphics/date_input.png" style="width:35%;height:35%;" alt="slider"><br>
+                <p><br></p>
+                <img src="../graphics/rangeslider2.png" style="width:80%;height:80%;" alt="slider">
+                <p><br></p>
+                <h4>    You can manually input a date range or drage and slide to the time you want.</h4>
+                <p><br></p>
+                <p><br></p>
+                <h4>8. On the table click <span class ="glyphicon glyphicon-remove"></span> to remove from graph.</h4>
+                <img src="../graphics/table.png" style="width:80%;height:80%;" alt="slider">
+                <p><br></p>
+                <p><br></p>
+                <h4>9. Click the clipboard, next to Reset for the shareble url with exact time stamps.</h4>
+                <img src="../graphics/clipboard.png" style="width:30%;height:30%;" alt="slider">
+                <p><br></p>
+                <p><br></p>
+
+            <footer>
+                <p class="float-right"><a href="#">Back to top</a></p>
+                <p>&copy; 2018 &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+                <p>&nbsp</p>
+            </footer>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  </body>
+</html>

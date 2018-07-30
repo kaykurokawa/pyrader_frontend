@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<link rel="manifest" href="">
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="theme-color" content="#000000">
+    <!--
+      manifest.json provides metadata used when your web app is added to the
+      homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
+    -->
+    <link rel="stylesheet" href="./css/project.css" />
+    <link rel="stylesheet" href="./css/highcharts.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>Blk dat</title>
+  </head>
+  <body>
+    <header class="navbar navbar-default navbar-static-top">
+      <div class="container">
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="/">Home</a></li>
+            <li><a href="getting.html">Getting Started</a></li>
+            <li><a href="more.html">More...</a></li>
+            <li><a href="https://github.com/kaykurokawa/pyrader_frontend">GitHub</a></li>
+            <li><a href="api.html">API</a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+    <div class="container">
+        <img src="../graphics/blkdat_logo_small.png" alt="logo" height="200" width="200">
+        <h2>More Features</h2>
+        <p>Blkdat works by GUI interaction or by taking user inputs from the url query string. In order to intract with the price data you can do the following:</p>
+        <pre><code class="lang-js">http://blkdat.com/?price&symbol=BTC&unit=USD&exchange=coinbase&interval=5min</code></pre>
+            <p>The following are the query string parameters:</p>
+            <ul>
+                <li><b>/?price</b> <br>your choice of price or block data (required)</li>
+                <li><b>&symbol</b><br> your choice of instrument symbol (required)</li>
+                <li><b>&unit</b><br> your choice of units (required)</li>
+                <li><b>&exchange</b><br> choose your exhchage, if blank it will draw an average of all exchanges (not required)</li>
+                <li><b>&interval</b><br> your choice of interval, if left blank it will draw from 0 averaging (not required)</li>
+            </ul>    
+        <p>Likewise with the block data you can populate it buy:</p>
+        <pre><code class="lang-js">http://blkdat.com/?block&coin=XMO&datatype=hash_rate&interval=hour</code></pre>
+        <ul>
+            <li><b>/?block</b> <br>your choice of price or block data (required)</li>
+            <li><b>&coin</b><br> your choice of instrument symbol (required)</li>
+            <li><b>&datatype</b><br> your choice of unis (required)</li>
+            <li><b>&interval</b><br> your choice of interval, if left blank it will draw from 0 averaging which is a scatter plot. (not required)</li>
+        </ul>
+    <p>Finally you can use a combination of price/volume/block query parameters in combination to display an infinite amount of graphs! </p> 
+    <pre><code class="lang-js">http://blkdat.com/?price&symbol=BTC&unit=USD&exchange=coinbase/?block&coin=XMO&datatype=difficulty&interval=hour</code></pre>
+    
+    <h2>Subscription Services</h2>
+    <p>Blkdat has a powerful feature that allows you to gain notifications everytime a user set condition has been met.</p>
+    <p>In order to subscribe to notifications make sure to sign up for an account and go to the bottom here:</p>
+    <img src="../graphics/subscription1.png" style="width:100%;height:100%;" alt="slider"><br>
+    <p>Follow the directions:</p>
+    <p>1. From the <b>Instr. to Watch</b>b> select menu pick which instrument to watch for (BTC, LTC, ETH).</p>
+    <p>2. In the <b>What to Look for</b> select menu check for price or a block criteria.</p>
+    <p>3. In the <b>Condition</b> select, choose to send notification when >, <, = to condition is met.</p>
+    <p>4. In the <b>Price/Block Point</b> input the condition value (i.e. when the price of bitcoin is more than 6000)</p>
+
+    <footer>
+            <p class="float-right"><a href="#">Back to top</a></p>
+            <p>&copy; 2018 &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+            <p>&nbsp</p>
+    </footer>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  </body>
+</html>
