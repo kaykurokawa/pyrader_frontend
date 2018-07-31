@@ -5,6 +5,12 @@
     const Table = require('./table.js');
     var seriesID = 1; //global to keep track of which series is what. If ever  MODEL becomes blank maybe set it back to 0
 
+    /*The default graph user can play with */
+    function defaultRender(){
+        getPriceAPI({parameter : 'http://159.65.167.149:8888/price?symbol=BTC&unit=USD&interval=hour', priceId : 11, volumeId : 12, symbol : 'BTC',
+            unit : 'USD', exchange: 'coinbase', interval : 'hour', first: true});
+    }
+
      /*reads dropdown and converts it into url and returns it to be passed to Ajax call. 
         Also save params into model and changes the url*/
     function readPricesValues(){
@@ -170,6 +176,8 @@
         var exchange = obj.exchange;
         exchange === "" ? exchange = "Aggregated" : exchange
         var interval = obj.interval;
+        var first = false;
+        first = obj.first === true ? true: false;
         validateParameters(parameter)
 
         fetch(parameter)
@@ -203,10 +211,11 @@
                     let last_date = x[x.length-1];
                     URL.changeURL();
                      //Here you will pass data to whatever Graphing library asynchronosly
+                     console.log(first)
                     Table.addPriceTable(priceId, coin_data, unit_data, last_price, first_date, last_date, interval, exchange);
                     Table.addVolumeTable(volumeId, coin_data, unit_data, last_volume, first_date, last_date, interval, exchange);  
-                    High.addPriceGraph(priceId, coin_data, unit_data, x, y_prices, first_date, last_date);
-                    High.addVolumeGraph(volumeId, coin_data, unit_data, x, y_volume, first_date, last_date);
+                    High.addPriceGraph(priceId, coin_data, unit_data, x, y_prices, first_date, last_date, null, null, first);
+                    High.addVolumeGraph(volumeId, coin_data, unit_data, x, y_volume, first_date, last_date, null, null, first);
                     return true;
                 });
                 }
@@ -542,5 +551,6 @@
         getParameterByName : getParameterByName,
         convertToModel : convertToModel,
         convertModelToParameter : convertModelToParameter,
-        getAllAPI : getAllAPI
+        getAllAPI : getAllAPI,
+        defaultRender : defaultRender
     }

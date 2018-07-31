@@ -38,7 +38,69 @@
       </div>
     </header>
     <div class="container">
-     
+        <img src="../graphics/blkdat_logo_small.png" alt="logo" height="200" width="200">
+        <h2>API</h2>
+    <p>The backend is built from the <b>Pyrader API</b> for cryptocurrency data collection</p>
+    <p>Available at <b>api.blkdat.com</b> example:</p>
+      <pre><code>api.blkdat.com/price?symbol=BTC&interval=5min</code></pre>
+    <p><b>The following are the arguments you can pass in the parameter:</b></p>
+    <pre><code class="lang-js">  
+      /block - get blockchain data
+        Args (REST arguments):
+            coin - type of cryptocurrency (i.e, BTC)
+            datatype - type of data to get ('size', 'difficulty', 'height', 'total_transfer_volume', etc..)
+            interval - tick interval alias ('0', 'hour', 'day')
+            start - start timestamp in mircroseconds, if None , return all data
+            end - end timestamp in mircroseconds, if None, return all data
+        Returns (Json dict containing below items):
+            coin - coin requested
+            datatype - datatype requested
+            plottype - 'scatter' for scatter plot or 'linear' linear plot
+            interval - if linear plot,  interval in microseconds
+            x1 - if linear plot, the starting timestamp
+            x2 - if linear plot, the ending timestamp
+            x - if scatter plot, the timestamps 
+            y - data 
+            
+    
+        /price - get price/vol data
+        Args (REST arguments):
+            exchange - exchange to get data from, unspecified to get aggregated data
+            interval - tick interval alias ('0', '5min', 'hour', 'day')
+            start - start timestamp in microseconds, if None , return all data
+            end - end timestamp in microseconds, if None, return all data
+            symbol - symbol of instrument to get price/vol data from (i.e., BTC)
+            unit - symbol for unit of price (i.e., USD)
+        Returns (Json dict containing below items):
+            symbol - symbol of instrument
+            unit - symbol for unit of price
+            exchange - exchange if specified
+            plottype - price will be 'linear' for all price data
+            interval - interval in microseconds
+            x1 - the starting timestamp
+            x2 - the ending timestamp
+            y - price data 
+            w - volume data 
+
+         /info - get information about API requests
+         Returns (Json dict containing below items):
+            price - contains a list of dicts with information about what
+                kind of data are available for the price endpoint, the dict is
+                structured as below
+                {'symbol': , 'unit': , 'exchange': , 'interval': , 'size': ,
+                'last_insert_sec_past': , 'plottype'}
+            block - contains a list of dicts with information about what 
+                kind of data are available for the block endpoint, the dict is
+                structured as below
+                {'coin': , 'datatype': , 'interval': , 'size': , 'last_insert_sec_past': , 'plottype':}
+         </code></pre><br><br>
+
+         <footer>
+            <p class="float-right"><a href="#">Back to top</a></p>
+            <p>&copy; 2018 &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+            <p>&nbsp</p>
+        </footer>
+
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>

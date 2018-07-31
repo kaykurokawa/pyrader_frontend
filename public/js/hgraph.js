@@ -3,7 +3,7 @@ const Input =  require('./input.js')
 /*Create Highcharts for price*/
 // High.addPriceGraph(id, coin_data, unit_data, x, y_prices, first_date, last_date, min, max);
 
-function addPriceGraph(id,coin,unit,x,y_prices,start,end, min, max){
+function addPriceGraph(id,coin,unit,x,y_prices,start,end, min, max, first){
     prices = [];
     for(i = 0 ; i < x.length ; i++){
         if(x[i] >= start && x[i] <= end){
@@ -45,14 +45,17 @@ function addPriceGraph(id,coin,unit,x,y_prices,start,end, min, max){
         yAxis: id + "-axis",
         //boostThreshold: 1
     });
+    console.log(first)
+    if(!first){
+        setMinMax(min,max) //from the url min and max query set the xAxis to min and max
+        AlignAxis(id, "Price")
+    }
 
-    setMinMax(min,max) //from the url min and max query set the xAxis to min and max
-    AlignAxis(id, "Price")
 }
 
 /*Create Highcharts for volume*/
 //High.addVolumeGraph(id, coin_data, unit_data, x, y_volume, first_date, last_date, min, max);
-function addVolumeGraph(id,coin,unit,x,y_volume,start,end, min, max){
+function addVolumeGraph(id,coin,unit,x,y_volume,start,end, min, max, first){
     volumes = [];
     for(i = 0 ; i < x.length ; i++){
         if(x[i] >= start && x[i] <= end){
@@ -96,8 +99,12 @@ function addVolumeGraph(id,coin,unit,x,y_volume,start,end, min, max){
         yAxis: id + "-axis",
         //boostThreshold: 1
     });
-    setMinMax(min,max) //from the url min and max query set the xAxis to min and max
-    AlignAxis(id, "Volume")
+    console.log(first)
+    if(!first){
+        setMinMax(min,max) //from the url min and max query set the xAxis to min and max
+        AlignAxis(id, "Volume")
+    }
+
 }
 
 /*For adding a new Yaxis, if there is an existing axis that has a min or max within 20 percent, then align the axes to have the same values */
@@ -110,7 +117,7 @@ function AlignAxis(id, matcher){
             if(iterating_axis === current){
                 continue;
             }
-    
+            
             if((nearTwentyPercent(iterating_axis.dataMax, current.dataMax) || nearTwentyPercent(iterating_axis.dataMin, current.dataMin)) 
                 && iterating_axis.userOptions.title.text.includes(matcher)){    
                 //add property LinkTo to the your axis.

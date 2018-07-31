@@ -24,6 +24,9 @@ $(document).ready(function () {
 
     /*Model is a global representation of the url parameters input*/
         Input.convertToModel(url);
+    }else{
+    /*Default render if no string parameters are present*/
+        Input.defaultRender();
     }
 
     if(View.MODELS.length > 0){

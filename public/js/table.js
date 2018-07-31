@@ -64,9 +64,8 @@ function addBlockTable(id,coin,datatype,last_block,first_date, last_date,interva
         + "<td>" + from_date + " to " + to_date + "</td>" + "<td>"+ current_block 
         + "</td>" + "<td>units</td>" +  "<td>" + interval +"</td>" 
         + "<td class = 'text-center'><span id='remove-row' class = 'glyphicon glyphicon-remove'></span></td>"; 
-
     document.querySelector("#remove-row").setAttribute("id", "remove" + id);
-    document.querySelector("#remove" + id).onclick= function(btn){
+    document.querySelector("#remove" + id).onclick = function(btn){ 
         let hchart = $('#hchart').highcharts(); 
         $("#data-row-" + id).remove();
         for(let i = 0 ; i < View.MODELS.length ; i++){
