@@ -7,8 +7,8 @@
 
     /*The default graph user can play with */
     function defaultRender(){
-        getPriceAPI({parameter : 'http://159.65.167.149:8888/price?symbol=BTC&unit=USD&interval=hour', priceId : 11, volumeId : 12, symbol : 'BTC',
-            unit : 'USD', exchange: 'coinbase', interval : 'hour', first: true});
+        getPriceAPI({parameter : 'http://159.65.167.149:8888/price?symbol=BTC&unit=USD&interval=5min', priceId : 11, volumeId : 12, symbol : 'BTC',
+            unit : 'USD', exchange: 'coinbase', interval : '5 min.', first: true});
     }
 
      /*reads dropdown and converts it into url and returns it to be passed to Ajax call. 

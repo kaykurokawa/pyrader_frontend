@@ -45,7 +45,7 @@ function addPriceGraph(id,coin,unit,x,y_prices,start,end, min, max, first){
         yAxis: id + "-axis",
         //boostThreshold: 1
     });
-    console.log(first)
+  
     if(!first){
         setMinMax(min,max) //from the url min and max query set the xAxis to min and max
         AlignAxis(id, "Price")
@@ -99,7 +99,7 @@ function addVolumeGraph(id,coin,unit,x,y_volume,start,end, min, max, first){
         yAxis: id + "-axis",
         //boostThreshold: 1
     });
-    console.log(first)
+
     if(!first){
         setMinMax(min,max) //from the url min and max query set the xAxis to min and max
         AlignAxis(id, "Volume")

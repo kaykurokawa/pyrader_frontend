@@ -40,39 +40,42 @@
     <div class="container">
         <img src="../graphics/blkdat_logo_small.png" alt="logo" height="200" width="200">
         <h2>More Features</h2>
-        <p>Blkdat works by GUI interaction or by taking user inputs from the url query string. In order to intract with the price data you can do the following:</p>
+        <p>Blkdat works by GUI interaction or by taking user inputs through the url query string. For example, in order to intract with the price data you can do the following:</p>
         <pre><code class="lang-js">http://blkdat.com/?price&symbol=BTC&unit=USD&exchange=coinbase&interval=5min</code></pre>
             <p>The following are the query string parameters:</p>
             <ul>
                 <li><b>/?price</b> <br>your choice of price or block data (required)</li>
-                <li><b>&symbol</b><br> your choice of instrument symbol (required)</li>
-                <li><b>&unit</b><br> your choice of units (required)</li>
-                <li><b>&exchange</b><br> choose your exhchage, if blank it will draw an average of all exchanges (not required)</li>
-                <li><b>&interval</b><br> your choice of interval, if left blank it will draw from 0 averaging (not required)</li>
+                <li><b>symbol</b><br> your choice of coin symbol (required)</li>
+                <li><b>unit</b><br> your choice of units (required)</li>
+                <li><b>exchange</b><br> choose your exhchage, if blank it will draw an average of all exchanges (not required)</li>
+                <li><b>interval</b><br> your choice of interval, if left blank it will draw from 0 averaging (not required)</li>
             </ul>    
         <p>Likewise with the block data you can populate it buy:</p>
         <pre><code class="lang-js">http://blkdat.com/?block&coin=XMO&datatype=hash_rate&interval=hour</code></pre>
         <ul>
             <li><b>/?block</b> <br>your choice of price or block data (required)</li>
-            <li><b>&coin</b><br> your choice of instrument symbol (required)</li>
-            <li><b>&datatype</b><br> your choice of unis (required)</li>
-            <li><b>&interval</b><br> your choice of interval, if left blank it will draw from 0 averaging which is a scatter plot. (not required)</li>
+            <li><b>coin</b><br> your choice of coin symbol (required)</li>
+            <li><b>datatype</b><br> your choice of units (required)</li>
+            <li><b>interval</b><br> your choice of interval, if left blank it will draw a scatter plot. (not required)</li>
         </ul>
-    <p>Finally you can use a combination of price/volume/block query parameters in combination to display an infinite amount of graphs! </p> 
-    <pre><code class="lang-js">http://blkdat.com/?price&symbol=BTC&unit=USD&exchange=coinbase/?block&coin=XMO&datatype=difficulty&interval=hour</code></pre>
+    <p>You can use a combination of price/volume/block query parameters in combination to display a combination of graphs! </p> 
+    <pre><code class="lang-js">http://blkdat.com/?price&symbol=BTC&unit=USD&exchange=coinbase/?block&coin=XMO&datatype=difficulty&interval=hour</code></pre><br>
+    <p>Finally you can pass in <b>Max</b> and <b>Min</b> parameters to limit the window of your graph to starting and ending timestamps (in Microseconds). </p>
+    <pre><code class="lang-js">http://blkdat.com/?price&symbol=BTC&unit=USD&exchange=coinbase&min=1527833708000000&max=1530425708000000</code></pre>
+    
     <hr>
     <h2>Coming Soon...Subscription Services</h2>
-    <p>Blkdat has a powerful feature that allows you to gain notifications everytime a user set condition has been met.</p>
-    <p>In order to subscribe to notifications make sure to sign up for an account and go to the bottom here:</p>
+    <p>Blkdat has a powerful feature that allows you to recieve notifications everytime you set condition.</p>
+    <p>In order to subscribe to notifications, make sure to sign up for an account and go to the bottom of the Home page here:</p>
     <img src="../graphics/subscription1.png" style="width:100%;height:100%;" alt="slider"><br>
-    <h4>Follow the directions:</h4>
-    <p>1. From the <b>Instr. to Watch</b> select menu pick which instrument to watch for (BTC, LTC, ETH).</p>
+    <h4><b>To have notifications sent to you:</b></h4><br>
+    <p>1. In the <b>Instr. to Watch</b> select menu pick which instrument to watch for (BTC, LTC, ETH).</p>
     <p>2. In the <b>What to Look for</b> select menu check for price or a block criteria.</p>
-    <p>3. In the <b>Condition</b> select, choose to send notification when >, <, = to condition is met.</p>
+    <p>3. In the <b>Condition</b> select, choose to send notification when <b> >, <, = </b> to condition is met.</p>
     <p>4. In the <b>Price/Block Point</b> input the condition value (i.e. when the price of bitcoin is more than 6000)</p>
     <p><b>As the backend collects the data, if it meets your conditon it will display on the table below:</b></p>
     <img src="../graphics/subscription2.png" style="width:100%;height:100%;" alt="slider"><br>
-    <p><b>Click "See Previous Notifications" to expand, This will open up all previous notifications you have saved:</b></p><br>
+    <p>After a while, your notifications will disappear but you can see them by<br> <b>Clicking "See Previous Notifications" to expand, This will open up all previous notifications you have saved:</b></p><br>
     <img src="../graphics/subscription3.png" style="width:100%;height:100%;" alt="slider"><br>
     <p><b>If you have too many notifications saved up press clear:</b></p><br>
     <img src="../graphics/subscription4.png" style="width:50%;height:50%;" alt="slider"><br><br>
