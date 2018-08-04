@@ -83,7 +83,6 @@ class Buttons extends React.Component{
                                 <button data-toggle="modal" id = "share-link" data-target="#myShare" title="Share Link!">
                                     <img src="/graphics/clippy.svg" height="18" width="18" alt="Copy to clipboard"></img>
                                 </button>
-                                 
                         </div>
                     </div>
                 </div>                                          

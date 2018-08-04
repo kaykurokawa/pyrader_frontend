@@ -346,23 +346,15 @@ var hchart = Highcharts.stockChart('hchart', {
                 useHTML : true
             },
             events: {
-                afterSetExtremes: function(event){
-
-                    document.querySelector('#share-link').onclick = function(e){
+                afterSetExtremes: (event) => {
+                    document.querySelector('#share-link').onclick = (e)=> {
+                        e.preventDefault()
                         let min_window = event.min*1000
                         let max_window = event.max*1000
                         let url = URL.removeParameter("min", URL.getURL())
                         url = URL.removeParameter("max", url)
                         URL.setShareLink( url + "&min=" + min_window + "&max=" + max_window) 
                     }
-
-                    document.querySelector('#share-block-link').onclick = function(e){
-                        let min_window = event.min*1000;
-                        let max_window = event.max*1000;
-                        let url = URL.removeParameter("min", URL.getURL())
-                        url = URL.removeParameter("max", url)
-                        URL.setShareLink(url + "&min=" + min_window + "&max=" + max_window); 
-                    }    
                 }
             }
         },

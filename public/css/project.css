@@ -13,6 +13,11 @@
     color: black;
 }
 
+.glyphicon.glyphicon-arrow-right{
+    font-size: 25px;
+    color: black;
+}
+
 .glyphicon.glyphicon-remove{
     font-size: 18px;
     color: grey;

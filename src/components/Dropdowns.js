@@ -339,8 +339,8 @@ class Dropdowns extends React.Component{
             </div>
         }
         return (
-        <div class='row'>
-            <div class='col-md-8' id='border'>
+        <div className='row'>
+            <div className='col-md-6' id='border'>
                 <form>
                     <Select enabled = {this.state.price_mode_enabled} options= {["Price", "Block"]} id = "price-or-block" label = "Price/Block" priceMode = {this.state.price_mode} onPriceMode = {this.handlePriceMode} />
                     {selectRows}

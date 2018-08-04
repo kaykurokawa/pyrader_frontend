@@ -201,7 +201,7 @@ class Select extends React.Component{
 
         return(
                 <div className="row" id={this.props.id + "-div"}>
-                        <div className="col-xs-8"> 
+                        <div className="col-xs-10"> 
                             <label id={this.props.id + "-label"} style= {{color : this.props.enabled === true ? 'black' : 'silver'}}>{this.props.label}</label>       
                             <select className="form-control" id = {this.props.id} disabled = {this.props.enabled === false ? true : true}>
                                 {this.props.enabled ? firstOption : "" }
@@ -212,7 +212,7 @@ class Select extends React.Component{
                             <span id={this.props.id + "-arrow"} style={{top:'30px', right:'40px'}}></span>
                             {this.props.id !== 'price-or-block' ? 
                                 ( <span id={this.props.id + "-x"} style={{top:'28px', right:'38px'}}></span>) : 
-                                (<span></span>)
+                                (null)
                                 }
                         </div>
                 </div>      
