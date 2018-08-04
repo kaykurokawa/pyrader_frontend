@@ -7,6 +7,7 @@ import {
     handleAddRow,
     handleDeleteRow
     } from '../actions/rowActions'
+import './Dropdowns.css'
 
 class Dropdowns extends React.Component{
 
@@ -337,12 +338,15 @@ class Dropdowns extends React.Component{
                     label = "Averaging" onBlockChange = {this.handleBlockChange} onPriceMode = {this.handlePriceMode} onBlockCancel = {this.handleBlockCancel} />
             </div>
         }
-
         return (
-        <div>
-            <Select enabled = {this.state.price_mode_enabled} options= {["Price", "Block"]} id = "price-or-block" label = "Price/Block" priceMode = {this.state.price_mode} onPriceMode = {this.handlePriceMode} />
-            {selectRows}
-            <Buttons  enabled = {this.state.submit_enabled} onCancel = {this.handleButtonCancel} priceMode = {this.state.price_mode} />
+        <div class='row'>
+            <div class='col-md-8' id='border'>
+                <form>
+                    <Select enabled = {this.state.price_mode_enabled} options= {["Price", "Block"]} id = "price-or-block" label = "Price/Block" priceMode = {this.state.price_mode} onPriceMode = {this.handlePriceMode} />
+                    {selectRows}
+                    <Buttons  enabled = {this.state.submit_enabled} onCancel = {this.handleButtonCancel} priceMode = {this.state.price_mode} />
+                </form>
+            </div>
         </div>
         )
     }

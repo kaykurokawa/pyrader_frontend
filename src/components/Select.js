@@ -103,7 +103,7 @@ class Select extends React.Component{
             let arrow_label = select + "-arrow"
             let x_label = select + "-x"
             document.getElementById(select).disabled = false
-            document.getElementById(arrow_label).classList.add("glyphicon", "glyphicon-arrow-right");
+            document.getElementById(arrow_label).classList.add("glyphicon", "glyphicon-arrow-left");
             if(currentComponent.props.id !== 'price-or-block'){
                 document.getElementById(x_label).classList.add("glyphicon", "glyphicon-remove");
             }
@@ -114,7 +114,7 @@ class Select extends React.Component{
             let select_label = select + "-label"
             let arrow_label = select + "-arrow"
             let x_label = select + "-x"
-            document.getElementById(arrow_label).classList.remove("glyphicon", "glyphicon-arrow-right");
+            document.getElementById(arrow_label).classList.remove("glyphicon", "glyphicon-arrow-left");
             document.getElementById(select).disabled = true
             document.getElementById(select_label).style.color = "silver"
             if(currentComponent.props.id !== 'price-or-block'){
@@ -200,15 +200,7 @@ class Select extends React.Component{
         }
 
         return(
-            <div className="col-xs-2" id={this.props.id + "-div"}>
-                <div className="row" >
-                    <div className="col-xs-2 text-center">
-                        {this.props.id !== 'price-or-block' ? 
-                            ( <span id={this.props.id + "-x"}></span>) : 
-                            (<span></span>)
-                            }
-                        <span id={this.props.id + "-arrow"}></span>
-                    </div>
+                <div className="row" id={this.props.id + "-div"}>
                         <div className="col-xs-8"> 
                             <label id={this.props.id + "-label"} style= {{color : this.props.enabled === true ? 'black' : 'silver'}}>{this.props.label}</label>       
                             <select className="form-control" id = {this.props.id} disabled = {this.props.enabled === false ? true : true}>
@@ -216,8 +208,14 @@ class Select extends React.Component{
                                 {optionItems}
                             </select>
                         </div>
+                        <div className="col-xs-2 text-center">
+                            <span id={this.props.id + "-arrow"} style={{top:'30px', right:'40px'}}></span>
+                            {this.props.id !== 'price-or-block' ? 
+                                ( <span id={this.props.id + "-x"} style={{top:'28px', right:'38px'}}></span>) : 
+                                (<span></span>)
+                                }
+                        </div>
                 </div>      
-            </div>
         )
     }
 }

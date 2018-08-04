@@ -7,7 +7,7 @@
 
     /*The default graph user can play with */
     function defaultRender(){
-        getPriceAPI({parameter : 'http://159.65.167.149:8888/price?symbol=BTC&unit=USD&interval=5min', priceId : 11, volumeId : 12, symbol : 'BTC',
+        getPriceAPI({parameter : 'http://159.65.167.149:8888/price?symbol=XMR&unit=BTC&interval=5min', priceId : 11, volumeId : 12, symbol : 'BTC',
             unit : 'USD', exchange: 'coinbase', interval : '5 min.', first: true});
     }
 
