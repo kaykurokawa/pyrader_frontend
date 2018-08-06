@@ -3,6 +3,7 @@ import { handleDeleteRow } from '../actions/rowActions';
 import { REST_URL, NOTIFY_URL } from '../constants';
 import axios from 'axios';
 import Info from '../info_data.js';
+import Display from './Display.js'
 var keygen = 0;
 
 class Subscriber extends React.Component{
@@ -14,14 +15,9 @@ class Subscriber extends React.Component{
             choice: "",
             price_point : ""
         }
-        this.handleChange = this.handleChange.bind(this);
-        this.handleCondSelect = this.handleCondSelect.bind(this);
-        this.handleWatchSelect = this.handleWatchSelect.bind(this);
-        this.handleSubmit = this.handleFormSubmit.bind(this);
-        this.handleChoiceSelect = this.handleChoiceSelect.bind(this)
     }
 
-    handleFormSubmit(event){
+    handleFormSubmit = (event) => {
         event.preventDefault();
         let condition = ""
         if(this.state.condition === "greater than"){
@@ -54,23 +50,23 @@ class Subscriber extends React.Component{
           });
     }
 
-    handleChange(event){
+    handleChange = (event) => {
         this.setState({price_point: event.target.value});
     }
 
-    handleCondSelect(event){
+    handleCondSelect = (event) => {
         this.setState({condition: event.target.value});
     }
 
-    handleWatchSelect(event){
+    handleWatchSelect = (event) => {
         this.setState({watch: event.target.value});
     }
 
-    handleChoiceSelect(event){
+    handleChoiceSelect = (event) => {
         this.setState({choice : event.target.value})
     }
 
-    createOptions(info, id){
+    createOptions = (info, id) => {
         var info_array = [];
         let text;
         for(let i = 0 ; i < info.length ; i++){
@@ -101,39 +97,44 @@ class Subscriber extends React.Component{
 
 
         return(
-            <div className="container">
-            <h3>Subsricption Notifications</h3>
-            <form>
-                <div className="form-row">
-                    <div className="form-group col-xs-4">
-                            <label htmlFor="watch">Instr. to Watch:</label>
-                            <select id="watch" className="form-control" value={this.state.watch} onChange={(e) => this.handleWatchSelect(e)}>
-                                {priceItems}
-                            </select>
+            <div>
+                <div className="container">
+                <h3>Subsricption Notifications</h3>
+                <form>
+                    <div className="form-row">
+                        <div className="form-group col-xs-4">
+                                <label htmlFor="watch">Instr. to Watch:</label>
+                                <select id="watch" className="form-control" value={this.state.watch} onChange={(e) => this.handleWatchSelect(e)}>
+                                    {priceItems}
+                                </select>
+                        </div>
+                        <div className="form-group col-xs-4">
+                                <label htmlFor="condition">What to Look for:</label>
+                                <select id="condition" className="form-control" value={this.state.choice} onChange={(e) => this.handleChoiceSelect(e)}>
+                                    <option value="none">Choose...</option>
+                                    <option value="less than">Price</option>
+                                    <option value="greater than">Block</option>
+                                </select>
+                        </div>
+                        <div className="form-group col-xs-4">
+                                <label htmlFor="condition">Condition:</label>
+                                <select id="condition" className="form-control" value={this.state.condition} onChange={(e) => this.handleCondSelect(e)}>
+                                    <option value="none">Choose...</option>
+                                    <option value="less than">less than</option>
+                                    <option value="greater than">greater than</option>
+                                </select>
+                        </div>
+                        <div className="form-group col-xs-4">
+                            <label htmlFor="inputEmail4">Price/Block Point:</label>
+                            <input type="text" className="form-control" id="point" placeholder="0" value={this.state.price_point} onChange={this.handleChange} />
+                        </div>
                     </div>
-                    <div className="form-group col-xs-4">
-                            <label htmlFor="condition">What to Look for:</label>
-                            <select id="condition" className="form-control" value={this.state.choice} onChange={(e) => this.handleChoiceSelect(e)}>
-                                <option value="none">Choose...</option>
-                                <option value="less than">Price</option>
-                                <option value="greater than">Block</option>
-                            </select>
-                    </div>
-                    <div className="form-group col-xs-4">
-                            <label htmlFor="condition">Condition:</label>
-                            <select id="condition" className="form-control" value={this.state.condition} onChange={(e) => this.handleCondSelect(e)}>
-                                <option value="none">Choose...</option>
-                                <option value="less than">less than</option>
-                                <option value="greater than">greater than</option>
-                            </select>
-                    </div>
-                    <div className="form-group col-xs-4">
-                        <label htmlFor="inputEmail4">Price/Block Point:</label>
-                        <input type="text" className="form-control" id="point" placeholder="0" value={this.state.price_point} onChange={this.handleChange} />
-                    </div>
-                </div>
-                <button type="submit" className="btn btn-primary" onClick = {(e) => this.handleFormSubmit(e)}>Subscribe</button>
-            </form>
+                    <button type="submit" className="btn btn-primary" onClick = {(e) => this.handleFormSubmit(e)}>Subscribe</button>
+                </form>
+            </div>
+            <div className='container'>
+                <Display />
+            </div>
         </div>    
         )
     }

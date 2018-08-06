@@ -13,13 +13,10 @@ class Notifier extends React.Component{
     constructor(props){
         super(props)
         this.state = {
-            messages : [{"date" : "July 1st 2018", "message" : "Price of BTC has reached 6200"}, {"date" : "July 2nd 2018", "message" : "Price of LTC has reached 80"}],
+            messages : [{"date" : "July 1st 2018", "message" : "Price of BTC has reached 6200", "icon" : <span></span>}, {"date" : "July 2nd 2018", "message" : "Price of LTC has reached 80"}],
             expired_messages : [{"date" : "June 15th 2018", "message" : "Price of BTC has reached 6000"}, {"date" : "June 28th 2018", "message" : "Price of LTC has reached 80"}],
             expanded : false
         }
-        this.handleExpand = this.handleExpand.bind(this)
-        this.handleClose = this.handleClose.bind(this)
-        this.handleClear = this.handleClear.bind(this)
     }
 
     componentDidMount(){
@@ -41,8 +38,8 @@ class Notifier extends React.Component{
         }
     }
 
-    handleExpand(e){
-        e.preventDefault();
+    handleExpand = (event) =>{
+        event.preventDefault();
         this.setState({expanded : true})
         let url = NOTIFY_URL + SAVE_PARAMETER;
         fetch(url).then(res =>res.json().then(data => {
@@ -55,13 +52,13 @@ class Notifier extends React.Component{
             });
     }
 
-    handleClose(e){
-        e.preventDefault();
+    handleClose = (event) => {
+        event.preventDefault();
         this.setState({expanded : false})
     }
 
-    handleClear(e){
-        e.preventDefault();
+    handleClear = (event) => {
+        event.preventDefault();
         this.setState({expired_messages : []})
         let post_body = {clear_saves : "true"}
         axios.post(NOTIFY_URL, post_body)
@@ -74,6 +71,10 @@ class Notifier extends React.Component{
     }
         
     render(){
+        const imageFormatter = () => { 
+            return '<span class ="glyphicon glyphicon-bell"></span>'
+        }
+        
         let ExpandedList =
             <div>
                 <h4>Previous Notifications:</h4>
@@ -98,6 +99,7 @@ class Notifier extends React.Component{
                 </div>
                 </div>    
                 <BootstrapTable data={this.state.expired_messages} striped hover pagination>
+                    <TableHeaderColumn dataField='icon' width='90'dataFormat={imageFormatter}></TableHeaderColumn>
                     <TableHeaderColumn dataField='date' dataSort={ true }>Time</TableHeaderColumn>
                     <TableHeaderColumn isKey={true} dataField='message'>Message</TableHeaderColumn>
                 </BootstrapTable>
@@ -108,11 +110,12 @@ class Notifier extends React.Component{
 
         let closeButton = 
             <button type="submit" className="btn btn-danger btn-sm" onClick = {(e) => this.handleClose(e)}>- Close</button>
-
+        
         return(
             <div className="container" id ="notifier">
             <h4>Current Notifications:</h4>
             <BootstrapTable data={this.state.messages} striped hover>
+                <TableHeaderColumn dataField='icon' width='90'dataFormat={imageFormatter}></TableHeaderColumn>
                 <TableHeaderColumn dataField='date' dataSort={ true }>Time</TableHeaderColumn>
                 <TableHeaderColumn isKey={true} dataField='message'>Message</TableHeaderColumn>
             </BootstrapTable>

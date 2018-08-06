@@ -5,10 +5,9 @@ import { handleDeleteRow } from '../actions/rowActions';
 class Table extends React.Component{
     constructor(props){
         super(props)
-    this.handleRemove = this.handleRemove.bind(this)
     }
 
-    handleRemove(id){
+    handleRemove = (id) => {
         this.props.dispatch(handleDeleteRow(id))
     }
     
